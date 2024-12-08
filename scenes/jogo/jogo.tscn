@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://diitcopwuj1ef"]
+
+[ext_resource type="PackedScene" uid="uid://fmwaqsnih7kj" path="res://scenes/magodoido/mago_doido.tscn" id="1_7d00r"]
+[ext_resource type="Texture2D" uid="uid://223pktgaxfd2" path="res://piso.png" id="2_e362k"]
+
+[node name="jogo" type="Node2D"]
+
+[node name="magoDoido" parent="." instance=ExtResource("1_7d00r")]
+position = Vector2(568, 376)
+
+[node name="piso" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+texture = ExtResource("2_e362k")

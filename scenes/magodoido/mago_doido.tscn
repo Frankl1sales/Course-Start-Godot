@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://fmwaqsnih7kj"]
+
+[ext_resource type="Script" path="res://scenes/magodoido/mago_doido.gd" id="1_dp01e"]
+[ext_resource type="Texture2D" uid="uid://5x7yj4y2sgyy" path="res://mago.png" id="1_h3vvn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gd35f"]
+radius = 96.0
+
+[node name="magoDoido" type="CharacterBody2D"]
+z_index = 1
+script = ExtResource("1_dp01e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gd35f")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_h3vvn")
