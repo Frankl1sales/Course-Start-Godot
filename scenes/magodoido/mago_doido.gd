@@ -1,35 +1,30 @@
 extends CharacterBody2D
 
-var velocidade_mago: float = 400.0
-var direcao_move: Vector2 = Vector2(0,0)
+var velocidade_cavalo: float = 300.0  # Velocidade do cavalo (ajustável)
+var direcao_move: Vector2 = Vector2(1, 1)  # Direção inicial
+var janela_tamanho: Vector2  # Tamanho da tela
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
-
+	# Obter o tamanho da tela
+	janela_tamanho = get_viewport_rect().size
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	move_mago()
-	
-func move_mago() -> void:
-	# Movimento horizontal
-	if Input.is_action_pressed("mv_direito"):
-		direcao_move.x = 1
-	elif Input.is_action_pressed("mv_esquerdo"):
-		direcao_move.x = -1
-	else:
-		direcao_move.x = 0
-	# Movimento Vertical
-	if Input.is_action_pressed("mv_cima"):
-		direcao_move.y = -1
-	elif Input.is_action_pressed("mv_baixo"):
-		direcao_move.y = 1
-	else:
-		direcao_move.y = 0
-		
-	# aplica as mudançasna direção do jogador
-	velocity = direcao_move.normalized() * velocidade_mago
+	# Atualiza a posição do cavalo
+	position += direcao_move * velocidade_cavalo * delta
+
+	# Verifica os limites da tela e reflete o movimento
+	if position.x < 0 or position.x > janela_tamanho.x:
+		direcao_move.x *= -1  # Inverte a direção horizontal
+	if position.y < 0 or position.y > janela_tamanho.y:
+		direcao_move.y *= -1  # Inverte a direção vertical
+
+	# Move o cavalo usando a velocidade calculada
+	velocity = direcao_move.normalized() * velocidade_cavalo
 	move_and_slide()
-	
-		
+
+func _on_Mago_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton and event.pressed:
+		# Adicione a lógica do clique aqui
+		print("Mago clicado!")
