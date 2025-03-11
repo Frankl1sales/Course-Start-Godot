@@ -298,8 +298,8 @@ func remover_todos_os_alvos_do_grid() -> void:
 
 
 func centro_de_alvo(alvo: int) -> Vector2:
-    return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width * escala,
-                                                         alvos_no_jogo[alvo].heigth * escala)
+    return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width / 2 * escala,
+                                                         alvos_no_jogo[alvo].heigth / 2 * escala)
 
 
 # Calcula a distância entre o centro de dois alvos. Use -1 em um dos alvos para especificar um ponto
