@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://crxyuw6h3xx20"]
+
+[ext_resource type="Script" path="res://scenes/alvos/maçã/maçã.gd" id="1_d0bfl"]
+[ext_resource type="Texture2D" uid="uid://da346gskqrrvk" path="res://assets/sprites/food/Food collection.svg" id="2_6w5lu"]
+
+[node name="Maçã" type="Area2D"]
+script = ExtResource("1_d0bfl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(54.375, 59.688)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("2_6w5lu")
+region_enabled = true
+region_rect = Rect2(988, 2026, 174, 191)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(38, 19, 51, 22, 51, 12, 55, 12, 64, 4, 73, 1, 83, 0, 83, 5, 79, 11, 75, 15, 71, 17, 64, 19, 59, 20, 59, 22, 64, 20, 72, 18, 79, 18, 85, 20, 91, 24, 99, 32, 104, 42, 107, 53, 108, 59, 108, 70, 106, 79, 102, 89, 96, 99, 89, 105, 79, 112, 69, 116, 58, 118, 47, 118, 35, 115, 24, 109, 16, 102, 9, 93, 5, 85, 1, 71, 1, 57, 4, 45, 8, 35, 15, 27, 20, 23, 26, 20, 32, 19)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

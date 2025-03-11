@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://x8gr2llucnrv"]
+
+[ext_resource type="Texture2D" uid="uid://da346gskqrrvk" path="res://assets/sprites/food/Food collection.svg" id="1_b4err"]
+[ext_resource type="Script" path="res://scenes/alvos/donut/donut.gd" id="1_kvvsi"]
+
+[node name="Donut" type="Area2D"]
+script = ExtResource("1_kvvsi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(53, 46.8)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_b4err")
+region_enabled = true
+region_rect = Rect2(117, 484, 265, 234)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(53, 46.8)
+scale = Vector2(0.4, 0.4)
+polygon = PackedVector2Array(-20, -117, 15, -117, 52.5, -107, 77.5, -94.5, 102.5, -74.5, 117.5, -54.5, 127.5, -32, 132.5, -6.99999, 132.5, 13, 125, 38, 115, 58, 100, 75.5, 80, 93, 55, 105.5, 20, 115.5, -20, 115.5, -50, 108, -75, 95.5, -95, 80.5, -112.5, 60.5, -125, 38, -130, 20.5, -132.5, 3, -132.5, -17, -130, -34.5, -122.5, -54.5, -110, -72, -95, -87, -65, -104.5, -40, -112)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

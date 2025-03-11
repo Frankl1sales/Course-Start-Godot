@@ -1,0 +1,70 @@
+[gd_scene load_steps=12 format=3 uid="uid://c1kieko08207m"]
+
+[ext_resource type="Script" path="res://scenes/jogo_principal/jogo_principal.gd" id="1_56i3e"]
+[ext_resource type="Theme" uid="uid://dejubhbtuxstt" path="res://scenes/jogo_principal/jogo_principal.tres" id="1_u5hf3"]
+[ext_resource type="Texture2D" uid="uid://11emcp3oxcn0" path="res://assets/background.png" id="2_1oknb"]
+[ext_resource type="AudioStream" uid="uid://trmfjw1qgyrb" path="res://assets/sounds/tap_right/tap.wav" id="2_4ap5s"]
+[ext_resource type="PackedScene" uid="uid://x8gr2llucnrv" path="res://scenes/alvos/donut/donut.tscn" id="2_33l3o"]
+[ext_resource type="Texture2D" uid="uid://ckybi4o6hyssl" path="res://assets/current_target_box.png" id="3_jvdrf"]
+[ext_resource type="AudioStream" uid="uid://baiwynv4mx0pu" path="res://assets/sounds/tap_wrong/tap_wrong.wav" id="3_p3tf5"]
+[ext_resource type="PackedScene" uid="uid://bi3p0yl1fdvr0" path="res://scenes/alvos/hambúrguer/hambúrguer.tscn" id="5_fjpxd"]
+[ext_resource type="PackedScene" uid="uid://b4mh3kec83g0j" path="res://scenes/alvos/pizza/pizza.tscn" id="6_51a2h"]
+[ext_resource type="PackedScene" uid="uid://c1qxkoehka503" path="res://scenes/alvos/ovo_frito/ovo_frito.tscn" id="7_nnegn"]
+[ext_resource type="PackedScene" uid="uid://crxyuw6h3xx20" path="res://scenes/alvos/maçã/maçã.tscn" id="8_wa8v5"]
+
+[node name="JogoPrincipal" type="Node2D"]
+script = ExtResource("1_56i3e")
+
+[node name="TapRight" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_4ap5s")
+
+[node name="TapWrong" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_p3tf5")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -340.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 80.0
+grow_horizontal = 0
+theme = ExtResource("1_u5hf3")
+theme_override_font_sizes/font_size = 48
+text = "Pontos: 0"
+horizontal_alignment = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_right = 0.13
+anchor_bottom = 0.231
+offset_right = 0.23999
+offset_bottom = 0.311996
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/AspectRatioContainer"]
+layout_mode = 2
+texture = ExtResource("3_jvdrf")
+expand_mode = 2
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(8000, 4500)
+scale = Vector2(1000, 1000)
+texture = ExtResource("2_1oknb")
+
+[node name="Donut" parent="." instance=ExtResource("2_33l3o")]
+position = Vector2(0, -93.6)
+
+[node name="Hambúguer" parent="." instance=ExtResource("5_fjpxd")]
+position = Vector2(0, -93)
+
+[node name="Pizza" parent="." instance=ExtResource("6_51a2h")]
+position = Vector2(0, -112.25)
+
+[node name="OvoFrito" parent="." instance=ExtResource("7_nnegn")]
+position = Vector2(0, -114)
+
+[node name="Maçã" parent="." instance=ExtResource("8_wa8v5")]
+position = Vector2(0, -118.125)

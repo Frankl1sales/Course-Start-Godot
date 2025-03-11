@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1qxkoehka503"]
+
+[ext_resource type="Script" path="res://scenes/alvos/ovo_frito/ovo_frito.gd" id="1_pe5se"]
+[ext_resource type="Texture2D" uid="uid://da346gskqrrvk" path="res://assets/sprites/food/Food collection.svg" id="2_gc3ko"]
+
+[node name="OvoFrito" type="Area2D"]
+script = ExtResource("1_pe5se")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(58, 57.25)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_gc3ko")
+region_enabled = true
+region_rect = Rect2(335, 130, 232, 229)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(63, 0, 74, 1, 87, 6, 97, 13, 104, 21, 110, 31, 113, 42, 115, 54, 116, 61, 115, 70, 113, 79, 109, 89, 105, 97, 100, 104, 93, 110, 87, 113, 82, 114, 76, 114, 69, 111, 60, 107, 55, 106, 51, 106, 42, 108, 36, 109, 28, 108, 21, 105, 13, 100, 6, 91, 2, 81, 1, 76, 0, 73, 1, 65, 3, 59, 8, 53, 12, 48, 14, 43, 16, 35, 19, 27, 24, 19, 30, 13, 35, 9, 47, 3, 55, 1)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

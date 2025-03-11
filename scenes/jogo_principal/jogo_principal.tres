@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dejubhbtuxstt"]
+
+[ext_resource type="FontFile" uid="uid://djt4kf01x8kya" path="res://assets/fonts/Titan_One/TitanOne-Regular.ttf" id="1_007o6"]
+
+[resource]
+Label/fonts/font = ExtResource("1_007o6")

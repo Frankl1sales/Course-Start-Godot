@@ -1,0 +1,191 @@
+[gd_scene load_steps=18 format=3 uid="uid://bnvvoqu08r3mk"]
+
+[ext_resource type="Script" path="res://UI/tela_inicial_teste.gd" id="1_hd6ew"]
+[ext_resource type="Theme" uid="uid://bjvi4gbyjhody" path="res://UI/menus_do_teste.tres" id="2_areup"]
+[ext_resource type="Texture2D" uid="uid://gjdr64kgj75v" path="res://assets/logo.png" id="3_7tfet"]
+[ext_resource type="Texture2D" uid="uid://bewxoofa1r3lc" path="res://assets/icons/music_note/music_note_normal.svg" id="4_m5w13"]
+[ext_resource type="Texture2D" uid="uid://d4kijdj4ncevo" path="res://assets/icons/speaker/speaker_normal.svg" id="5_i0eoa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5887"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bo6o"]
+bg_color = Color(0.74902, 0.623529, 0.533333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hkty"]
+bg_color = Color(0.74902, 0.623529, 0.533333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h1ewn"]
+bg_color = Color(0.74902, 0.623529, 0.533333, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_quvs2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xsscm"]
+bg_color = Color(0.74902, 0.701961, 0.666667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2c8ov"]
+bg_color = Color(0.74902, 0.701961, 0.666667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_al8hu"]
+bg_color = Color(0.74902, 0.701961, 0.666667, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8k75e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbay5"]
+bg_color = Color(0.858824, 0.760784, 0.686275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aeysx"]
+bg_color = Color(0.858824, 0.760784, 0.686275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5t1no"]
+bg_color = Color(0.858824, 0.760784, 0.686275, 1)
+
+[node name="TelaInicialTeste" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hd6ew")
+
+[node name="Fundo" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_areup")
+
+[node name="Logo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.144
+anchor_top = 0.208
+anchor_right = 0.856
+anchor_bottom = 0.525
+offset_left = 0.111984
+offset_top = 0.216003
+offset_right = -0.112061
+offset_bottom = -0.200012
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_7tfet")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="BotãoJogar" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.385
+anchor_top = 0.579
+anchor_right = 0.615
+anchor_bottom = 0.741
+offset_left = 0.47998
+offset_top = -0.192047
+offset_right = -0.47998
+offset_bottom = -0.16803
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_areup")
+theme_override_font_sizes/font_size = 55
+text = "JOGAR"
+
+[node name="BotãoSecreto1" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.052
+anchor_right = 0.2
+anchor_bottom = 0.21
+offset_top = 0.304001
+offset_right = -0.400009
+offset_bottom = -0.0800018
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_m5887")
+theme_override_styles/hover = SubResource("StyleBoxFlat_7bo6o")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_6hkty")
+theme_override_styles/normal = SubResource("StyleBoxFlat_h1ewn")
+
+[node name="BotãoSecreto2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.901
+anchor_right = 0.108
+anchor_bottom = 1.0
+offset_top = 0.151978
+offset_right = -0.416
+grow_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_quvs2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xsscm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2c8ov")
+theme_override_styles/normal = SubResource("StyleBoxFlat_al8hu")
+
+[node name="BotãoSecreto3" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.847
+anchor_top = 0.699
+anchor_right = 1.0
+anchor_bottom = 0.836
+offset_left = 0.25592
+offset_top = 0.0479736
+offset_bottom = 0.271973
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8k75e")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mbay5")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aeysx")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5t1no")
+
+[node name="ContainerBotãoMúsica" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.003
+anchor_top = 0.367
+anchor_right = 0.076
+anchor_bottom = 0.497
+offset_left = 0.544
+offset_top = 0.18399
+offset_right = 0.447998
+offset_bottom = -0.0559998
+grow_vertical = 2
+alignment_horizontal = 0
+alignment_vertical = 2
+
+[node name="BotãoMúsica" type="Button" parent="ContainerBotãoMúsica"]
+layout_mode = 2
+theme = ExtResource("2_areup")
+theme_override_icons/icon = ExtResource("4_m5w13")
+expand_icon = true
+
+[node name="ContainerBotãoSons" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.003
+anchor_top = 0.503
+anchor_right = 0.076
+anchor_bottom = 0.633
+offset_left = 0.544
+offset_top = 0.0559998
+offset_right = 0.447998
+offset_bottom = -0.184021
+grow_vertical = 2
+alignment_horizontal = 0
+alignment_vertical = 0
+
+[node name="BotãoSons" type="Button" parent="ContainerBotãoSons"]
+layout_mode = 2
+theme = ExtResource("2_areup")
+theme_override_icons/icon = ExtResource("5_i0eoa")
+expand_icon = true
+
+[connection signal="pressed" from="BotãoJogar" to="." method="_on_botão_jogar_pressed"]
+[connection signal="pressed" from="BotãoSecreto1" to="." method="_on_botão_secreto_1_pressed"]
+[connection signal="pressed" from="BotãoSecreto2" to="." method="_on_botão_secreto_2_pressed"]
+[connection signal="pressed" from="BotãoSecreto3" to="." method="_on_botão_secreto_3_pressed"]
+[connection signal="button_down" from="ContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_button_down"]
+[connection signal="button_up" from="ContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_button_up"]
+[connection signal="pressed" from="ContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_pressed"]
+[connection signal="button_down" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
+[connection signal="button_up" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
+[connection signal="pressed" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]

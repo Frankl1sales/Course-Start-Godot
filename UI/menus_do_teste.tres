@@ -1,0 +1,39 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bjvi4gbyjhody"]
+
+[ext_resource type="FontFile" uid="uid://djt4kf01x8kya" path="res://assets/fonts/Titan_One/TitanOne-Regular.ttf" id="1_kjjjk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ucjdn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_44ct0"]
+bg_color = Color(0.690196, 0.6, 0.560784, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1qeb"]
+bg_color = Color(0.69, 0.59823, 0.5589, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jtgs2"]
+bg_color = Color(0.577837, 0.487841, 0.448598, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie6gp"]
+bg_color = Color(0.94902, 0.862745, 0.796078, 1)
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(0.932463, 0.88566, 0.852883, 1)
+Button/fonts/font = ExtResource("1_kjjjk")
+Button/styles/focus = SubResource("StyleBoxEmpty_ucjdn")
+Button/styles/hover = SubResource("StyleBoxFlat_44ct0")
+Button/styles/normal = SubResource("StyleBoxFlat_p1qeb")
+Button/styles/pressed = SubResource("StyleBoxFlat_jtgs2")
+Panel/styles/panel = SubResource("StyleBoxFlat_ie6gp")

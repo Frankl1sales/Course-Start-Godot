@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dyhbdl4p31hkc"]
+
+[ext_resource type="Script" path="res://scenes/game_manager/game_manager.gd" id="1_7dy7b"]
+[ext_resource type="AudioStream" uid="uid://dtu53tb7ttpac" path="res://assets/music/background/soft-background-music-308418.mp3" id="2_31gks"]
+
+[node name="GameManager" type="Node"]
+script = ExtResource("1_7dy7b")
+
+[node name="MúsicaDeFundo" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_31gks")
+bus = &"Música"

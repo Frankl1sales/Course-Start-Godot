@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://s0jn048bopew"]
+
+[ext_resource type="Script" path="res://scenes/alvos/cupcake/cupcake.gd" id="1_7fgfu"]
+[ext_resource type="Texture2D" uid="uid://da346gskqrrvk" path="res://assets/sprites/food/Food collection.svg" id="2_knfhv"]
+
+[node name="Cupcake" type="Area2D"]
+script = ExtResource("1_7fgfu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(47.75, 50.5)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_knfhv")
+region_enabled = true
+region_rect = Rect2(1191, 516, 191, 202)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(47, 0, 56, 1, 63, 4, 70, 9, 73, 13, 76, 19, 77, 23, 80, 23, 86, 25, 91, 29, 94, 34, 95, 37, 95, 45, 93, 49, 90, 53, 87, 55, 83, 57, 73, 101, 23, 101, 12, 57, 7, 54, 3, 49, 2, 48, 1, 45, 1, 36, 4, 30, 9, 26, 15, 23, 17, 23, 18, 18, 22, 12, 27, 7, 33, 3, 39, 1)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
