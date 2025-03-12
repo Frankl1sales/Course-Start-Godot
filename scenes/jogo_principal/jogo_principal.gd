@@ -250,11 +250,11 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 	if ocupar:
 		grid_de_alvos[coluna][linha] = alvo
 		
-	var pos_x = coluna * tamanho_célula.x + rng.randf_range(-offset_máximo.x, offset_máximo.x)
-	var pos_y = linha * tamanho_célula.y + rng.randf_range(-offset_máximo.y, offset_máximo.y)
+	var pos_x = coluna * tamanho_célula.x + tamanho_célula.x / 2 + rng.randf_range(-offset_máximo.x, offset_máximo.x)
+	var pos_y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
 	
-	alvos_no_jogo[alvo].global_position = Vector2(pos_x + alvos_no_jogo[alvo].width * escala / 2,\
-												  pos_y + alvos_no_jogo[alvo].heigth * escala / 2)
+	alvos_no_jogo[alvo].global_position = Vector2(pos_x - alvos_no_jogo[alvo].width * escala / 2,\
+												  pos_y - alvos_no_jogo[alvo].heigth * escala / 2)
 
 
 func spawnar_todos_os_alvos() -> void:
