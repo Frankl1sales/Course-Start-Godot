@@ -65,7 +65,7 @@ texture = ExtResource("2_1oknb")
 
 [node name="Picolé" parent="." instance=ExtResource("7_30t43")]
 z_index = 10
-position = Vector2(0, -142)
+position = Vector2(0, -113.6)
 
 [node name="Brócolis" parent="." instance=ExtResource("7_oa5at")]
 z_index = 9

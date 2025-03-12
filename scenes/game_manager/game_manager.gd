@@ -1,12 +1,10 @@
 extends Node
 
-enum Dificuldades {
-	MUITO_FÁCIL, # Alvos não se movimentam e não trocam de posição quando tocados adequadamente.
-	FÁCIL, # Alvos não se movimentam, trocam de posição quando tocados adequadamente.
-	MÉDIO, # Alvos se movimentam lentamente por padrão, não trocam de posição quando tocados adequadamente.
-	MÉDIO_DIFÍCIL, # Alvos se movimentam lentamente por padrão, trocam de posição quando tocados adequadamente.
-	DIFÍCIL, # Alvos se movimentam rapidamente por padrão, não trocam de posição quando tocados adequadamente.
-	MUITO_DIFÍCIL, # Alvos se movimentam rapidamente por padrão, trocam de posição quando tocados adequadamente.
+
+enum PolíticasDeReposicionamento {
+	NENHUM,
+	ALVO,
+	TODOS
 }
 
 
@@ -23,18 +21,18 @@ enum Alvos {
 	PICOLÉ
 }
 
-
-const VELOCIDADE_LENTA_PADRÃO: float = 150
-const VELOCIDADE_RÁPIDA_PADRÃO: float = 300
+const VELOCIDADE_ZERO_PADRÃO: float = 0.0
+const VELOCIDADE_LENTA_PADRÃO: float = 150.0
+const VELOCIDADE_RÁPIDA_PADRÃO: float = 300.0
 
 # Parâmetros do sistema
 var música_desligada: bool = false;
 var sons_mutados: bool = false;
 
 # Parâmetros do jogo
-var dificuldade
-var override_velocidade: float = -1.0
+var velocidade: float = -1.0
 var alvos_no_jogo: Array = []
+var política_de_reposicionamento: int
 
 
 var alvo_atual: int
@@ -59,13 +57,13 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(dificuldade_do_jogo: int, número_de_alvos: int, override_velocidade_dos_alvos: int = -1) -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int = -1) -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
 	
-	dificuldade = dificuldade_do_jogo
-	override_velocidade = override_velocidade_dos_alvos
+	política_de_reposicionamento = política_de_reposicionamento_do_jogo
+	velocidade = velocidade_dos_alvos
 	
 	alvo_atual = alvos_no_jogo.pick_random()
 	pontos = 0

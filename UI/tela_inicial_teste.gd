@@ -113,4 +113,4 @@ func _on_botão_secreto_3_pressed() -> void:
 
 
 func _on_botão_jogar_pressed() -> void:
-	GameManager.iniciar_jogo(GameManager.Dificuldades.MÉDIO_DIFÍCIL, 10)
+	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_ZERO_PADRÃO)
