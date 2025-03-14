@@ -35,6 +35,11 @@ func _process(delta):
 
 # Função para lidar com o clique no Cavalo
 func _on_Cavalo_input_event(viewport, event, shape_idx):
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			GameManager.verificar_clique("Cavalo")
+			print("Cavalo clicado!")
+			
 	if event is InputEventMouseButton and event.pressed:
 		# Adiciona a lógica de clique no Cavalo
 		game_manager.verificar_clique("Cavalo")

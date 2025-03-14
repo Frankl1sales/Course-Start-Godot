@@ -25,7 +25,12 @@ func _process(delta):
 	move_and_slide()
 
 func _on_Mago_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed:
-		# Adicione a lógica do clique aqui
-		GameManager.verificar_clique("Mago")
-		print("Mago clicado!")
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			GameManager.verificar_clique("Mago")
+			print("Mago clicado!")
+	elif event is InputEventMouseButton:
+		if event.pressed:
+			# Adicione a lógica do clique aqui
+			GameManager.verificar_clique("Mago")
+			print("Mago clicado!")

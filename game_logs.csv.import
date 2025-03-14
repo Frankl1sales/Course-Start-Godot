@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dssrxtpioaue"
+
+[deps]
+
+files=["res://game_logs.Cliques.translation", "res://game_logs.Personagem.translation", "res://game_logs.Alvo.translation", "res://game_logs.Acerto.translation"]
+
+source_file="res://game_logs.csv"
+dest_files=["res://game_logs.Cliques.translation", "res://game_logs.Personagem.translation", "res://game_logs.Alvo.translation", "res://game_logs.Acerto.translation"]
+
+[params]
+
+compress=true
+delimiter=0
