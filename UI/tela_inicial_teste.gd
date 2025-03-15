@@ -7,11 +7,11 @@ const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 
 # Variáveis para armazenar os IDs
 var id_profissional: int
-var id_aluno: int
+var id_sujeito_de_teste: int
 
 # Referências aos nós LineEdit
 @onready var line_edit_profissional: LineEdit = $ContainerIDs/LineEditProfissional
-@onready var line_edit_aluno: LineEdit = $ContainerIDs/LineEditAluno
+@onready var line_edit_sujeito_de_teste: LineEdit = $ContainerIDs/LineEditSujeitoDeTeste
 
 
 var ícone_música_normal = preload("res://assets/icons/music_note/music_note_normal.svg")
@@ -125,9 +125,9 @@ func _on_botão_jogar_pressed() -> void:
 	print("Botão Jogar pressionado!")  # Teste para ver se a função é chamada
 
 	var id_profissional_text = $ContainerIDs/LineEditProfissional.text.strip_edges()
-	var id_aluno_text = $ContainerIDs/LineEditAluno.text.strip_edges()
+	var id_sujeito_de_teste_text = $ContainerIDs/LineEditSujeitoDeTeste.text.strip_edges()
 
-	print("Profissional:", id_profissional_text, "Aluno:", id_aluno_text)
+	print("Profissional: ", id_profissional_text, "Sujeito de teste: ", id_sujeito_de_teste_text)
 
 	var regex = RegEx.new()
 	regex.compile("^[0-9]{4}$")
@@ -136,19 +136,19 @@ func _on_botão_jogar_pressed() -> void:
 		print("Erro: O ID do profissional deve ter exatamente 4 dígitos numéricos.")
 		return
 
-	if not regex.search(id_aluno_text):
-		print("Erro: O ID do aluno deve ter exatamente 4 dígitos numéricos.")
+	if not regex.search(id_sujeito_de_teste_text):
+		print("Erro: O ID do sujeito de teste deve ter exatamente 4 dígitos numéricos.")
 		return
 
 	id_profissional = int(id_profissional_text)
-	id_aluno = int(id_aluno_text)
+	id_sujeito_de_teste = int(id_sujeito_de_teste_text)
 	
 	var id_profissional_string = str(id_profissional)
-	var id_aluno_string = str(id_aluno)
+	var id_sujeito_de_teste_string = str(id_sujeito_de_teste)
 
 
-	print("ID do Profissional:", id_profissional)
-	print("ID do Aluno:", id_aluno)
+	print("ID do Profissional: ", id_profissional)
+	print("ID do Sujeito de Teste: ", id_sujeito_de_teste)
 	print("Iniciando jogo...")
 
-	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_LENTA_PADRÃO, id_profissional_string,id_aluno_string)
+	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_LENTA_PADRÃO, id_profissional_string, id_sujeito_de_teste_string)

@@ -61,13 +61,13 @@ theme = ExtResource("2_areup")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.144
-anchor_top = 0.208
+anchor_top = 0.144
 anchor_right = 0.856
-anchor_bottom = 0.525
+anchor_bottom = 0.46
 offset_left = 0.111984
-offset_top = 0.216003
-offset_right = -0.112061
-offset_bottom = -0.200012
+offset_top = -0.312004
+offset_right = -0.112122
+offset_bottom = -0.0800476
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_7tfet")
@@ -78,13 +78,13 @@ stretch_mode = 4
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.385
-anchor_top = 0.579
+anchor_top = 0.687
 anchor_right = 0.615
-anchor_bottom = 0.741
-offset_left = 0.47998
-offset_top = -0.192047
+anchor_bottom = 0.849
+offset_left = 0.480011
+offset_top = -0.176025
 offset_right = -0.47998
-offset_bottom = -0.16803
+offset_bottom = -0.152039
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_areup")
@@ -182,27 +182,37 @@ expand_icon = true
 [node name="ContainerIDs" type="VBoxContainer" parent="."]
 z_index = 2
 custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-offset_left = 4.0
-offset_top = 312.0
-offset_right = 196.0
-offset_bottom = 424.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.253
+anchor_top = 0.46
+anchor_right = 0.747
+anchor_bottom = 0.633
+offset_left = 0.543976
+offset_top = -0.0800171
+offset_right = 0.455933
+offset_bottom = -0.184021
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("2_areup")
 alignment = 1
 
 [node name="LineEditProfissional" type="LineEdit" parent="ContainerIDs"]
 layout_mode = 2
+placeholder_text = "ID do profissional"
+alignment = 1
 
-[node name="LineEditAluno" type="LineEdit" parent="ContainerIDs"]
+[node name="LineEditSujeitoDeTeste" type="LineEdit" parent="ContainerIDs"]
 light_mask = 9
 visibility_layer = 5
 z_index = 1
 z_as_relative = false
 layout_mode = 2
 localize_numeral_system = false
+theme = ExtResource("2_areup")
 theme_override_font_sizes/font_size = 50
-text = "idaluno"
-alignment = 2
+placeholder_text = "ID do sujeito de teste"
+alignment = 1
 
 [connection signal="pressed" from="BotãoJogar" to="." method="_on_botão_jogar_pressed"]
 [connection signal="pressed" from="BotãoSecreto1" to="." method="_on_botão_secreto_1_pressed"]

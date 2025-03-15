@@ -44,7 +44,7 @@ var duração_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
-var id_aluno: String = "ID_Padrão_Aluno"
+var id_sujeito_de_teste: String = "ID_Padrão_Sujeito_de_Teste"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -82,7 +82,7 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int = -1, id_prof: String = "", id_aln: String = "") -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int = -1, id_prof: String = "", id_suj: String = "") -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
@@ -93,7 +93,7 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 	pontos = 0
 	# Armazena os novos IDs
 	id_profissional = id_prof
-	id_aluno = id_aln
+	id_sujeito_de_teste = id_suj
 	
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
 
@@ -112,13 +112,13 @@ func clique(alvo: int) -> bool:
 			alvo_atual = alvos_no_jogo.pick_random()
 
 		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, id_aluno, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, true]) # Exemplo de log com acerto
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, true]) # Exemplo de log com acerto
 		salvar_logs_csv()
 		
 		return true
 	else:
 		pontos -= 1
-		log_data.append([id_sessão, id_profissional, id_aluno, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, false])  # Exemplo de log com erro
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, false])  # Exemplo de log com erro
 		salvar_logs_csv()
 		return false
 
@@ -135,7 +135,7 @@ func salvar_logs_csv() -> void:
 			return
 		
 		# Escreve o cabeçalho apenas uma vez
-		file.store_line("ID_Sessao,ID_Profissional,ID_Aluno,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto")
+		file.store_line("ID_Sessao,ID_Profissional,ID_Sujeito_De_Teste,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto")
 
 	# Vai para o final do arquivo
 	file.seek_end()
@@ -157,7 +157,7 @@ func finalizar_sessão() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s" % [id_sessão, id_profissional, id_aluno, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos, "N/A", "N/A"])
+	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos, "N/A", "N/A"])
 	
 	file.close()
 	print("✅ Término da sessão registrado no log.")
