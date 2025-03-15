@@ -179,6 +179,31 @@ theme = ExtResource("2_areup")
 theme_override_icons/icon = ExtResource("5_i0eoa")
 expand_icon = true
 
+[node name="ContainerIDs" type="VBoxContainer" parent="."]
+z_index = 2
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+offset_left = 4.0
+offset_top = 312.0
+offset_right = 196.0
+offset_bottom = 424.0
+theme = ExtResource("2_areup")
+alignment = 1
+
+[node name="LineEditProfissional" type="LineEdit" parent="ContainerIDs"]
+layout_mode = 2
+
+[node name="LineEditAluno" type="LineEdit" parent="ContainerIDs"]
+light_mask = 9
+visibility_layer = 5
+z_index = 1
+z_as_relative = false
+layout_mode = 2
+localize_numeral_system = false
+theme_override_font_sizes/font_size = 50
+text = "idaluno"
+alignment = 2
+
 [connection signal="pressed" from="BotãoJogar" to="." method="_on_botão_jogar_pressed"]
 [connection signal="pressed" from="BotãoSecreto1" to="." method="_on_botão_secreto_1_pressed"]
 [connection signal="pressed" from="BotãoSecreto2" to="." method="_on_botão_secreto_2_pressed"]
