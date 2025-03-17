@@ -45,6 +45,7 @@ var profissional_responsável: String = "Profissional Padrão"  # Nome do profis
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
 var id_sujeito_de_teste: String = "ID_Padrão_Sujeito_de_Teste"
+var caminho = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.csv"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -82,7 +83,7 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int = -1, id_prof: String = "", id_suj: String = "") -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float = -1, id_prof: String = "", id_suj: String = "") -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
@@ -124,7 +125,6 @@ func clique(alvo: int) -> bool:
 
 # Função para salvar os logs em um arquivo CSV
 func salvar_logs_csv() -> void:
-	var caminho = "user://game_logs.csv"  # Salva o arquivo na pasta user://
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	if file == null:
@@ -148,12 +148,11 @@ func salvar_logs_csv() -> void:
 		])
 
 	file.close()
-	print("✅ Logs salvos em: ", caminho)
+	print("✅ Logs salvos em: ", file.get_path_absolute())
 
 # Função para finalizar a sessão e registrar o término
 func finalizar_sessão() -> void:
 	# Adiciona uma linha indicando o término da sessão
-	var caminho = "user://game_logs.csv"
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
@@ -164,7 +163,6 @@ func finalizar_sessão() -> void:
 
 # Função para verificar se o arquivo foi salvo
 func verificar_logs() -> void:
-	var caminho = "user://game_logs.csv"
 	if FileAccess.file_exists(caminho):
 		print("📂 Arquivo encontrado!")
 		
