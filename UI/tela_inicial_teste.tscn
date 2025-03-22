@@ -199,6 +199,7 @@ alignment = 1
 
 [node name="LineEditProfissional" type="LineEdit" parent="ContainerIDs"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 placeholder_text = "ID do profissional"
 alignment = 1
 
@@ -210,7 +211,7 @@ z_as_relative = false
 layout_mode = 2
 localize_numeral_system = false
 theme = ExtResource("2_areup")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 32
 placeholder_text = "ID do sujeito de teste"
 alignment = 1
 

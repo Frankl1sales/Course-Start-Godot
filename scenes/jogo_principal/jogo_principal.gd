@@ -20,7 +20,6 @@ var vetores_de_movimento_dos_alvos: Array[Vector2] = []
 var sprites_dos_alvos: Array[Sprite2D] = []
 var sprite_do_alvo_atual: Sprite2D
 var tamanho_da_janela: Vector2
-var escala: float
 
 const colunas: int = 5
 var linhas: int
@@ -38,10 +37,9 @@ const TAMANHO_BASE_DA_FONTE: int = 48
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:   
 	tamanho_da_janela = get_viewport_rect().size
-	escala = tamanho_da_janela.x / 1152
 	
-	distância_mínima_entre_alvos *= escala
-	velocidade = GameManager.velocidade * escala
+	distância_mínima_entre_alvos *= GameManager.escala
+	velocidade = GameManager.velocidade * GameManager.escala
 
 
 	# Inicialização do ruído azul
@@ -62,7 +60,7 @@ func _ready() -> void:
 	grid_de_alvos[0][0] = 2147483647
 	
 	var aspect_ratio_célula: float = tamanho_célula.y / tamanho_célula.x
-	offset_máximo = Vector2(BASE_OFFSET_MÁXIMO * escala, BASE_OFFSET_MÁXIMO * escala * aspect_ratio_célula)
+	offset_máximo = Vector2(BASE_OFFSET_MÁXIMO * GameManager.escala, BASE_OFFSET_MÁXIMO * GameManager.escala * aspect_ratio_célula)
 	
 
 	# Inicialização dos alvos
@@ -95,14 +93,14 @@ func _ready() -> void:
 	sprites_dos_alvos.resize(alvos_no_jogo.size())
 		
 	for i in alvos_no_jogo.size():
-		alvos_no_jogo[i].scale = Vector2(escala, escala)
+		alvos_no_jogo[i].scale = Vector2(GameManager.escala, GameManager.escala)
 		
 		for child in alvos_no_jogo[i].get_children():
 			if child is Sprite2D:
 				sprites_dos_alvos[i] = child.duplicate()
 				
-				sprites_dos_alvos[i].scale *= escala
-				sprites_dos_alvos[i].position = Vector2(75 * escala, 75 * escala)
+				sprites_dos_alvos[i].scale *= GameManager.escala
+				sprites_dos_alvos[i].position = Vector2(75 * GameManager.escala, 75 * GameManager.escala)
 				
 		vetores_de_movimento_dos_alvos[i] = vetor_de_movimento_aleatório()
 
@@ -115,9 +113,9 @@ func _ready() -> void:
 	
 	# Inicialização dos indicadores da interface
 	setar_sprite_alvo(GameManager.alvos_no_jogo.find(GameManager.alvo_atual))
-	$CanvasLayer/Control/TextureRect.scale = Vector2(escala, escala)
+	$CanvasLayer/Control/TextureRect.scale = Vector2(GameManager.escala, GameManager.escala)
 	
-	$CanvasLayer/Label.add_theme_font_size_override("font_size", escala * TAMANHO_BASE_DA_FONTE)
+	$CanvasLayer/Label.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -127,13 +125,13 @@ func _process(delta: float) -> void:
 		if vetores_de_movimento_dos_alvos[i].x < 0 and alvos_no_jogo[i].global_position.x < 0:
 			vetores_de_movimento_dos_alvos[i].x *= -1
 		
-		if vetores_de_movimento_dos_alvos[i].x > 0 and alvos_no_jogo[i].global_position.x + alvos_no_jogo[i].width * escala > tamanho_da_janela.x:
+		if vetores_de_movimento_dos_alvos[i].x > 0 and alvos_no_jogo[i].global_position.x + alvos_no_jogo[i].width * GameManager.escala > tamanho_da_janela.x:
 			vetores_de_movimento_dos_alvos[i].x *= -1
 
 		if vetores_de_movimento_dos_alvos[i].y < 0 and alvos_no_jogo[i].global_position.y < 0:
 			vetores_de_movimento_dos_alvos[i].y *= -1
 
-		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].heigth * escala > tamanho_da_janela.y:
+		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].heigth * GameManager.escala > tamanho_da_janela.y:
 			vetores_de_movimento_dos_alvos[i].y *= -1
 
 
@@ -172,8 +170,8 @@ func clique(alvo: int) -> void:
 				var tentativas = 0
 
 				while true:                
-					alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * escala),
-																		   rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].heigth * escala))
+					alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * GameManager.escala),
+																		   rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].heigth * GameManager.escala))
 					
 					var colisão = false
 					var colisão_com_o_indicado_do_alvo = false
@@ -187,12 +185,12 @@ func clique(alvo: int) -> void:
 							break
 					
 					# Detecta se o alvo está na área do indicador do alvo
-					if distância_entre_alvos(alvo_original, -1, Vector2(0, 0)) < 200 * escala:
+					if distância_entre_alvos(alvo_original, -1, Vector2(0, 0)) < 200 * GameManager.escala:
 						colisão = true
 						colisão_com_o_indicado_do_alvo = true
 						
 					# Detecra se o alvo está muito perto da posição inicial
-					if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * escala:
+					if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * GameManager.escala:
 						colisão = true
 							
 					if not colisão or (tentativas >= 100 and not colisão_com_o_indicado_do_alvo):
@@ -253,8 +251,8 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 	var pos_x = coluna * tamanho_célula.x + tamanho_célula.x / 2 + rng.randf_range(-offset_máximo.x, offset_máximo.x)
 	var pos_y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
 	
-	alvos_no_jogo[alvo].global_position = Vector2(pos_x - alvos_no_jogo[alvo].width * escala / 2,\
-												  pos_y - alvos_no_jogo[alvo].heigth * escala / 2)
+	alvos_no_jogo[alvo].global_position = Vector2(pos_x - alvos_no_jogo[alvo].width * GameManager.escala / 2,\
+												  pos_y - alvos_no_jogo[alvo].heigth * GameManager.escala / 2)
 
 
 func spawnar_todos_os_alvos() -> void:
@@ -303,8 +301,8 @@ func remover_todos_os_alvos_do_grid() -> void:
 
 
 func centro_de_alvo(alvo: int) -> Vector2:
-	return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width / 2 * escala,
-														 alvos_no_jogo[alvo].heigth / 2 * escala)
+	return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width / 2 * GameManager.escala,
+														 alvos_no_jogo[alvo].heigth / 2 * GameManager.escala)
 
 
 # Calcula a distância entre o centro de dois alvos. Use -1 em um dos alvos para especificar um ponto

@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 
 enum PolíticasDeReposicionamento {
@@ -24,6 +24,7 @@ enum Alvos {
 const VELOCIDADE_ZERO_PADRÃO: float = 0.0
 const VELOCIDADE_LENTA_PADRÃO: float = 150.0
 const VELOCIDADE_RÁPIDA_PADRÃO: float = 300.0
+@onready var escala = get_viewport_rect().size.x / 1152
 
 # Parâmetros do sistema
 var música_desligada: bool = false;

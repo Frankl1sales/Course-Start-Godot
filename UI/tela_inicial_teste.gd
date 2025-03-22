@@ -24,8 +24,13 @@ var ícone_sons_precionado = preload("res://assets/icons/speaker/speaker_pressed
 var ícone_sons_mudo_normal = preload("res://assets/icons/speaker/speaker_mute_normal.svg")
 var ícone_sons_mudo_precionado = preload("res://assets/icons/speaker/speaker_mute_pressed.svg")
 
+const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	$ContainerIDs/LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
+	$ContainerIDs/LineEditSujeitoDeTeste.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
+	
 	GameManager.iniciar_múscia()
 
 
