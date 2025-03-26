@@ -36,6 +36,7 @@ var alvos_no_jogo: Array = []
 var política_de_reposicionamento: int
 var alvo_atual: int
 var pontos = 0
+var suporte = 0
 
 # Variáveis para o log
 var log_data: Array = []  # Armazena os dados do log
@@ -64,6 +65,26 @@ func _process(delta: float) -> void:
 	# Detectar se a tecla "ESC" foi pressionada para sair do jogo
 	if Input.is_key_pressed(KEY_ESCAPE):
 		sair_do_jogo()
+		
+var toque_contador = 0
+var tempo_inicial = 0.0
+
+func _input(event: InputEvent) -> void:
+	# Finalizar o jogo com toque de quatro dedos três vezes em 5 segundos
+	if event is InputEventScreenTouch and event.is_pressed():
+		if event.index == 3:  # Verifica se há quatro dedos tocando
+			if toque_contador == 0:
+				tempo_inicial = Time.get_unix_time_from_system()  # Marca o tempo inicial
+			toque_contador += 1
+			
+			if toque_contador == 3:  # Verifica se houve três toques
+				var tempo_atual = Time.get_unix_time_from_system()
+				if tempo_atual - tempo_inicial <= 5.0:
+					sair_do_jogo()
+					toque_contador = 0  # Reinicia o contador
+				else:
+					toque_contador = 1  # Reinicia para o toque atual
+					tempo_inicial = tempo_atual
 
 # Função para gerar um ID único para a sessão
 func gerar_id_único() -> String:
@@ -114,18 +135,28 @@ func clique(alvo: int) -> bool:
 			alvo_atual = alvos_no_jogo.pick_random()
 
 		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, true]) # Exemplo de log com acerto
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, true, suporte]) # Exemplo de log com acerto
 		salvar_logs_csv()
 		
 		return true
 	else:
 		pontos -= 1
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, false])  # Exemplo de log com erro
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, false, suporte])  # Exemplo de log com erro
 		salvar_logs_csv()
 		return false
+		
+func mudança_no_suporte() -> void:
+	# Adiciona uma linha indicando o novo suporte
+	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
+	
+	file.seek_end()  # Vai para o final do arquivo
+	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos, "N/A", "N/A", suporte])
+	
+	file.close()
+	
 
 # Função para salvar os logs em um arquivo CSV
-func salvar_logs_csv() -> void:
+func salvar_logs_csv(limpar: bool = true) -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	if file == null:
@@ -136,17 +167,20 @@ func salvar_logs_csv() -> void:
 			return
 		
 		# Escreve o cabeçalho apenas uma vez
-		file.store_line("ID_Sessao,ID_Profissional,ID_Sujeito_De_Teste,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto")
+		file.store_line("ID_Sessao,ID_Profissional,ID_Sujeito_De_Teste,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto,Suporte")
 
 	# Vai para o final do arquivo
 	file.seek_end()
 
 	# Armazena os logs
 	for log_entry in log_data:
-		file.store_line("%s,%s,%s,%s,%f,%s,%f,%d,%s,%s" % [
+		file.store_line("%s,%s,%s,%s,%f,%s,%f,%d,%s,%s,%s" % [
 			log_entry[0], log_entry[1], log_entry[2], log_entry[3], log_entry[4], log_entry[5],
-			log_entry[6], log_entry[7], str(log_entry[8]), str(log_entry[9])
+			log_entry[6], log_entry[7], str(log_entry[8]), str(log_entry[9]), str(log_entry[10])
 		])
+		
+	if limpar:
+		log_data = []
 
 	file.close()
 	print("✅ Logs salvos em: ", file.get_path_absolute())
@@ -157,7 +191,7 @@ func finalizar_sessão() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos, "N/A", "N/A"])
+	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos, "N/A", "N/A", "N/A"])
 	
 	file.close()
 	print("✅ Término da sessão registrado no log.")

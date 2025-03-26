@@ -20,6 +20,8 @@ var vetores_de_movimento_dos_alvos: Array[Vector2] = []
 var sprites_dos_alvos: Array[Sprite2D] = []
 var sprite_do_alvo_atual: Sprite2D
 var tamanho_da_janela: Vector2
+var tempo_total: float = 0.0
+var tempo_desde_clique_certo = 0.0
 
 const colunas: int = 5
 var linhas: int
@@ -33,6 +35,7 @@ var distância_mínima_entre_alvos: float = 125.0
 var grid_de_alvos: Array[Array] = []
 
 const TAMANHO_BASE_DA_FONTE: int = 48
+const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 30.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:   
@@ -116,9 +119,19 @@ func _ready() -> void:
 	$CanvasLayer/Control/TextureRect.scale = Vector2(GameManager.escala, GameManager.escala)
 	
 	$CanvasLayer/Label.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
+	
+	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	tempo_total += delta
+	tempo_desde_clique_certo += delta
+	
+	var novo_suporte: int = min(10, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
+	
+	if novo_suporte != GameManager.suporte:
+		alterar_suporte(novo_suporte)
+	
 	for i in alvos_no_jogo.size():
 		alvos_no_jogo[i].global_position += vetores_de_movimento_dos_alvos[i] * delta
 		
@@ -134,6 +147,23 @@ func _process(delta: float) -> void:
 		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].heigth * GameManager.escala > tamanho_da_janela.y:
 			vetores_de_movimento_dos_alvos[i].y *= -1
 
+	if (GameManager.suporte > 0):
+		var alvo_atual = alvos_no_jogo[GameManager.alvos_no_jogo.find(GameManager.alvo_atual)]
+		
+		var escala_ajuda_alvo = abs(sin(tempo_total * GameManager.suporte) * (GameManager.suporte - 1) * 0.1)
+		$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala + GameManager.escala * escala_ajuda_alvo, GameManager.escala + GameManager.escala * escala_ajuda_alvo)
+		
+		$CanvasLayer/AjudaAlvo.global_position = Vector2(alvo_atual.global_position.x + (alvo_atual.width / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala,
+														 alvo_atual.global_position.y + (alvo_atual.heigth / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala)
+	else:
+		$CanvasLayer/AjudaAlvo.scale = Vector2(0, 0)
+		$CanvasLayer/AjudaAlvo.global_position = Vector2(-10000, -10000)
+
+
+func alterar_suporte(novo_suporte: int):
+	if (novo_suporte != GameManager.suporte):
+		GameManager.suporte = novo_suporte
+		GameManager.mudança_no_suporte()
 
 func setar_sprite_alvo(index: int) -> void:
 	if sprite_do_alvo_atual != null:
@@ -153,6 +183,11 @@ func clique(alvo: int) -> void:
 	
 	if certo:        
 		$TapRight.play()
+		
+		alterar_suporte(0)
+		tempo_desde_clique_certo = 0.0
+		
+		$CanvasLayer/AjudaAlvo.global_position = Vector2(0, -150 * GameManager.escala)
 		
 		var index = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
 		setar_sprite_alvo(index)
@@ -284,9 +319,7 @@ func encontrar_posição_de_alvo_no_grid(alvo: int) -> Array[int]:
 func trocar_alvo_de_posição(alvo: int) -> void:
 	var posição_atual = encontrar_posição_de_alvo_no_grid(alvo)
 
-	if posição_atual[0] < 0 or posição_atual[1] < 0:
-		assert(false, "Alvo não encontrado no grid")
-		return
+	assert(posição_atual[0] >= 0 and posição_atual[1] >= 0, "Alvo não encontrado no grid")
 
 	spawnar_alvo(alvo, true)
 	grid_de_alvos[posição_atual[0]][posição_atual[1]] = -1
