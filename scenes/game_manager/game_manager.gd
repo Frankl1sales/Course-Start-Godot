@@ -97,7 +97,7 @@ func obter_data_hora_atual() -> String:
 	return data_hora
 
 
-func iniciar_múscia() -> void:
+func iniciar_música() -> void:
 	$"MúsicaDeFundo".play()
 
 

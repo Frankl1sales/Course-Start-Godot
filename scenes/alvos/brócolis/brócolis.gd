@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 101.1
-const heigth: float = 98.7
+const height: float = 98.7
 const tipo: int = GameManager.Alvos.BRÓCOLIS
 
 

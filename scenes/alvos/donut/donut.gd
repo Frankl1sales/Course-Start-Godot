@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 106.0
-const heigth: float = 93.6
+const height: float = 93.6
 const tipo: int = GameManager.Alvos.DONUT
 
 

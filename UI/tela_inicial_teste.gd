@@ -31,7 +31,7 @@ func _ready() -> void:
 	$ContainerIDs/LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
 	$ContainerIDs/LineEditSujeitoDeTeste.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
 	
-	GameManager.iniciar_múscia()
+	GameManager.iniciar_música()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

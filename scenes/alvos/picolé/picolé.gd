@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 51.6
-const heigth: float = 113.6
+const height: float = 113.6
 const tipo: int = GameManager.Alvos.PICOLÉ
 
 

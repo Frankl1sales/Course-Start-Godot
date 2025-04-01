@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 67.6
-const heigth: float = 128.4
+const height: float = 128.4
 const tipo: int = GameManager.Alvos.SORVETE
 
 

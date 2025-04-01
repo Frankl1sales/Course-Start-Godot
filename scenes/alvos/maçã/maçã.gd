@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 108.75
-const heigth: float = 119.375
+const height: float = 119.375
 const tipo: int = GameManager.Alvos.MAÇÃ
 
 

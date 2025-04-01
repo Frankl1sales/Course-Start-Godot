@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 115.75
-const heigth: float = 114.0
+const height: float = 114.0
 const tipo: int = GameManager.Alvos.OVO_FRITO
 
 

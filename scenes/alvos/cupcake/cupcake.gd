@@ -2,7 +2,7 @@ extends Area2D
 
 
 const width: float = 95.5
-const heigth: float = 101.0
+const height: float = 101.0
 const tipo: int = GameManager.Alvos.CUPCAKE
 
 

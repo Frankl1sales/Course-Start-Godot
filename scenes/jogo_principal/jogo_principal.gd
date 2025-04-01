@@ -2,7 +2,7 @@ extends Node2D
 
 
 @onready var donut = $Donut
-@onready var hambúrguer = $"Hambúguer"
+@onready var hambúrguer = $"Hambúrguer"
 @onready var pizza = $Pizza
 @onready var ovo_frito = $OvoFrito
 @onready var maçã = $"Maçã"
@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 		if vetores_de_movimento_dos_alvos[i].y < 0 and alvos_no_jogo[i].global_position.y < 0:
 			vetores_de_movimento_dos_alvos[i].y *= -1
 
-		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].heigth * GameManager.escala > tamanho_da_janela.y:
+		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].height * GameManager.escala > tamanho_da_janela.y:
 			vetores_de_movimento_dos_alvos[i].y *= -1
 
 	if (GameManager.suporte > 0):
@@ -154,7 +154,7 @@ func _process(delta: float) -> void:
 		$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala + GameManager.escala * escala_ajuda_alvo, GameManager.escala + GameManager.escala * escala_ajuda_alvo)
 		
 		$CanvasLayer/AjudaAlvo.global_position = Vector2(alvo_atual.global_position.x + (alvo_atual.width / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala,
-														 alvo_atual.global_position.y + (alvo_atual.heigth / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala)
+														 alvo_atual.global_position.y + (alvo_atual.height / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala)
 	else:
 		$CanvasLayer/AjudaAlvo.scale = Vector2(0, 0)
 		$CanvasLayer/AjudaAlvo.global_position = Vector2(-10000, -10000)
@@ -193,10 +193,10 @@ func clique(alvo: int) -> void:
 		setar_sprite_alvo(index)
 		
 		if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
-			# Reposisiona o alvo imóvel
+			# Reposiciona o alvo imóvel
 			if velocidade == GameManager.VELOCIDADE_ZERO_PADRÃO:
 				trocar_alvo_de_posição(alvo_original)
-			# Reposisiona o alvo móvel
+			# Reposiciona o alvo móvel
 			else:
 				vetores_de_movimento_dos_alvos[alvo_original] = vetor_de_movimento_aleatório()
 				
@@ -206,7 +206,7 @@ func clique(alvo: int) -> void:
 
 				while true:                
 					alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * GameManager.escala),
-																		   rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].heigth * GameManager.escala))
+																		   rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].height * GameManager.escala))
 					
 					var colisão = false
 					var colisão_com_o_indicado_do_alvo = false
@@ -224,7 +224,7 @@ func clique(alvo: int) -> void:
 						colisão = true
 						colisão_com_o_indicado_do_alvo = true
 						
-					# Detecra se o alvo está muito perto da posição inicial
+					# Detecta se o alvo está muito perto da posição inicial
 					if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * GameManager.escala:
 						colisão = true
 							
@@ -238,10 +238,10 @@ func clique(alvo: int) -> void:
 		
 	atualizar_placar()
 	
-	# A ordem de renzerização de nós irmão é de cima para baixo com base no que aparece na árvore de
+	# A ordem de renderização de nós irmão é de cima para baixo com base no que aparece na árvore de
 	# nós. A ordem de tratamento de entradas segue a mesma ordem. O efeito disso é que nós
 	# renderizados abaixo de outros nós serão tratados antes dos nós a frente, então se a propagação
-	# é parada apenas o nó mais de tráz é tratado. Para resolver isso a solução é colocar os nós na
+	# é parada apenas o nó mais de traz é tratado. Para resolver isso a solução é colocar os nós na
 	# árvore em ordem reversa a ordem desejada para renderização e setar o índice Z para que sejam
 	# renderizados na ordem desejada.
 	# A ordem de renderização é bem documentada, porém, aparente mente a ordem de execução de
@@ -268,17 +268,22 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 	var coluna: int
 	var linha: int
 	
-	var tentativas: int = 0
+	# Cria uma lista de células não ocupadas
+	var células_vazias: Array = []
+	for i in colunas:
+		for j in linhas:
+			if grid_de_alvos[i][j] < 0:
+				células_vazias.append([i, j])
 	
-	# Encontra uma célula não ocupada
-	while true:
-		tentativas += 1
-		
+	# Escolhe uma célula aleatória da lista
+	if células_vazias.size() > 0:
+		var célula_escolhida = células_vazias[rng.randi_range(0, células_vazias.size() - 1)]
+		coluna = célula_escolhida[0]
+		linha = célula_escolhida[1]
+	else:
+		# Caso não haja células vazias, escolhe uma célula aleatória
 		coluna = rng.randi_range(0, colunas - 1)
 		linha = rng.randi_range(0, linhas - 1)
-		
-		if grid_de_alvos[coluna][linha] < 0 || tentativas >= 100:
-			break
 	
 	if ocupar:
 		grid_de_alvos[coluna][linha] = alvo
@@ -287,7 +292,7 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 	var pos_y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
 	
 	alvos_no_jogo[alvo].global_position = Vector2(pos_x - alvos_no_jogo[alvo].width * GameManager.escala / 2,\
-												  pos_y - alvos_no_jogo[alvo].heigth * GameManager.escala / 2)
+												  pos_y - alvos_no_jogo[alvo].height * GameManager.escala / 2)
 
 
 func spawnar_todos_os_alvos() -> void:
@@ -335,11 +340,11 @@ func remover_todos_os_alvos_do_grid() -> void:
 
 func centro_de_alvo(alvo: int) -> Vector2:
 	return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width / 2 * GameManager.escala,
-														 alvos_no_jogo[alvo].heigth / 2 * GameManager.escala)
+														 alvos_no_jogo[alvo].height / 2 * GameManager.escala)
 
 
 # Calcula a distância entre o centro de dois alvos. Use -1 em um dos alvos para especificar um ponto
-# arbitrário no tericeiro argumento ou -1 nos dois alvos para especificar dois pontos arbitrários no
+# arbitrário no terceiro argumento ou -1 nos dois alvos para especificar dois pontos arbitrários no
 # terceiro e quart argumento e calcular a distância entre eles.
 func distância_entre_alvos(a: int, b: int, pos_1: Vector2 = Vector2(0, 0), pos_2: Vector2 = Vector2(0, 0)) -> float:
 	var centro_a: Vector2
