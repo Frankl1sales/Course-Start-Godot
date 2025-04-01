@@ -157,9 +157,9 @@ func mudança_no_suporte() -> void:
 
 # Função para salvar os logs em um arquivo CSV
 func salvar_logs_csv(limpar: bool = true) -> void:
-	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
+	var file: FileAccess
 	
-	if file == null:
+	if !FileAccess.file_exists(caminho):
 		# Se o arquivo não existir, cria um novo e adiciona o cabeçalho
 		file = FileAccess.open(caminho, FileAccess.WRITE)
 		if file == null:
@@ -168,6 +168,10 @@ func salvar_logs_csv(limpar: bool = true) -> void:
 		
 		# Escreve o cabeçalho apenas uma vez
 		file.store_line("ID_Sessao,ID_Profissional,ID_Sujeito_De_Teste,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto,Suporte")
+		
+		file.close()
+	
+	file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 
 	# Vai para o final do arquivo
 	file.seek_end()
