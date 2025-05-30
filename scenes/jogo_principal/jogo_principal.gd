@@ -184,14 +184,14 @@ func setar_sprite_alvo(index: int) -> void:
 
 
 func atualizar_placar() -> void:
-		$CanvasLayer/Label.text = "Pontos: " + str(GameManager.pontos)
+	$CanvasLayer/Label.text = "Pontos: " + str(GameManager.pontos_display)
 
 
 func clique(alvo: int) -> void:    
 	var alvo_original = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
 	var certo = GameManager.clique(alvo)
 	
-	if certo:        
+	if certo:
 		$TapRight.play()
 		
 		alterar_suporte(0)

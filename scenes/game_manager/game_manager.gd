@@ -35,7 +35,8 @@ var velocidade: float = -1.0
 var alvos_no_jogo: Array = []
 var política_de_reposicionamento: int
 var alvo_atual: int
-var pontos = 0
+var pontos_real = 0
+var pontos_display = 0
 var suporte = 0
 
 # Variáveis para o log
@@ -113,7 +114,8 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 	política_de_reposicionamento = política_de_reposicionamento_do_jogo
 	velocidade = velocidade_dos_alvos
 	alvo_atual = alvos_no_jogo.pick_random()
-	pontos = 0
+	pontos_real = 0
+	pontos_display = 0
 	# Armazena os novos IDs
 	id_profissional = id_prof
 	id_sujeito_de_teste = id_suj
@@ -127,7 +129,8 @@ func clique(alvo: int) -> bool:
 	var tempo_resposta = Time.get_ticks_msec() / 1000.0  # Tempo de resposta em segundos
 	
 	if alvo == alvo_atual:
-		pontos += 1
+		pontos_real += 1
+		pontos_display += 1
 		var anterior = alvo_atual
 		
 		# O alvo novo sempre será diferente do anterior
@@ -135,14 +138,19 @@ func clique(alvo: int) -> bool:
 			alvo_atual = alvos_no_jogo.pick_random()
 
 		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, true, suporte]) # Exemplo de log com acerto
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte]) # Exemplo de log com acerto
 		salvar_logs_csv()
 		
 		return true
 	else:
-		pontos -= 1
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos, alvo_atual, false, suporte])  # Exemplo de log com erro
+		if pontos_display >= 1:
+			pontos_display -= 1
+		
+		pontos_real -= 1
+		
+		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte])  # Exemplo de log com erro
 		salvar_logs_csv()
+		
 		return false
 		
 func mudança_no_suporte() -> void:
@@ -150,7 +158,7 @@ func mudança_no_suporte() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos, "N/A", "N/A", suporte])
+	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, "N/A", "N/A", suporte])
 	
 	file.close()
 	
@@ -195,7 +203,7 @@ func finalizar_sessão() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos, "N/A", "N/A", "N/A"])
+	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", "N/A"])
 	
 	file.close()
 	print("✅ Término da sessão registrado no log.")
