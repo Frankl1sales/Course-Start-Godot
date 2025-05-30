@@ -12,6 +12,9 @@ extends Node2D
 @onready var brócolis = $"Brócolis"
 @onready var picolé = $"Picolé"
 
+@onready var current_target_box_hollow_default = load("res://assets/current_target_box_hollow.png")
+@onready var current_target_box_hollow_red = load("res://assets/current_target_box_hollow_red.png")
+
 @onready var rng = RandomNumberGenerator.new()
 
 var velocidade: float
@@ -35,7 +38,7 @@ var distância_mínima_entre_alvos: float = 125.0
 var grid_de_alvos: Array[Array] = []
 
 const TAMANHO_BASE_DA_FONTE: int = 48
-const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 30.0
+const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:   
@@ -118,6 +121,8 @@ func _ready() -> void:
 	setar_sprite_alvo(GameManager.alvos_no_jogo.find(GameManager.alvo_atual))
 	$CanvasLayer/Control/TextureRect.scale = Vector2(GameManager.escala, GameManager.escala)
 	
+	$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
+	
 	$CanvasLayer/Label.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	
 	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
@@ -127,7 +132,7 @@ func _process(delta: float) -> void:
 	tempo_total += delta
 	tempo_desde_clique_certo += delta
 	
-	var novo_suporte: int = min(10, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
+	var novo_suporte: int = min(3, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
 	
 	if novo_suporte != GameManager.suporte:
 		alterar_suporte(novo_suporte)
@@ -164,6 +169,11 @@ func alterar_suporte(novo_suporte: int):
 	if (novo_suporte != GameManager.suporte):
 		GameManager.suporte = novo_suporte
 		GameManager.mudança_no_suporte()
+		
+		if novo_suporte == 3:
+			$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_red
+		else:
+			$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
 
 func setar_sprite_alvo(index: int) -> void:
 	if sprite_do_alvo_atual != null:
