@@ -12,8 +12,8 @@ extends Node2D
 @onready var brócolis = $"Brócolis"
 @onready var picolé = $"Picolé"
 
-@onready var current_target_box_hollow_default = load("res://assets/current_target_box_hollow.png")
-@onready var current_target_box_hollow_red = load("res://assets/current_target_box_hollow_red.png")
+@onready var current_target_box_hollow_default = preload("res://assets/current_target_box_hollow.png")
+@onready var current_target_box_hollow_red = preload("res://assets/current_target_box_hollow_red.png")
 
 @onready var rng = RandomNumberGenerator.new()
 
@@ -126,11 +126,23 @@ func _ready() -> void:
 	$CanvasLayer/Label.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	
 	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
+	
+	$BarraDeTempo.scale = Vector2(0, GameManager.escala)
+	$BarraDeTempo.global_position = Vector2(0.0, tamanho_da_janela.y - 16 * GameManager.escala)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	tempo_total += delta
 	tempo_desde_clique_certo += delta
+	
+	if tempo_total >= GameManager.duração:
+		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+		
+	if GameManager.duração != INF:
+		var progresso = tempo_total / GameManager.duração
+		
+		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)
+		$BarraDeTempo.global_position.x = progresso * tamanho_da_janela.x / 2
 	
 	var novo_suporte: int = min(3, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
 	
@@ -254,7 +266,7 @@ func clique(alvo: int) -> void:
 	# é parada apenas o nó mais de traz é tratado. Para resolver isso a solução é colocar os nós na
 	# árvore em ordem reversa a ordem desejada para renderização e setar o índice Z para que sejam
 	# renderizados na ordem desejada.
-	# A ordem de renderização é bem documentada, porém, aparente mente a ordem de execução de
+	# A ordem de renderização é bem documentada, porém, aparentemente a ordem de execução de
 	# entradas não é. Mais informações sobre a ordem de execução não documentada:
 	# https://www.reddit.com/r/godot/comments/112w2zt/notes_on_event_execution_order_with_a_side_dose/
 	get_viewport().set_input_as_handled() # Para a propagação da entrada
@@ -355,7 +367,7 @@ func centro_de_alvo(alvo: int) -> Vector2:
 
 # Calcula a distância entre o centro de dois alvos. Use -1 em um dos alvos para especificar um ponto
 # arbitrário no terceiro argumento ou -1 nos dois alvos para especificar dois pontos arbitrários no
-# terceiro e quart argumento e calcular a distância entre eles.
+# terceiro e quarto argumento e calcular a distância entre eles.
 func distância_entre_alvos(a: int, b: int, pos_1: Vector2 = Vector2(0, 0), pos_2: Vector2 = Vector2(0, 0)) -> float:
 	var centro_a: Vector2
 	var centro_b: Vector2

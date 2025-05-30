@@ -35,9 +35,10 @@ var velocidade: float = -1.0
 var alvos_no_jogo: Array = []
 var política_de_reposicionamento: int
 var alvo_atual: int
-var pontos_real = 0
-var pontos_display = 0
-var suporte = 0
+var pontos_real: int = 0
+var pontos_display: int = 0
+var suporte: int = 0
+var duração: float = 120.0
 
 # Variáveis para o log
 var log_data: Array = []  # Armazena os dados do log
@@ -62,11 +63,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Atualizar a duração da sessão
 	duração_sessão += delta
-
-	# Detectar se a tecla "ESC" foi pressionada para sair do jogo
-	if Input.is_key_pressed(KEY_ESCAPE):
-		sair_do_jogo()
-		
+	
 var toque_contador = 0
 var tempo_inicial = 0.0
 
@@ -81,11 +78,14 @@ func _input(event: InputEvent) -> void:
 			if toque_contador == 3:  # Verifica se houve três toques
 				var tempo_atual = Time.get_unix_time_from_system()
 				if tempo_atual - tempo_inicial <= 5.0:
-					sair_do_jogo()
+					get_tree().change_scene_to_file("res://UI/tela_final.tscn")
 					toque_contador = 0  # Reinicia o contador
 				else:
 					toque_contador = 1  # Reinicia para o toque atual
 					tempo_inicial = tempo_atual
+	# Detectar se a tecla "ESC" foi pressionada para sair do jogo
+	elif event.is_action_released("finalizar_sessão"):
+		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
 
 # Função para gerar um ID único para a sessão
 func gerar_id_único() -> String:
@@ -222,8 +222,5 @@ func verificar_logs() -> void:
 
 # Função para sair do jogo
 func sair_do_jogo() -> void:
-	# Registra o término da sessão antes de sair
-	finalizar_sessão()
-	
 	print("Saindo do jogo...")  # Exibe uma mensagem de saída
 	get_tree().quit()  # Encerra o jogo
