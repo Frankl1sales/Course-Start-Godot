@@ -21,9 +21,10 @@ enum Alvos {
 	PICOLÉ
 }
 
-const VELOCIDADE_ZERO_PADRÃO: float = 0.0
-const VELOCIDADE_LENTA_PADRÃO: float = 150.0
-const VELOCIDADE_RÁPIDA_PADRÃO: float = 300.0
+const VELOCIDADE_ESTÁTICA: float = 0.0
+const VELOCIDADE_LENTA: float = 50.0
+const VELOCIDADE_MÉDIA: float = 150.0
+const VELOCIDADE_RÁPIDA: float = 300.0
 @onready var escala = get_viewport_rect().size.x / 1152
 
 # Parâmetros do sistema
@@ -31,7 +32,7 @@ var música_desligada: bool = false;
 var sons_mutados: bool = false;
 
 # Parâmetros do jogo
-var velocidade: float = -1.0
+var velocidade: float
 var alvos_no_jogo: Array = []
 var política_de_reposicionamento: int
 var alvo_atual: int

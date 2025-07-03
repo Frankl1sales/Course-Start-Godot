@@ -113,7 +113,7 @@ func _ready() -> void:
 	spawnar_todos_os_alvos()
 	
 	# Não mantenha as células ocupadas se os alvos vão se mover
-	if velocidade == GameManager.VELOCIDADE_ZERO_PADRÃO:
+	if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
 		remover_todos_os_alvos_do_grid()
 	
 	
@@ -216,7 +216,7 @@ func clique(alvo: int) -> void:
 		
 		if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
 			# Reposiciona o alvo imóvel
-			if velocidade == GameManager.VELOCIDADE_ZERO_PADRÃO:
+			if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
 				trocar_alvo_de_posição(alvo_original)
 			# Reposiciona o alvo móvel
 			else:
