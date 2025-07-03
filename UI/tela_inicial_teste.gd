@@ -135,5 +135,5 @@ func _on_botão_jogar_pressed() -> void:
 	iniciar_jogo()
 
 
-func _on_line_edit_profissional_text_submitted(new_text: String) -> void:
+func _on_line_edit_profissional_text_submitted(_new_text: String) -> void:
 	iniciar_jogo()

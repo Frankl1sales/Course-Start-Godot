@@ -26,6 +26,8 @@ var tamanho_da_janela: Vector2
 var tempo_total: float = 0.0
 var tempo_desde_clique_certo = 0.0
 
+var cliques: Array[int] = [];
+
 const colunas: int = 5
 var linhas: int
 
@@ -143,6 +145,69 @@ func _process(delta: float) -> void:
 		
 		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)
 		$BarraDeTempo.global_position.x = progresso * tamanho_da_janela.x / 2
+
+	# Tratamento dos cliques, se múltiplos alvos forem clicados em simultâneo devido à propagação do clique o certo se sobrepõe aos errados
+	if cliques.size() != 0:
+		var alvo_original = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
+		var certo = GameManager.clique(cliques)
+		
+		if certo:
+			$TapRight.play()
+			
+			alterar_suporte(0)
+			tempo_desde_clique_certo = 0.0
+			
+			$CanvasLayer/AjudaAlvo.global_position = Vector2(0, -150 * GameManager.escala)
+			
+			var index = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
+			setar_sprite_alvo(index)
+			
+			if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
+				# Reposiciona o alvo imóvel
+				if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
+					trocar_alvo_de_posição(alvo_original)
+				# Reposiciona o alvo móvel
+				else:
+					vetores_de_movimento_dos_alvos[alvo_original] = vetor_de_movimento_aleatório()
+					
+					var posição_original: Vector2 = centro_de_alvo(alvo_original)
+					
+					var tentativas = 0
+
+					while true:                
+						alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * GameManager.escala),
+																			rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].height * GameManager.escala))
+						
+						var colisão = false
+						var colisão_com_o_indicado_do_alvo = false
+						
+						for i in alvos_no_jogo.size():
+							if i == alvo_original:
+								continue
+							
+							if distância_entre_alvos(i, alvo_original) < distância_mínima_entre_alvos:
+								colisão = true
+								break
+						
+						# Detecta se o alvo está na área do indicador do alvo
+						if distância_entre_alvos(alvo_original, -1, Vector2(0, 0)) < 200 * GameManager.escala:
+							colisão = true
+							colisão_com_o_indicado_do_alvo = true
+							
+						# Detecta se o alvo está muito perto da posição inicial
+						if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * GameManager.escala:
+							colisão = true
+								
+						if not colisão or (tentativas >= 100 and not colisão_com_o_indicado_do_alvo):
+							break
+			elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.TODOS:
+				spawnar_todos_os_alvos()
+				
+		else:
+			$TapWrong.play()
+			
+		atualizar_placar()
+		cliques.clear()
 	
 	var novo_suporte: int = min(3, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
 	
@@ -199,77 +264,8 @@ func atualizar_placar() -> void:
 	$CanvasLayer/Label.text = "Pontos: " + str(GameManager.pontos_display)
 
 
-func clique(alvo: int) -> void:    
-	var alvo_original = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
-	var certo = GameManager.clique(alvo)
-	
-	if certo:
-		$TapRight.play()
-		
-		alterar_suporte(0)
-		tempo_desde_clique_certo = 0.0
-		
-		$CanvasLayer/AjudaAlvo.global_position = Vector2(0, -150 * GameManager.escala)
-		
-		var index = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
-		setar_sprite_alvo(index)
-		
-		if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
-			# Reposiciona o alvo imóvel
-			if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
-				trocar_alvo_de_posição(alvo_original)
-			# Reposiciona o alvo móvel
-			else:
-				vetores_de_movimento_dos_alvos[alvo_original] = vetor_de_movimento_aleatório()
-				
-				var posição_original: Vector2 = centro_de_alvo(alvo_original)
-				
-				var tentativas = 0
-
-				while true:                
-					alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * GameManager.escala),
-																		   rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].height * GameManager.escala))
-					
-					var colisão = false
-					var colisão_com_o_indicado_do_alvo = false
-					
-					for i in alvos_no_jogo.size():
-						if i == alvo_original:
-							continue
-						
-						if distância_entre_alvos(i, alvo_original) < distância_mínima_entre_alvos:
-							colisão = true
-							break
-					
-					# Detecta se o alvo está na área do indicador do alvo
-					if distância_entre_alvos(alvo_original, -1, Vector2(0, 0)) < 200 * GameManager.escala:
-						colisão = true
-						colisão_com_o_indicado_do_alvo = true
-						
-					# Detecta se o alvo está muito perto da posição inicial
-					if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * GameManager.escala:
-						colisão = true
-							
-					if not colisão or (tentativas >= 100 and not colisão_com_o_indicado_do_alvo):
-						break
-		elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.TODOS:
-			spawnar_todos_os_alvos()
-			
-	else:
-		$TapWrong.play()
-		
-	atualizar_placar()
-	
-	# A ordem de renderização de nós irmão é de cima para baixo com base no que aparece na árvore de
-	# nós. A ordem de tratamento de entradas segue a mesma ordem. O efeito disso é que nós
-	# renderizados abaixo de outros nós serão tratados antes dos nós a frente, então se a propagação
-	# é parada apenas o nó mais de traz é tratado. Para resolver isso a solução é colocar os nós na
-	# árvore em ordem reversa a ordem desejada para renderização e setar o índice Z para que sejam
-	# renderizados na ordem desejada.
-	# A ordem de renderização é bem documentada, porém, aparentemente a ordem de execução de
-	# entradas não é. Mais informações sobre a ordem de execução não documentada:
-	# https://www.reddit.com/r/godot/comments/112w2zt/notes_on_event_execution_order_with_a_side_dose/
-	get_viewport().set_input_as_handled() # Para a propagação da entrada
+func clique(alvo: int) -> void:
+	cliques.append(alvo)
  
 
 func vetor_de_movimento_aleatório() -> Vector2:

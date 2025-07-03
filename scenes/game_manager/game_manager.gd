@@ -123,10 +123,11 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 
 
 # Função de clique para verificar acerto
-func clique(alvo: int) -> bool:
+func clique(alvos: Array[int]) -> bool:
 	var tempo_resposta = Time.get_ticks_msec() / 1000.0  # Tempo de resposta em segundos
 	
-	if alvo == alvo_atual:
+	# Se multiplos alvos forem clicados em simultâneo devido à propagação do clique, o certo se sobrepõe aos errados
+	if alvo_atual in alvos:
 		pontos_real += 1
 		pontos_display += 1
 		var anterior = alvo_atual
