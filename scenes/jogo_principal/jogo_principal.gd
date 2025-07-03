@@ -140,7 +140,7 @@ func _process(delta: float) -> void:
 	if tempo_total >= GameManager.duração:
 		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
 		
-	if GameManager.duração != INF:
+	if GameManager.mostrar_barra_de_tempo and GameManager.duração != INF:
 		var progresso: float = tempo_total / GameManager.duração
 		
 		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)

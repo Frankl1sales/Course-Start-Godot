@@ -40,6 +40,7 @@ var pontos_real: int = 0
 var pontos_display: int = 0
 var suporte: int = 0
 var duração: float = 120.0
+var mostrar_barra_de_tempo: bool = true
 
 # Variáveis para o log
 var log_data: Array = []  # Armazena os dados do log
@@ -105,7 +106,7 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float, id_prof: String = "") -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float, id_prof: String = "", mostrar_tempo: bool = true) -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
@@ -115,8 +116,8 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 	alvo_atual = alvos_no_jogo.pick_random()
 	pontos_real = 0
 	pontos_display = 0
-	# Armazena os novos IDs
 	id_profissional = id_prof
+	mostrar_barra_de_tempo = mostrar_tempo
 	
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
 
