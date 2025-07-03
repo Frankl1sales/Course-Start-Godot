@@ -25,7 +25,7 @@ const VELOCIDADE_ESTÁTICA: float = 0.0
 const VELOCIDADE_LENTA: float = 50.0
 const VELOCIDADE_MÉDIA: float = 150.0
 const VELOCIDADE_RÁPIDA: float = 300.0
-@onready var escala = get_viewport_rect().size.x / 1152
+@onready var escala: float = get_viewport_rect().size.x / 1152
 
 # Parâmetros do sistema
 var música_desligada: bool = false;
@@ -49,7 +49,7 @@ var duração_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
-var caminho = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.csv"
+var caminho: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.csv"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -64,8 +64,8 @@ func _process(delta: float) -> void:
 	# Atualizar a duração da sessão
 	duração_sessão += delta
 	
-var toque_contador = 0
-var tempo_inicial = 0.0
+var toque_contador: int = 0
+var tempo_inicial: float = 0.0
 
 func _input(event: InputEvent) -> void:
 	# Finalizar o jogo com toque de quatro dedos três vezes em 5 segundos
@@ -76,7 +76,7 @@ func _input(event: InputEvent) -> void:
 			toque_contador += 1
 			
 			if toque_contador == 3:  # Verifica se houve três toques
-				var tempo_atual = Time.get_unix_time_from_system()
+				var tempo_atual: float = Time.get_unix_time_from_system()
 				if tempo_atual - tempo_inicial <= 5.0:
 					get_tree().change_scene_to_file("res://UI/tela_final.tscn")
 					toque_contador = 0  # Reinicia o contador
@@ -93,7 +93,7 @@ func gerar_id_único() -> String:
 
 # Função para obter a data e hora atuais
 func obter_data_hora_atual() -> String:
-	var data_hora = Time.get_datetime_string_from_system()  # Formato: "YYYY-MM-DDTHH:MM:SS"
+	var data_hora: String = Time.get_datetime_string_from_system()  # Formato: "YYYY-MM-DDTHH:MM:SS"
 	return data_hora
 
 
@@ -124,13 +124,13 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 
 # Função de clique para verificar acerto
 func clique(alvos: Array[int]) -> bool:
-	var tempo_resposta = Time.get_ticks_msec() / 1000.0  # Tempo de resposta em segundos
+	var tempo_resposta: float = Time.get_ticks_msec() / 1000.0  # Tempo de resposta em segundos
 	
-	# Se multiplos alvos forem clicados em simultâneo devido à propagação do clique, o certo se sobrepõe aos errados
+	# Se múltiplos alvos forem clicados em simultâneo devido à propagação do clique, o certo se sobrepõe aos errados
 	if alvo_atual in alvos:
 		pontos_real += 1
 		pontos_display += 1
-		var anterior = alvo_atual
+		var anterior: int = alvo_atual
 		
 		# O alvo novo sempre será diferente do anterior
 		while alvo_atual == anterior and alvos_no_jogo.size() > 1:
@@ -154,7 +154,7 @@ func clique(alvos: Array[int]) -> bool:
 		
 func mudança_no_suporte() -> void:
 	# Adiciona uma linha indicando o novo suporte
-	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
+	var file: FileAccess = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
 	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, "N/A", "N/A", suporte])
@@ -199,7 +199,7 @@ func salvar_logs_csv(limpar: bool = true) -> void:
 # Função para finalizar a sessão e registrar o término
 func finalizar_sessão() -> void:
 	# Adiciona uma linha indicando o término da sessão
-	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
+	var file: FileAccess = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
 	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", "N/A"])
@@ -212,7 +212,7 @@ func verificar_logs() -> void:
 	if FileAccess.file_exists(caminho):
 		print("📂 Arquivo encontrado!")
 		
-		var file = FileAccess.open(caminho, FileAccess.READ)
+		var file: FileAccess = FileAccess.open(caminho, FileAccess.READ)
 		while not file.eof_reached():
 			print(file.get_line())  # Exibe cada linha do CSV no console
 		file.close()

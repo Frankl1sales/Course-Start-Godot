@@ -11,15 +11,15 @@ var id_profissional: String = ""
 @onready var line_edit_profissional: LineEdit = $ContainerIDs/LineEditProfissional
 
 
-var ícone_música_normal = preload("res://assets/icons/music_note/music_note_normal.svg")
-var ícone_música_precionado = preload("res://assets/icons/music_note/music_note_pressed.svg")
-var ícone_música_desligada_normal = preload("res://assets/icons/music_note/music_note_off_normal.svg")
-var ícone_música_desligada_precionado = preload("res://assets/icons/music_note/music_note_off_pressed.svg")
+var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
+var ícone_música_pressionado: Resource = preload("res://assets/icons/music_note/music_note_pressed.svg")
+var ícone_música_desligada_normal: Resource = preload("res://assets/icons/music_note/music_note_off_normal.svg")
+var ícone_música_desligada_pressionado: Resource = preload("res://assets/icons/music_note/music_note_off_pressed.svg")
 
-var ícone_sons_normal = preload("res://assets/icons/speaker/speaker_normal.svg")
-var ícone_sons_precionado = preload("res://assets/icons/speaker/speaker_pressed.svg")
-var ícone_sons_mudo_normal = preload("res://assets/icons/speaker/speaker_mute_normal.svg")
-var ícone_sons_mudo_precionado = preload("res://assets/icons/speaker/speaker_mute_pressed.svg")
+var ícone_sons_normal: Resource = preload("res://assets/icons/speaker/speaker_normal.svg")
+var ícone_sons_pressionado: Resource = preload("res://assets/icons/speaker/speaker_pressed.svg")
+var ícone_sons_mudo_normal: Resource = preload("res://assets/icons/speaker/speaker_mute_normal.svg")
+var ícone_sons_mudo_pressionado: Resource = preload("res://assets/icons/speaker/speaker_mute_pressed.svg")
 
 const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
 
@@ -37,9 +37,9 @@ func _process(_delta: float) -> void:
 	
 func _on_botão_música_button_down() -> void:
 	if GameManager.música_desligada:
-		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_precionado
+		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_pressionado
 	else:
-		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_precionado
+		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_pressionado
 
 
 func _on_botão_música_button_up() -> void:
@@ -50,7 +50,7 @@ func _on_botão_música_button_up() -> void:
 	
 
 func _on_botão_música_pressed() -> void:
-	var index_bus_música = AudioServer.get_bus_index("Música")
+	var index_bus_música: int = AudioServer.get_bus_index("Música")
 	
 	GameManager.música_desligada = !GameManager.música_desligada
 	
@@ -64,9 +64,9 @@ func _on_botão_música_pressed() -> void:
 
 func _on_botão_sons_button_down() -> void:
 	if GameManager.sons_mutados:
-		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_precionado
+		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_pressionado
 	else:
-		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_precionado
+		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_pressionado
 
 
 func _on_botão_sons_button_up() -> void:
@@ -77,7 +77,7 @@ func _on_botão_sons_button_up() -> void:
 
 
 func _on_botão_sons_pressed() -> void:
-	var index_bust_sons = AudioServer.get_bus_index("SFX")
+	var index_bust_sons: int = AudioServer.get_bus_index("SFX")
 	
 	GameManager.sons_mutados = !GameManager.sons_mutados
 	
