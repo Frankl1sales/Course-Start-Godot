@@ -203,18 +203,6 @@ theme_override_font_sizes/font_size = 32
 placeholder_text = "ID do profissional"
 alignment = 1
 
-[node name="LineEditSujeitoDeTeste" type="LineEdit" parent="ContainerIDs"]
-light_mask = 9
-visibility_layer = 5
-z_index = 1
-z_as_relative = false
-layout_mode = 2
-localize_numeral_system = false
-theme = ExtResource("2_areup")
-theme_override_font_sizes/font_size = 32
-placeholder_text = "ID do sujeito de teste"
-alignment = 1
-
 [connection signal="pressed" from="BotãoJogar" to="." method="_on_botão_jogar_pressed"]
 [connection signal="pressed" from="BotãoSecreto1" to="." method="_on_botão_secreto_1_pressed"]
 [connection signal="pressed" from="BotãoSecreto2" to="." method="_on_botão_secreto_2_pressed"]
@@ -225,3 +213,4 @@ alignment = 1
 [connection signal="button_down" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
 [connection signal="button_up" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
 [connection signal="pressed" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]
+[connection signal="text_submitted" from="ContainerIDs/LineEditProfissional" to="." method="_on_line_edit_profissional_text_submitted"]

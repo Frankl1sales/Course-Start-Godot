@@ -5,13 +5,10 @@ var hora_da_última_apertada_de_um_botão_secreto: float = 0.0
 var sequência: Array[int] = []
 const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 
-# Variáveis para armazenar os IDs
-var id_profissional: int
-var id_sujeito_de_teste: int
+var id_profissional: String = ""
 
 # Referências aos nós LineEdit
 @onready var line_edit_profissional: LineEdit = $ContainerIDs/LineEditProfissional
-@onready var line_edit_sujeito_de_teste: LineEdit = $ContainerIDs/LineEditSujeitoDeTeste
 
 
 var ícone_música_normal = preload("res://assets/icons/music_note/music_note_normal.svg")
@@ -29,7 +26,6 @@ const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$ContainerIDs/LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
-	$ContainerIDs/LineEditSujeitoDeTeste.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
 	
 	GameManager.iniciar_música()
 
@@ -124,36 +120,20 @@ func _on_botão_secreto_3_pressed() -> void:
 		sequência = [3]
 		
 	hora_da_última_apertada_de_um_botão_secreto = Time.get_unix_time_from_system()
+	
+	
+func iniciar_jogo() -> void:
+	id_profissional = $ContainerIDs/LineEditProfissional.text.strip_edges()
+
+	print("ID do Profissional: ", id_profissional)
+	print("Iniciando jogo...")
+
+	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_LENTA_PADRÃO, id_profissional)
 
 
 func _on_botão_jogar_pressed() -> void:
-	print("Botão Jogar pressionado!")  # Teste para ver se a função é chamada
-
-	var id_profissional_text = $ContainerIDs/LineEditProfissional.text.strip_edges()
-	var id_sujeito_de_teste_text = $ContainerIDs/LineEditSujeitoDeTeste.text.strip_edges()
-
-	print("Profissional: ", id_profissional_text, "Sujeito de teste: ", id_sujeito_de_teste_text)
-
-	var regex = RegEx.new()
-	regex.compile("^[0-9]{4}$")
-
-	if not regex.search(id_profissional_text):
-		print("Erro: O ID do profissional deve ter exatamente 4 dígitos numéricos.")
-		return
-
-	if not regex.search(id_sujeito_de_teste_text):
-		print("Erro: O ID do sujeito de teste deve ter exatamente 4 dígitos numéricos.")
-		return
-
-	id_profissional = int(id_profissional_text)
-	id_sujeito_de_teste = int(id_sujeito_de_teste_text)
-	
-	var id_profissional_string = str(id_profissional)
-	var id_sujeito_de_teste_string = str(id_sujeito_de_teste)
+	iniciar_jogo()
 
 
-	print("ID do Profissional: ", id_profissional)
-	print("ID do Sujeito de Teste: ", id_sujeito_de_teste)
-	print("Iniciando jogo...")
-
-	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_LENTA_PADRÃO, id_profissional_string, id_sujeito_de_teste_string)
+func _on_line_edit_profissional_text_submitted(new_text: String) -> void:
+	iniciar_jogo()

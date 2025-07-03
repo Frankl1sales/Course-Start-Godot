@@ -48,7 +48,6 @@ var duração_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
-var id_sujeito_de_teste: String = "ID_Padrão_Sujeito_de_Teste"
 var caminho = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.csv"
 
 # Called when the node enters the scene tree for the first time.
@@ -89,8 +88,7 @@ func _input(event: InputEvent) -> void:
 
 # Função para gerar um ID único para a sessão
 func gerar_id_único() -> String:
-	var uuid = str(randi()) + str(Time.get_ticks_msec())  # Combina um número aleatório com o tempo atual em milissegundos
-	return uuid
+	return str(randi()) + str(Time.get_ticks_msec())  # Combina um número aleatório com o tempo atual em milissegundos
 
 # Função para obter a data e hora atuais
 func obter_data_hora_atual() -> String:
@@ -106,7 +104,7 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float = -1, id_prof: String = "", id_suj: String = "") -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float, id_prof: String = "") -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
@@ -118,7 +116,6 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 	pontos_display = 0
 	# Armazena os novos IDs
 	id_profissional = id_prof
-	id_sujeito_de_teste = id_suj
 	
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
 
@@ -138,7 +135,7 @@ func clique(alvo: int) -> bool:
 			alvo_atual = alvos_no_jogo.pick_random()
 
 		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte]) # Exemplo de log com acerto
+		log_data.append([id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte]) # Exemplo de log com acerto
 		salvar_logs_csv()
 		
 		return true
@@ -148,7 +145,7 @@ func clique(alvo: int) -> bool:
 		
 		pontos_real -= 1
 		
-		log_data.append([id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte])  # Exemplo de log com erro
+		log_data.append([id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte])  # Exemplo de log com erro
 		salvar_logs_csv()
 		
 		return false
@@ -158,7 +155,7 @@ func mudança_no_suporte() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, "N/A", "N/A", suporte])
+	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, "N/A", "N/A", suporte])
 	
 	file.close()
 	
@@ -175,7 +172,7 @@ func salvar_logs_csv(limpar: bool = true) -> void:
 			return
 		
 		# Escreve o cabeçalho apenas uma vez
-		file.store_line("ID_Sessao,ID_Profissional,ID_Sujeito_De_Teste,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto,Suporte")
+		file.store_line("ID_Sessao,ID_Profissional,Data_Sessao,Duracao_Sessao,Nome_Jogo,Tempo_Resposta,Pontos,Alvo_Atual,Acerto,Suporte")
 		
 		file.close()
 	
@@ -186,9 +183,9 @@ func salvar_logs_csv(limpar: bool = true) -> void:
 
 	# Armazena os logs
 	for log_entry in log_data:
-		file.store_line("%s,%s,%s,%s,%f,%s,%f,%d,%s,%s,%s" % [
-			log_entry[0], log_entry[1], log_entry[2], log_entry[3], log_entry[4], log_entry[5],
-			log_entry[6], log_entry[7], str(log_entry[8]), str(log_entry[9]), str(log_entry[10])
+		file.store_line("%s,%s,%s,%f,%s,%f,%d,%s,%s,%s" % [
+			log_entry[0], log_entry[1], log_entry[2], log_entry[3], log_entry[4],
+			log_entry[5], log_entry[6], str(log_entry[7]), str(log_entry[8]), str(log_entry[9])
 		])
 		
 	if limpar:
@@ -203,7 +200,7 @@ func finalizar_sessão() -> void:
 	var file = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, id_sujeito_de_teste, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", "N/A"])
+	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%s" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", "N/A"])
 	
 	file.close()
 	print("✅ Término da sessão registrado no log.")
