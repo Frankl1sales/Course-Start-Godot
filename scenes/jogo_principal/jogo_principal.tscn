@@ -266,7 +266,7 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_0xnf1")
 
 [node name="Star" type="AnimatedSprite2D" parent="CanvasLayer"]
-position = Vector2(201.05, 65)
+position = Vector2(200, 65)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_eqsfm")
 

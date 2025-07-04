@@ -59,11 +59,6 @@ func _ready() -> void:
 			velocidade = 300.0 * GameManager.escala
 		_:
 			assert(false, "Velocidade inválida")
-
-	if GameManager.vidas == 2147483647:
-		$CanvasLayer/LabelVidas.queue_free()
-		$CanvasLayer/Heart.queue_free()
-		$CanvasLayer/HeartAnimation.queue_free()
 		
 	atualizar_placar()
 	atualizar_vidas()
@@ -143,12 +138,26 @@ func _ready() -> void:
 	
 	$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
 	
-	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
-	
 	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
 	
 	$BarraDeTempo.scale = Vector2(0, GameManager.escala)
 	$BarraDeTempo.global_position = Vector2(0.0, tamanho_da_janela.y - 16 * GameManager.escala)
+	
+	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
+	$CanvasLayer/LabelVidas.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
+
+	if GameManager.vidas == 2147483647:
+		$CanvasLayer/LabelVidas.queue_free()
+		$CanvasLayer/Heart.queue_free()
+		$CanvasLayer/HeartAnimation.queue_free()
+		
+	$CanvasLayer/Heart.global_position *= GameManager.escala
+	$CanvasLayer/HeartAnimation.global_position *= GameManager.escala
+	$CanvasLayer/Star.global_position *= GameManager.escala
+	
+	$CanvasLayer/Heart.scale *= GameManager.escala
+	$CanvasLayer/HeartAnimation.scale *= GameManager.escala
+	$CanvasLayer/Star.scale *= GameManager.escala
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
