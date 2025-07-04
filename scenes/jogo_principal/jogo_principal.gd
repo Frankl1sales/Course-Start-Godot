@@ -39,7 +39,7 @@ var distância_mínima_entre_alvos: float = 125.0
 
 var grid_de_alvos: Array[Array] = []
 
-const TAMANHO_BASE_DA_FONTE: int = 48
+const TAMANHO_BASE_DA_FONTE: int = 64
 const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 
 # Called when the node enters the scene tree for the first time.
@@ -49,6 +49,13 @@ func _ready() -> void:
 	distância_mínima_entre_alvos *= GameManager.escala
 	velocidade = GameManager.velocidade * GameManager.escala
 
+	if GameManager.vidas == 2147483647:
+		$CanvasLayer/LabelVidas.queue_free()
+		$CanvasLayer/Heart.queue_free()
+		$CanvasLayer/HeartAnimation.queue_free()
+		
+	atualizar_placar()
+	atualizar_vidas()
 
 	# Inicialização do ruído azul
 	linhas = round(tamanho_da_janela.y / tamanho_da_janela.x * colunas)
@@ -125,7 +132,7 @@ func _ready() -> void:
 	
 	$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
 	
-	$CanvasLayer/Label.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
+	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	
 	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
 	
@@ -153,6 +160,9 @@ func _process(delta: float) -> void:
 		
 		if certo:
 			$TapRight.play()
+			
+			if GameManager.animar:
+				$CanvasLayer/Star.play()
 			
 			alterar_suporte(0)
 			tempo_desde_clique_certo = 0.0
@@ -204,9 +214,15 @@ func _process(delta: float) -> void:
 				spawnar_todos_os_alvos()
 				
 		else:
-			$TapWrong.play()
+			if GameManager.vidas != 0:
+				$TapWrong.play()
+				
+				if GameManager.animar and GameManager.vidas != 2147483647:
+					$CanvasLayer/HeartAnimation.play()
 			
 		atualizar_placar()
+		atualizar_vidas()
+		
 		cliques.clear()
 	
 	var novo_suporte: int = min(3, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
@@ -261,7 +277,12 @@ func setar_sprite_alvo(index: int) -> void:
 
 
 func atualizar_placar() -> void:
-	$CanvasLayer/Label.text = "Pontos: " + str(GameManager.pontos_display)
+	$CanvasLayer/LabelPontos.text = str(GameManager.pontos_display)
+	
+
+func atualizar_vidas() -> void:
+	if GameManager.vidas != 2147483647:
+		$CanvasLayer/LabelVidas.text = str(GameManager.vidas)
 
 
 func clique(alvo: int) -> void:

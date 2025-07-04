@@ -38,9 +38,11 @@ var política_de_reposicionamento: int
 var alvo_atual: int
 var pontos_real: int = 0
 var pontos_display: int = 0
+var vidas: int = 2147483647
 var suporte: int = 0
 var duração: float = 120.0
 var mostrar_barra_de_tempo: bool = true
+var animar: bool = true
 
 # Variáveis para o log
 var log_data: Array = []  # Armazena os dados do log
@@ -106,7 +108,7 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float, id_prof: String = "", mostrar_tempo: bool = true) -> void:
+func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: float, id_prof: String = "", mostrar_tempo: bool = true, número_de_vidas: int = 2147483647, animar_ícones: bool = true) -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
@@ -118,6 +120,8 @@ func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: 
 	pontos_display = 0
 	id_profissional = id_prof
 	mostrar_barra_de_tempo = mostrar_tempo
+	vidas = número_de_vidas
+	animar = animar_ícones
 	
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
 
@@ -148,8 +152,14 @@ func clique(alvos: Array[int]) -> bool:
 		
 		pontos_real -= 1
 		
+		if vidas != 2147483647:
+			vidas -= 1
+		
 		log_data.append([id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte])  # Exemplo de log com erro
 		salvar_logs_csv()
+		
+		if vidas == 0:
+			get_tree().change_scene_to_file("res://UI/tela_final.tscn")
 		
 		return false
 		
