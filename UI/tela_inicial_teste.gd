@@ -128,7 +128,7 @@ func iniciar_jogo() -> void:
 	print("ID do Profissional: ", id_profissional)
 	print("Iniciando jogo...")
 
-	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.VELOCIDADE_MÉDIA, id_profissional, true, 10, true)
+	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.Velocidades.MÉDIA, id_profissional, true, 10, true)
 
 
 func _on_botão_jogar_pressed() -> void:

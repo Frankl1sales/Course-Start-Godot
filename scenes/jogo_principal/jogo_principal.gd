@@ -47,7 +47,18 @@ func _ready() -> void:
 	tamanho_da_janela = get_viewport_rect().size
 	
 	distância_mínima_entre_alvos *= GameManager.escala
-	velocidade = GameManager.velocidade * GameManager.escala
+
+	match GameManager.velocidade:
+		GameManager.Velocidades.ESTÁTICA:
+			velocidade = 0.0
+		GameManager.Velocidades.LENTA:
+			velocidade = 50.0 * GameManager.escala
+		GameManager.Velocidades.MÉDIA:
+			velocidade = 150.0 * GameManager.escala
+		GameManager.Velocidades.RÁPIDA:
+			velocidade = 300.0 * GameManager.escala
+		_:
+			assert(false, "Velocidade inválida")
 
 	if GameManager.vidas == 2147483647:
 		$CanvasLayer/LabelVidas.queue_free()
@@ -122,7 +133,7 @@ func _ready() -> void:
 	spawnar_todos_os_alvos()
 	
 	# Não mantenha as células ocupadas se os alvos vão se mover
-	if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
+	if GameManager.velocidade == GameManager.Velocidades.ESTÁTICA:
 		remover_todos_os_alvos_do_grid()
 	
 	
@@ -174,7 +185,7 @@ func _process(delta: float) -> void:
 			
 			if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
 				# Reposiciona o alvo imóvel
-				if velocidade == GameManager.VELOCIDADE_ESTÁTICA:
+				if GameManager.velocidade == GameManager.Velocidades.ESTÁTICA:
 					trocar_alvo_de_posição(alvo_original)
 				# Reposiciona o alvo móvel
 				else:
