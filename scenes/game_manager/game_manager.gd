@@ -34,13 +34,13 @@ var música_desligada: bool = false;
 var sons_mutados: bool = false;
 
 # Parâmetros do jogo
-var velocidade: int
-var alvos_no_jogo: Array = []
-var política_de_reposicionamento: int
-var alvo_atual: int
+var velocidade: int = Velocidades.MÉDIA
+var alvos_no_jogo: Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+var política_de_reposicionamento: int = PolíticasDeReposicionamento.TODOS
+var alvo_atual: int = 0
 var pontos_real: int = 0
 var pontos_display: int = 0
-var vidas: int = 2147483647
+var vidas: int = 10
 var suporte: int = 0
 var duração: float = 120.0
 var mostrar_barra_de_tempo: bool = true
