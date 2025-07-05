@@ -50,6 +50,7 @@ var animar: bool = true
 var log_data: Array = []  # Armazena os dados do log
 var id_sessão: String = ""  # ID único para a sessão
 var data_sessão: String = ""  # Data da sessão
+var tempo_resposta: float = 0.0
 var timestamp_atual_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
@@ -65,6 +66,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Atualizar a duração da sessão
 	timestamp_atual_sessão += delta
+	tempo_resposta += delta
 	
 var toque_contador: int = 0
 var tempo_inicial: float = 0.0
@@ -127,6 +129,7 @@ func iniciar_jogo(número_de_alvos: int, tempo_de_duração: float, política_de
 	pontos_display = 0
 	suporte = 0
 	timestamp_atual_sessão = 0.0
+	tempo_resposta = 0.0
 	log_data = []
 
 	# Gerar ID único e data da sessão
@@ -140,12 +143,11 @@ func iniciar_jogo(número_de_alvos: int, tempo_de_duração: float, política_de
 
 # Função de clique para verificar acerto
 func clique(alvos: Array[int]) -> bool:
-	var tempo_resposta: float = Time.get_ticks_msec() / 1000.0  # Tempo de resposta em segundos
-	
 	# Se múltiplos alvos forem clicados em simultâneo devido à propagação do clique, o certo se sobrepõe aos errados
 	if alvo_atual in alvos:
 		pontos_real += 1
 		pontos_display += 1
+		
 		var anterior: int = alvo_atual
 		
 		# O alvo novo sempre será diferente do anterior
@@ -155,6 +157,8 @@ func clique(alvos: Array[int]) -> bool:
 		# Adiciona os dados ao log
 		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte, Velocidades.find_key(velocidade), vidas]) # Exemplo de log com acerto
 		salvar_logs_csv()
+		
+		tempo_resposta = 0.0
 		
 		return true
 	else:
@@ -170,7 +174,7 @@ func clique(alvos: Array[int]) -> bool:
 		salvar_logs_csv()
 		
 		if vidas == 0:
-			GameManager.finalizar_sessão()
+			finalizar_sessão()
 		
 		return false
 
