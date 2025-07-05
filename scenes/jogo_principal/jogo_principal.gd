@@ -165,7 +165,7 @@ func _process(delta: float) -> void:
 	tempo_desde_clique_certo += delta
 	
 	if tempo_total >= GameManager.duração:
-		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+		GameManager.finalizar_sessão()
 		
 	if GameManager.mostrar_barra_de_tempo and GameManager.duração != INF:
 		var progresso: float = tempo_total / GameManager.duração

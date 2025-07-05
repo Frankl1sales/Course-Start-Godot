@@ -8,7 +8,7 @@ const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 var id_profissional: String = ""
 
 # Referências aos nós LineEdit
-@onready var line_edit_profissional: LineEdit = $ContainerIDs/LineEditProfissional
+@onready var line_edit_profissional: LineEdit = $LineEditProfissional
 
 
 var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
@@ -25,7 +25,7 @@ const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$ContainerIDs/LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
+	$LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
 	
 	GameManager.iniciar_música()
 
@@ -123,12 +123,12 @@ func _on_botão_secreto_3_pressed() -> void:
 	
 	
 func iniciar_jogo() -> void:
-	id_profissional = $ContainerIDs/LineEditProfissional.text.strip_edges()
+	id_profissional = $LineEditProfissional.text.strip_edges()
 
 	print("ID do Profissional: ", id_profissional)
 	print("Iniciando jogo...")
 
-	GameManager.iniciar_jogo(10, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.Velocidades.MÉDIA, id_profissional, true, 10, true)
+	GameManager.iniciar_jogo(10, 120.0, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.Velocidades.MÉDIA, id_profissional, true, 10, true)
 
 
 func _on_botão_jogar_pressed() -> void:

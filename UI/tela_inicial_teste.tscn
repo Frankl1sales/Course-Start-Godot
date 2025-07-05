@@ -179,26 +179,17 @@ theme = ExtResource("2_areup")
 theme_override_icons/icon = ExtResource("5_i0eoa")
 expand_icon = true
 
-[node name="ContainerIDs" type="VBoxContainer" parent="."]
-z_index = 2
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.253
-anchor_top = 0.46
-anchor_right = 0.747
-anchor_bottom = 0.633
-offset_left = 0.543976
-offset_top = -0.0800171
-offset_right = 0.455933
-offset_bottom = -0.184021
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_areup")
-alignment = 1
-
-[node name="LineEditProfissional" type="LineEdit" parent="ContainerIDs"]
+[node name="LineEditProfissional" type="LineEdit" parent="."]
 layout_mode = 2
+anchor_left = 0.253
+anchor_top = 0.505
+anchor_right = 0.747
+anchor_bottom = 0.586
+offset_left = 0.543945
+offset_top = -0.23999
+offset_right = -0.544067
+offset_bottom = 0.271973
+theme = ExtResource("2_areup")
 theme_override_font_sizes/font_size = 32
 placeholder_text = "ID do profissional"
 alignment = 1
@@ -213,4 +204,4 @@ alignment = 1
 [connection signal="button_down" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
 [connection signal="button_up" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
 [connection signal="pressed" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]
-[connection signal="text_submitted" from="ContainerIDs/LineEditProfissional" to="." method="_on_line_edit_profissional_text_submitted"]
+[connection signal="text_submitted" from="LineEditProfissional" to="." method="_on_line_edit_profissional_text_submitted"]

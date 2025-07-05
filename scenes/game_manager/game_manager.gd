@@ -50,7 +50,7 @@ var animar: bool = true
 var log_data: Array = []  # Armazena os dados do log
 var id_sessão: String = ""  # ID único para a sessão
 var data_sessão: String = ""  # Data da sessão
-var duração_sessão: float = 0.0  # Duração da sessão em segundos
+var timestamp_atual_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
 var nome_jogo: String = "Tapa Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
@@ -58,19 +58,17 @@ var caminho: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.c
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Gerar ID único e data da sessão
-	id_sessão = gerar_id_único()
-	data_sessão = obter_data_hora_atual()
-	print("ID da Sessão: ", id_sessão)
-	print("Data da Sessão: ", data_sessão)
+	pass
+
 
 # Chamado a cada frame
 func _process(delta: float) -> void:
 	# Atualizar a duração da sessão
-	duração_sessão += delta
+	timestamp_atual_sessão += delta
 	
 var toque_contador: int = 0
 var tempo_inicial: float = 0.0
+
 
 func _input(event: InputEvent) -> void:
 	# Finalizar o jogo com toque de quatro dedos três vezes em 5 segundos
@@ -83,18 +81,19 @@ func _input(event: InputEvent) -> void:
 			if toque_contador == 3:  # Verifica se houve três toques
 				var tempo_atual: float = Time.get_unix_time_from_system()
 				if tempo_atual - tempo_inicial <= 5.0:
-					get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+					finalizar_sessão()
 					toque_contador = 0  # Reinicia o contador
 				else:
 					toque_contador = 1  # Reinicia para o toque atual
 					tempo_inicial = tempo_atual
 	# Detectar se a tecla "ESC" foi pressionada para sair do jogo
 	elif event.is_action_released("finalizar_sessão"):
-		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+		finalizar_sessão()
 
 # Função para gerar um ID único para a sessão
 func gerar_id_único() -> String:
 	return str(randi()) + str(Time.get_ticks_msec())  # Combina um número aleatório com o tempo atual em milissegundos
+
 
 # Função para obter a data e hora atuais
 func obter_data_hora_atual() -> String:
@@ -110,23 +109,33 @@ func parar_música() -> void:
 	$"MúsicaDeFundo".stop()
 
 
-func iniciar_jogo(número_de_alvos: int, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int, id_prof: String = "", mostrar_tempo: bool = true, número_de_vidas: int = 2147483647, animar_ícones: bool = true) -> void:
+func iniciar_jogo(número_de_alvos: int, tempo_de_duração: float, política_de_reposicionamento_do_jogo: int, velocidade_dos_alvos: int, id_prof: String = "", mostrar_tempo: bool = true, número_de_vidas: int = 2147483647, animar_ícones: bool = true) -> void:
 	alvos_no_jogo = Alvos.values()
 	alvos_no_jogo.shuffle()
 	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
 	
+	duração = tempo_de_duração
 	política_de_reposicionamento = política_de_reposicionamento_do_jogo
 	velocidade = velocidade_dos_alvos
 	alvo_atual = alvos_no_jogo.pick_random()
-	pontos_real = 0
-	pontos_display = 0
 	id_profissional = id_prof
 	mostrar_barra_de_tempo = mostrar_tempo
 	vidas = número_de_vidas
 	animar = animar_ícones
+
+	pontos_real = 0
+	pontos_display = 0
+	suporte = 0
+	timestamp_atual_sessão = 0.0
+	log_data = []
+
+	# Gerar ID único e data da sessão
+	id_sessão = gerar_id_único()
+	data_sessão = obter_data_hora_atual()
+	print("ID da Sessão: ", id_sessão)
+	print("Data da Sessão: ", data_sessão)
 	
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
-
 
 
 # Função de clique para verificar acerto
@@ -144,7 +153,7 @@ func clique(alvos: Array[int]) -> bool:
 			alvo_atual = alvos_no_jogo.pick_random()
 
 		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte, Velocidades.find_key(velocidade), vidas]) # Exemplo de log com acerto
+		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte, Velocidades.find_key(velocidade), vidas]) # Exemplo de log com acerto
 		salvar_logs_csv()
 		
 		return true
@@ -157,23 +166,24 @@ func clique(alvos: Array[int]) -> bool:
 		if vidas != 2147483647:
 			vidas -= 1
 		
-		log_data.append([id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte, Velocidades.find_key(velocidade), vidas])  # Exemplo de log com erro
+		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte, Velocidades.find_key(velocidade), vidas])  # Exemplo de log com erro
 		salvar_logs_csv()
 		
 		if vidas == 0:
-			get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+			GameManager.finalizar_sessão()
 		
 		return false
-		
+
+
 func mudança_no_suporte() -> void:
 	# Adiciona uma linha indicando o novo suporte
 	var file: FileAccess = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%f,%s,%s,%d,%d,%s,%s,%s,%d" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, alvo_atual, "N/A", suporte, Velocidades.find_key(velocidade), vidas])
+	file.store_line("%s,%s,%s,%f,%s,%s,%d,%d,%s,%s,%s,%d" % [id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, "MUDANÇA NO SUPORTE", pontos_real, alvo_atual, "N/A", suporte, Velocidades.find_key(velocidade), vidas])
 	
 	file.close()
-	
+
 
 # Função para salvar os logs em um arquivo CSV
 func salvar_logs_csv(limpar: bool = true) -> void:
@@ -210,16 +220,21 @@ func salvar_logs_csv(limpar: bool = true) -> void:
 	file.close()
 	print("✅ Logs salvos em: ", file.get_path_absolute())
 
+
 # Função para finalizar a sessão e registrar o término
-func finalizar_sessão() -> void:
+func finalizar_sessão(mudar_para_cena_final: bool = true) -> void:
 	# Adiciona uma linha indicando o término da sessão
 	var file: FileAccess = FileAccess.open(caminho, FileAccess.READ_WRITE)
 	
 	file.seek_end()  # Vai para o final do arquivo
-	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%d,%s,%d" % [id_sessão, id_profissional, data_sessão, duração_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", suporte, Velocidades.find_key(velocidade), vidas])
+	file.store_line("%s,%s,%s,%f,%s,%s,%d,%s,%s,%d,%s,%d" % [id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, "FIM DA SESSÃO", pontos_real, "N/A", "N/A", suporte, Velocidades.find_key(velocidade), vidas])
 	
 	file.close()
 	print("✅ Término da sessão registrado no log.")
+	
+	if mudar_para_cena_final:
+		get_tree().change_scene_to_file("res://UI/tela_final.tscn")
+
 
 # Função para verificar se o arquivo foi salvo
 func verificar_logs() -> void:
@@ -232,6 +247,7 @@ func verificar_logs() -> void:
 		file.close()
 	else:
 		print("❌ Arquivo NÃO encontrado!")
+
 
 # Função para sair do jogo
 func sair_do_jogo() -> void:
