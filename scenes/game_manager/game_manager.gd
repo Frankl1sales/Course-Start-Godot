@@ -53,7 +53,7 @@ var data_sessão: String = ""  # Data da sessão
 var tempo_resposta: float = 0.0
 var timestamp_atual_sessão: float = 0.0  # Duração da sessão em segundos
 var profissional_responsável: String = "Profissional Padrão"  # Nome do profissional responsável
-var nome_jogo: String = "Tapa Certo"  # Nome do jogo
+var nome_jogo: String = "Toque Certo"  # Nome do jogo
 var id_profissional: String = "ID_Padrão_Profissional"
 var caminho: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.csv"
 
