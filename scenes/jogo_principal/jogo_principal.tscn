@@ -1,9 +1,10 @@
-[gd_scene load_steps=61 format=3 uid="uid://c1kieko08207m"]
+[gd_scene load_steps=74 format=3 uid="uid://c1kieko08207m"]
 
 [ext_resource type="Script" path="res://scenes/jogo_principal/jogo_principal.gd" id="1_56i3e"]
 [ext_resource type="Theme" uid="uid://dejubhbtuxstt" path="res://scenes/jogo_principal/jogo_principal.tres" id="1_u5hf3"]
 [ext_resource type="Texture2D" uid="uid://11emcp3oxcn0" path="res://assets/background.png" id="2_1oknb"]
 [ext_resource type="AudioStream" uid="uid://trmfjw1qgyrb" path="res://assets/sounds/tap_right/tap.wav" id="2_4ap5s"]
+[ext_resource type="PackedScene" uid="uid://b220by45y5bjv" path="res://UI/menu_pausa.tscn" id="2_7sorp"]
 [ext_resource type="PackedScene" uid="uid://x8gr2llucnrv" path="res://scenes/alvos/donut/donut.tscn" id="2_33l3o"]
 [ext_resource type="Texture2D" uid="uid://ckybi4o6hyssl" path="res://assets/current_target_box.png" id="3_jvdrf"]
 [ext_resource type="AudioStream" uid="uid://baiwynv4mx0pu" path="res://assets/sounds/tap_wrong/tap_wrong.wav" id="3_p3tf5"]
@@ -58,6 +59,7 @@
 [ext_resource type="Texture2D" uid="uid://b30v6po5gku16" path="res://assets/sprites/star/animation/0018.png" id="44_h0ty4"]
 [ext_resource type="Texture2D" uid="uid://da3ksdal8buef" path="res://assets/sprites/star/animation/0019.png" id="45_xqc4m"]
 [ext_resource type="Texture2D" uid="uid://bg1fkipxa8e28" path="res://assets/sprites/star/animation/0020.png" id="46_3m0lv"]
+[ext_resource type="Texture2D" uid="uid://xmupgpm6mby8" path="res://assets/icons/pause/pause_normal.svg" id="47_bjway"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0xnf1"]
 animations = [{
@@ -192,6 +194,28 @@ animations = [{
 "speed": 60.0
 }]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aawdg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bcy77"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kwq6n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yyvur"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xnwg2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bk0bg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8yqac"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgrdx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5777t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wdk14"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_futig"]
+
 [node name="JogoPrincipal" type="Node2D"]
 script = ExtResource("1_56i3e")
 
@@ -241,14 +265,14 @@ offset_right = 150.0
 texture = ExtResource("6_40f5l")
 expand_mode = 2
 
-[node name="Control" type="Control" parent="CanvasLayer"]
+[node name="ControlAlvo" type="Control" parent="CanvasLayer"]
 layout_mode = 3
 anchor_right = 0.13
 anchor_bottom = 0.231
 offset_right = 0.23999
 offset_bottom = 0.311996
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control"]
+[node name="RectAlvo" type="TextureRect" parent="CanvasLayer/ControlAlvo"]
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
@@ -269,6 +293,36 @@ sprite_frames = SubResource("SpriteFrames_0xnf1")
 position = Vector2(200, 65)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_eqsfm")
+
+[node name="ContainerBotãoPausa" type="AspectRatioContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.9
+anchor_top = 0.023
+anchor_right = 0.987
+anchor_bottom = 0.177
+offset_left = 0.199951
+offset_top = 0.0959988
+offset_right = -0.0240479
+offset_bottom = 0.304001
+
+[node name="BotãoPausa" type="Button" parent="CanvasLayer/ContainerBotãoPausa"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_aawdg")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_bcy77")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_kwq6n")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yyvur")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_xnwg2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_bk0bg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8yqac")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_tgrdx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_5777t")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_wdk14")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_futig")
+icon = ExtResource("47_bjway")
+expand_icon = true
+
+[node name="MenuPausa" parent="CanvasLayer" instance=ExtResource("2_7sorp")]
+visible = false
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(8000, 4500)
@@ -309,3 +363,7 @@ position = Vector2(0, -98.7)
 
 [node name="Picolé" parent="." instance=ExtResource("7_30t43")]
 position = Vector2(0, -113.6)
+
+[connection signal="button_down" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_down"]
+[connection signal="button_up" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_up"]
+[connection signal="pressed" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_pressed"]
