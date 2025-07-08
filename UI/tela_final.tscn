@@ -41,7 +41,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ContainerBotões" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.291
@@ -57,17 +57,17 @@ grow_vertical = 2
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="BotãoMenuPrincipal" type="Button" parent="VBoxContainer"]
+[node name="BotãoMenuPrincipal" type="Button" parent="ContainerBotões"]
 layout_mode = 2
 theme = ExtResource("1_2mng0")
 theme_override_font_sizes/font_size = 55
 text = "Menu principal"
 
-[node name="BotãoSair" type="Button" parent="VBoxContainer"]
+[node name="BotãoSair" type="Button" parent="ContainerBotões"]
 layout_mode = 2
 theme = ExtResource("1_2mng0")
 theme_override_font_sizes/font_size = 55
 text = "Fechar o jogo"
 
-[connection signal="pressed" from="VBoxContainer/BotãoMenuPrincipal" to="." method="_on_botão_menu_principal_pressed"]
-[connection signal="pressed" from="VBoxContainer/BotãoSair" to="." method="_on_botão_sair_pressed"]
+[connection signal="pressed" from="ContainerBotões/BotãoMenuPrincipal" to="." method="_on_botão_menu_principal_pressed"]
+[connection signal="pressed" from="ContainerBotões/BotãoSair" to="." method="_on_botão_sair_pressed"]
