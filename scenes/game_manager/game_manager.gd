@@ -67,30 +67,6 @@ func _process(delta: float) -> void:
 	# Atualizar a duração da sessão
 	timestamp_atual_sessão += delta
 	tempo_resposta += delta
-	
-var toque_contador: int = 0
-var tempo_inicial: float = 0.0
-
-
-func _input(event: InputEvent) -> void:
-	# Finalizar o jogo com toque de quatro dedos três vezes em 5 segundos
-	if event is InputEventScreenTouch and event.is_pressed():
-		if event.index == 3:  # Verifica se há quatro dedos tocando
-			if toque_contador == 0:
-				tempo_inicial = Time.get_unix_time_from_system()  # Marca o tempo inicial
-			toque_contador += 1
-			
-			if toque_contador == 3:  # Verifica se houve três toques
-				var tempo_atual: float = Time.get_unix_time_from_system()
-				if tempo_atual - tempo_inicial <= 5.0:
-					finalizar_sessão()
-					toque_contador = 0  # Reinicia o contador
-				else:
-					toque_contador = 1  # Reinicia para o toque atual
-					tempo_inicial = tempo_atual
-	# Detectar se a tecla "ESC" foi pressionada para sair do jogo
-	elif event.is_action_released("finalizar_sessão"):
-		finalizar_sessão()
 
 # Função para gerar um ID único para a sessão
 func gerar_id_único() -> String:

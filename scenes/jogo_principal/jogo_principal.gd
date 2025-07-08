@@ -1,6 +1,9 @@
 extends Node2D
 
 
+const ícone_pausa_normal: Resource = preload("res://assets/icons/pause/pause_normal.svg")
+const ícone_pausa_pressed: Resource = preload("res://assets/icons/pause/pause_pressed.svg")
+
 @onready var donut: Area2D = $Donut
 @onready var hambúrguer: Area2D = $"Hambúrguer"
 @onready var pizza: Area2D = $Pizza
@@ -134,7 +137,7 @@ func _ready() -> void:
 	
 	# Inicialização dos indicadores da interface
 	setar_sprite_alvo(GameManager.alvos_no_jogo.find(GameManager.alvo_atual))
-	$CanvasLayer/Control/TextureRect.scale = Vector2(GameManager.escala, GameManager.escala)
+	$CanvasLayer/ControlAlvo/RectAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
 	
 	$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
 	
@@ -142,14 +145,15 @@ func _ready() -> void:
 	
 	$BarraDeTempo.scale = Vector2(0, GameManager.escala)
 	$BarraDeTempo.global_position = Vector2(0.0, tamanho_da_janela.y - 16 * GameManager.escala)
+	$BarraDeTempo.visible = GameManager.mostrar_barra_de_tempo
 	
 	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	$CanvasLayer/LabelVidas.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 
 	if GameManager.vidas == 2147483647:
-		$CanvasLayer/LabelVidas.queue_free()
-		$CanvasLayer/Heart.queue_free()
-		$CanvasLayer/HeartAnimation.queue_free()
+		$CanvasLayer/LabelVidas.visible = false
+		$CanvasLayer/Heart.visible = false
+		$CanvasLayer/HeartAnimation.visible = false
 		
 	$CanvasLayer/Heart.global_position *= GameManager.escala
 	$CanvasLayer/HeartAnimation.global_position *= GameManager.escala
@@ -239,6 +243,9 @@ func _process(delta: float) -> void:
 				
 				if GameManager.animar and GameManager.vidas != 2147483647:
 					$CanvasLayer/HeartAnimation.play()
+				
+				if GameManager.vidas != 2147483647:
+					$CanvasLayer/MenuPausa.find_child("LineEditVidas").text = str(GameManager.vidas)
 			
 		atualizar_placar()
 		atualizar_vidas()
@@ -278,6 +285,12 @@ func _process(delta: float) -> void:
 		$CanvasLayer/AjudaAlvo.global_position = Vector2(-10000, -10000)
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_released("pausar"):
+		$CanvasLayer/MenuPausa.visible = true
+		get_tree().paused = true
+
+
 func alterar_suporte(novo_suporte: int) -> void:
 	if (novo_suporte != GameManager.suporte):
 		GameManager.suporte = novo_suporte
@@ -290,9 +303,9 @@ func alterar_suporte(novo_suporte: int) -> void:
 
 func setar_sprite_alvo(index: int) -> void:
 	if sprite_do_alvo_atual != null:
-		$CanvasLayer/Control.remove_child(sprite_do_alvo_atual)
+		$CanvasLayer/ControlAlvo.remove_child(sprite_do_alvo_atual)
 	
-	$CanvasLayer/Control.add_child(sprites_dos_alvos[index])
+	$CanvasLayer/ControlAlvo.add_child(sprites_dos_alvos[index])
 	sprite_do_alvo_atual = sprites_dos_alvos[index]
 
 
@@ -423,3 +436,20 @@ func distância_entre_alvos(a: int, b: int, pos_1: Vector2 = Vector2(0, 0), pos_
 		centro_b = centro_de_alvo(b)
 	
 	return sqrt(pow(centro_a.x - centro_b.x, 2) + pow(centro_a.y - centro_b.y, 2))
+
+
+func pausar():
+	$CanvasLayer/MenuPausa.visible = true
+	get_tree().paused = true
+
+
+func _on_botão_pausa_button_down() -> void:
+	$"CanvasLayer/ContainerBotãoPausa/BotãoPausa".icon = ícone_pausa_pressed
+
+
+func _on_botão_pausa_button_up() -> void:
+	$"CanvasLayer/ContainerBotãoPausa/BotãoPausa".icon = ícone_pausa_normal
+
+
+func _on_botão_pausa_pressed() -> void:
+	pausar()

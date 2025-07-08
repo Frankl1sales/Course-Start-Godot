@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://bjvi4gbyjhody"]
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bjvi4gbyjhody"]
 
 [ext_resource type="FontFile" uid="uid://djt4kf01x8kya" path="res://assets/fonts/Titan_One/TitanOne-Regular.ttf" id="1_kjjjk"]
 
@@ -25,6 +25,42 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbivh"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46f3e"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v60t2"]
+bg_color = Color(0.333333, 0.298039, 0.282353, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.333333, 0.298039, 0.282353, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1jcy1"]
 bg_color = Color(0.690196, 0.6, 0.560784, 1)
 corner_radius_top_left = 5
@@ -50,7 +86,12 @@ Button/styles/focus = SubResource("StyleBoxEmpty_ucjdn")
 Button/styles/hover = SubResource("StyleBoxFlat_44ct0")
 Button/styles/normal = SubResource("StyleBoxFlat_p1qeb")
 Button/styles/pressed = SubResource("StyleBoxFlat_jtgs2")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_qbivh")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_46f3e")
+HSlider/styles/slider = SubResource("StyleBoxFlat_v60t2")
 Label/fonts/font = ExtResource("1_kjjjk")
+LineEdit/colors/font_color = Color(1, 1, 1, 1)
+LineEdit/fonts/font = ExtResource("1_kjjjk")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_1jcy1")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_5hd0x")
 Panel/styles/panel = SubResource("StyleBoxFlat_ie6gp")

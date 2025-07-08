@@ -1,0 +1,373 @@
+[gd_scene load_steps=34 format=3 uid="uid://b220by45y5bjv"]
+
+[ext_resource type="Script" path="res://UI/menu_pausa.gd" id="1_j2nut"]
+[ext_resource type="Theme" uid="uid://bjvi4gbyjhody" path="res://UI/menus_do_teste.tres" id="1_ljsd4"]
+[ext_resource type="Shader" path="res://UI/blur_background.gdshader" id="1_nxd6b"]
+[ext_resource type="Texture2D" uid="uid://bxx0ete8lc5fv" path="res://assets/icons/toggle/toggle_on.svg" id="4_dhg4s"]
+[ext_resource type="Texture2D" uid="uid://bewxoofa1r3lc" path="res://assets/icons/music_note/music_note_normal.svg" id="4_kppcn"]
+[ext_resource type="Texture2D" uid="uid://d4kijdj4ncevo" path="res://assets/icons/speaker/speaker_normal.svg" id="5_r0n8l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f1ogu"]
+shader = ExtResource("1_nxd6b")
+shader_parameter/amount = 1.5
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_nsow0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wpovj"]
+bg_color = Color(0.690196, 0.6, 0.560784, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gs304"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1bqcl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c76rv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ggsse"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1ekg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tdmxy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kv34y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_synd0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i5cq0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v04hf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0rhqf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4tkb8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cwrq7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s4gi0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4un2r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oyiia"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_waeii"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhy05"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lefbf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_70usj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7nnnd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ls516"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgkgx"]
+bg_color = Color(0.690196, 0.6, 0.560784, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y2iri"]
+bg_color = Color(0.690196, 0.6, 0.560784, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="MenuPausa" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ljsd4")
+script = ExtResource("1_j2nut")
+
+[node name="Blur" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_f1ogu")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_nsow0")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.690196, 0.6, 0.560784, 0.247059)
+
+[node name="LabelPausado" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.305
+anchor_top = 0.058
+anchor_right = 0.695
+anchor_bottom = 0.231
+offset_left = 0.139984
+offset_top = -0.0839996
+offset_right = -0.140076
+offset_bottom = -0.103012
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 96
+text = "Pausado"
+
+[node name="BotãoVoltarAoJogo" type="Button" parent="."]
+layout_mode = 2
+anchor_left = 0.239
+anchor_top = 0.27
+anchor_right = 0.76
+anchor_bottom = 0.347
+offset_left = -0.328003
+offset_top = 0.0399933
+offset_right = -0.520081
+offset_bottom = 0.143997
+theme_override_font_sizes/font_size = 32
+text = "Voltar ao jogo"
+
+[node name="LabelBarraDeTempo" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.239
+anchor_top = 0.355
+anchor_right = 0.76
+anchor_bottom = 0.44
+offset_left = -0.328003
+offset_top = -0.0400085
+offset_right = -0.520081
+offset_bottom = -0.120026
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_wpovj")
+text = "Barra de tempo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToggleBarraDeTempo" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.695
+anchor_top = 0.355
+anchor_right = 0.743
+anchor_bottom = 0.44
+offset_left = 0.359924
+offset_top = -0.0400085
+offset_right = 0.0639648
+offset_bottom = -0.120026
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gs304")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1bqcl")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_c76rv")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_ggsse")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_o1ekg")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_tdmxy")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kv34y")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_synd0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_i5cq0")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_v04hf")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0rhqf")
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("4_dhg4s")
+icon_alignment = 2
+expand_icon = true
+
+[node name="LabelAnimações" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.239
+anchor_top = 0.448
+anchor_right = 0.76
+anchor_bottom = 0.532
+offset_left = -0.328003
+offset_top = -0.304016
+offset_right = -0.520142
+offset_bottom = 0.264008
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_wpovj")
+text = "Animações"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToggleAnimações" type="Button" parent="."]
+layout_mode = 2
+anchor_left = 0.695
+anchor_top = 0.448
+anchor_right = 0.743
+anchor_bottom = 0.532
+offset_left = 0.359924
+offset_top = -0.304016
+offset_right = 0.0639648
+offset_bottom = 0.264008
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4tkb8")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_cwrq7")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_s4gi0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_4un2r")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_oyiia")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_waeii")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_nhy05")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_lefbf")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_70usj")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_7nnnd")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ls516")
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("4_dhg4s")
+icon_alignment = 2
+expand_icon = true
+
+[node name="LabelMúsica" type="Label" parent="."]
+layout_mode = 2
+anchor_left = 0.239
+anchor_top = 0.54
+anchor_right = 0.76
+anchor_bottom = 0.625
+offset_left = -0.328003
+offset_top = 0.0799866
+offset_right = -0.520081
+theme_override_styles/normal = SubResource("StyleBoxFlat_vgkgx")
+
+[node name="AspectRatioContainerBotãoMúsica" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.239
+anchor_top = 0.54
+anchor_right = 0.286
+anchor_bottom = 0.625
+offset_left = -0.328003
+offset_top = 0.0799866
+offset_right = 0.527985
+
+[node name="BotãoMúsica" type="Button" parent="AspectRatioContainerBotãoMúsica"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_icons/icon = ExtResource("4_kppcn")
+icon_alignment = 1
+expand_icon = true
+
+[node name="HSliderMúsica" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.295
+anchor_top = 0.54
+anchor_right = 0.745
+anchor_bottom = 0.625
+offset_left = 0.159973
+offset_top = 0.0799866
+offset_right = -0.240051
+value = 30.0
+
+[node name="LabelSons" type="Label" parent="."]
+layout_mode = 2
+anchor_left = 0.239
+anchor_top = 0.633
+anchor_right = 0.76
+anchor_bottom = 0.718
+offset_left = -0.328003
+offset_top = -0.184021
+offset_right = -0.520081
+offset_bottom = -0.264038
+theme_override_styles/normal = SubResource("StyleBoxFlat_vgkgx")
+
+[node name="AspectRatioContainerBotãoSons" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.239
+anchor_top = 0.633
+anchor_right = 0.286
+anchor_bottom = 0.718
+offset_left = -0.328003
+offset_top = -0.184021
+offset_right = 0.527985
+offset_bottom = -0.264038
+
+[node name="BotãoSons" type="Button" parent="AspectRatioContainerBotãoSons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_icons/icon = ExtResource("5_r0n8l")
+icon_alignment = 1
+expand_icon = true
+
+[node name="HSliderSons" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.295
+anchor_top = 0.633
+anchor_right = 0.745
+anchor_bottom = 0.718
+offset_left = 0.159973
+offset_top = -0.184021
+offset_right = -0.240051
+offset_bottom = -0.264038
+value = 100.0
+
+[node name="LabelVidas" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.239
+anchor_top = 0.725
+anchor_right = 0.76
+anchor_bottom = 0.81
+offset_left = -0.328003
+offset_top = 0.199982
+offset_right = -0.520081
+offset_bottom = 0.119934
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_y2iri")
+text = "Vidas"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LineEditVidas" type="LineEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.641
+anchor_top = 0.73
+anchor_right = 0.746
+anchor_bottom = 0.806
+offset_left = 0.567993
+offset_top = -0.0400085
+offset_right = -0.39209
+offset_bottom = -0.288025
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "10"
+alignment = 2
+
+[node name="BotãoFinalizarSessão" type="Button" parent="."]
+layout_mode = 2
+anchor_left = 0.239
+anchor_top = 0.818
+anchor_right = 0.76
+anchor_bottom = 0.903
+offset_left = -0.328003
+offset_top = -0.0640259
+offset_right = -0.520142
+offset_bottom = -0.144043
+theme_override_font_sizes/font_size = 32
+text = "Finalizar sessão"
+
+[connection signal="pressed" from="BotãoVoltarAoJogo" to="." method="_on_botão_voltar_ao_jogo_pressed"]
+[connection signal="toggled" from="ToggleBarraDeTempo" to="." method="_on_toggle_barra_de_tempo_toggled"]
+[connection signal="toggled" from="ToggleAnimações" to="." method="_on_toggle_animações_toggled"]
+[connection signal="button_down" from="AspectRatioContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_button_down"]
+[connection signal="button_up" from="AspectRatioContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_button_up"]
+[connection signal="pressed" from="AspectRatioContainerBotãoMúsica/BotãoMúsica" to="." method="_on_botão_música_pressed"]
+[connection signal="value_changed" from="HSliderMúsica" to="." method="_on_h_slider_música_value_changed"]
+[connection signal="button_down" from="AspectRatioContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
+[connection signal="button_up" from="AspectRatioContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
+[connection signal="pressed" from="AspectRatioContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]
+[connection signal="value_changed" from="HSliderSons" to="." method="_on_h_slider_sons_value_changed"]
+[connection signal="text_changed" from="LineEditVidas" to="." method="_on_line_edit_vidas_text_changed"]
+[connection signal="text_submitted" from="LineEditVidas" to="." method="_on_line_edit_vidas_text_submitted"]
+[connection signal="pressed" from="BotãoFinalizarSessão" to="." method="_on_botão_finalizar_sessão_pressed"]
