@@ -5,12 +5,6 @@ var hora_da_última_apertada_de_um_botão_secreto: float = 0.0
 var sequência: Array[int] = []
 const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 
-var id_profissional: String = ""
-
-# Referências aos nós LineEdit
-@onready var line_edit_profissional: LineEdit = $LineEditProfissional
-
-
 var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
 var ícone_música_pressionado: Resource = preload("res://assets/icons/music_note/music_note_pressed.svg")
 var ícone_música_desligada_normal: Resource = preload("res://assets/icons/music_note/music_note_off_normal.svg")
@@ -21,13 +15,9 @@ var ícone_sons_pressionado: Resource = preload("res://assets/icons/speaker/spea
 var ícone_sons_mudo_normal: Resource = preload("res://assets/icons/speaker/speaker_mute_normal.svg")
 var ícone_sons_mudo_pressionado: Resource = preload("res://assets/icons/speaker/speaker_mute_pressed.svg")
 
-const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
-	
-	GameManager.iniciar_música()
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -115,25 +105,12 @@ func _on_botão_secreto_3_pressed() -> void:
 		if sequência == [3, 1, 2, 3]:
 			sequência = []
 			
-			print("Sequência secreta realizada.")
+			get_tree().change_scene_to_file("res://UI/tela_pré_teste.tscn")
 	else:
 		sequência = [3]
 		
 	hora_da_última_apertada_de_um_botão_secreto = Time.get_unix_time_from_system()
-	
-	
-func iniciar_jogo() -> void:
-	id_profissional = $LineEditProfissional.text.strip_edges()
-
-	print("ID do Profissional: ", id_profissional)
-	print("Iniciando jogo...")
-
-	GameManager.iniciar_jogo(10, 120.0, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.Velocidades.MÉDIA, id_profissional, true, 10, true)
 
 
 func _on_botão_jogar_pressed() -> void:
-	iniciar_jogo()
-
-
-func _on_line_edit_profissional_text_submitted(_new_text: String) -> void:
-	iniciar_jogo()
+	GameManager.iniciar_jogo()

@@ -61,9 +61,9 @@ theme = ExtResource("2_areup")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.144
-anchor_top = 0.157
+anchor_top = 0.187864
 anchor_right = 0.856
-anchor_bottom = 0.46
+anchor_bottom = 0.490864
 offset_left = 0.111984
 offset_top = 0.264
 offset_right = -0.112061
@@ -73,14 +73,15 @@ grow_vertical = 2
 texture = ExtResource("3_7tfet")
 expand_mode = 5
 stretch_mode = 4
+metadata/_edit_use_anchors_ = true
 
 [node name="BotãoJogar" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.385
-anchor_top = 0.687
+anchor_top = 0.549654
 anchor_right = 0.615
-anchor_bottom = 0.849
+anchor_bottom = 0.711654
 offset_left = 0.480011
 offset_top = -0.176025
 offset_right = -0.47998
@@ -90,6 +91,7 @@ grow_vertical = 2
 theme = ExtResource("2_areup")
 theme_override_font_sizes/font_size = 55
 text = "JOGAR"
+metadata/_edit_use_anchors_ = true
 
 [node name="BotãoSecreto1" type="Button" parent="."]
 layout_mode = 1
@@ -179,21 +181,6 @@ theme = ExtResource("2_areup")
 theme_override_icons/icon = ExtResource("5_i0eoa")
 expand_icon = true
 
-[node name="LineEditProfissional" type="LineEdit" parent="."]
-layout_mode = 2
-anchor_left = 0.253
-anchor_top = 0.505
-anchor_right = 0.747
-anchor_bottom = 0.586
-offset_left = 0.543945
-offset_top = -0.23999
-offset_right = -0.544067
-offset_bottom = 0.271973
-theme = ExtResource("2_areup")
-theme_override_font_sizes/font_size = 32
-placeholder_text = "ID do profissional"
-alignment = 1
-
 [connection signal="pressed" from="BotãoJogar" to="." method="_on_botão_jogar_pressed"]
 [connection signal="pressed" from="BotãoSecreto1" to="." method="_on_botão_secreto_1_pressed"]
 [connection signal="pressed" from="BotãoSecreto2" to="." method="_on_botão_secreto_2_pressed"]
@@ -204,4 +191,3 @@ alignment = 1
 [connection signal="button_down" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
 [connection signal="button_up" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
 [connection signal="pressed" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]
-[connection signal="text_submitted" from="LineEditProfissional" to="." method="_on_line_edit_profissional_text_submitted"]

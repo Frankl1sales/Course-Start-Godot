@@ -8,6 +8,7 @@ const TAMANHO_BASE_DA_FONTE_BOTÕES: int = 55
 func _ready() -> void:
 	$"LabelParabéns".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE_LABEL_PARABÉNS * GameManager.escala)
 	$"ContainerBotões/BotãoMenuPrincipal".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE_BOTÕES * GameManager.escala)
+	$"ContainerBotões/BotãoParâmetros".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE_BOTÕES * GameManager.escala)
 	$"ContainerBotões/BotãoSair".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE_BOTÕES * GameManager.escala)
 	
 	$"LabelParabéns".text = "Parabéns você obteve " + str(GameManager.pontos_display) + " ponto" + \
@@ -21,6 +22,10 @@ func _process(_delta: float) -> void:
 
 func _on_botão_sair_pressed() -> void:
 	GameManager.sair_do_jogo()
+
+
+func _on_botão_parâmetros_pressed() -> void:
+	get_tree().change_scene_to_file("res://UI/tela_pré_teste.tscn")
 
 
 func _on_botão_menu_principal_pressed() -> void:

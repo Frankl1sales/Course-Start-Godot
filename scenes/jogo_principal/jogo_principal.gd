@@ -31,9 +31,6 @@ var tempo_desde_clique_certo: float = 0.0
 
 var cliques: Array[int] = [];
 
-const colunas: int = 5
-var linhas: int
-
 var tamanho_célula: Vector2
 var offset_máximo: Vector2
 const BASE_OFFSET_MÁXIMO: int = 50
@@ -67,14 +64,13 @@ func _ready() -> void:
 	atualizar_vidas()
 
 	# Inicialização do ruído azul
-	linhas = round(tamanho_da_janela.y / tamanho_da_janela.x * colunas)
-	tamanho_célula.x = tamanho_da_janela.x / colunas
-	tamanho_célula.y = tamanho_da_janela.y / linhas
+	tamanho_célula.x = tamanho_da_janela.x / GameManager.colunas
+	tamanho_célula.y = tamanho_da_janela.y / GameManager.linhas
 	
-	grid_de_alvos.resize(colunas)
+	grid_de_alvos.resize(GameManager.colunas)
 	
 	var array_temporário: Array[int]
-	array_temporário.resize(linhas)
+	array_temporário.resize(GameManager.linhas)
 	array_temporário.fill(-1)
 	
 	for i: int in grid_de_alvos.size():
@@ -342,8 +338,8 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 	
 	# Cria uma lista de células não ocupadas
 	var células_vazias: Array[Array] = []
-	for i: int in colunas:
-		for j: int in linhas:
+	for i: int in GameManager.colunas:
+		for j: int in GameManager.linhas:
 			if grid_de_alvos[i][j] < 0:
 				células_vazias.append([i, j])
 	
@@ -354,8 +350,8 @@ func spawnar_alvo(alvo: int, ocupar: bool) -> void:
 		linha = célula_escolhida[1]
 	else:
 		# Caso não haja células vazias, escolhe uma célula aleatória
-		coluna = rng.randi_range(0, colunas - 1)
-		linha = rng.randi_range(0, linhas - 1)
+		coluna = rng.randi_range(0, GameManager.colunas - 1)
+		linha = rng.randi_range(0, GameManager.linhas - 1)
 	
 	if ocupar:
 		grid_de_alvos[coluna][linha] = alvo
