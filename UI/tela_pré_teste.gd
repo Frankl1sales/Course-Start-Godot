@@ -76,6 +76,8 @@ func _ready() -> void:
 	
 	$ScrollContainer/Control/LabelVidas.add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
 	$ScrollContainer/Control/LineEditVidas.add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
+	
+	GameManager.vidas = 10
 	$ScrollContainer/Control/LineEditVidas.text = str(GameManager.vidas)
 	
 	$"ScrollContainer/Control/LabelDuração".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
