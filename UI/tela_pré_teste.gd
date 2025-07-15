@@ -1,5 +1,11 @@
 extends Control
 
+enum ModoEnter {
+	NENHUM,
+	MENU,
+	JOGO
+}
+
 var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
 var ícone_música_pressionado: Resource = preload("res://assets/icons/music_note/music_note_pressed.svg")
 var ícone_música_desligada_normal: Resource = preload("res://assets/icons/music_note/music_note_off_normal.svg")
@@ -13,6 +19,8 @@ var ícone_sons_mudo_pressionado: Resource = preload("res://assets/icons/speaker
 const TAMANHO_BASE_DA_FONTE_SUBTÍTULO: int = 64
 const TAMANHO_BASE_DA_FONTE: int = 48
 const TAMANHO_BASE_DA_BARRA_DE_SCROLL: int = 12
+
+var modo_enter: int = ModoEnter.NENHUM
 
 
 # Called when the node enters the scene tree for the first time.
@@ -128,6 +136,8 @@ func _ready() -> void:
 	$"ScrollContainer/Control/BotãoIniciarMenu".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
 	$"ScrollContainer/Control/BotãoIniciarJogo".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
 
+	modo_enter = ModoEnter.NENHUM
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -208,11 +218,46 @@ func id_profissional_inválido() -> void:
 	tween.tween_property($ScrollContainer/Control/LineEditProfissional, "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.1)
 
 
+func iniciar_menu() -> void:
+	if GameManager.id_profissional == "":
+		modo_enter = ModoEnter.MENU
+		id_profissional_inválido()
+	else:
+		get_tree().change_scene_to_file("res://UI/tela_inicial_teste.tscn")
+
+
+func iniciar_jogo() -> void:
+	if GameManager.id_profissional == "":
+		modo_enter = ModoEnter.JOGO
+		id_profissional_inválido()
+	else:
+		GameManager.iniciar_jogo()
+
+
 func _on_line_edit_profissional_text_submitted(new_text: String) -> void:
 	atualizar_id_profissional(new_text)
+	
+	if GameManager.id_profissional == "":
+		id_profissional_inválido()
+	else:
+		match modo_enter:
+			ModoEnter.NENHUM:
+				var tween: Tween = create_tween()
+				var início_do_scroll: int = $ScrollContainer.scroll_vertical
+				var fim_do_scroll: int = $"ScrollContainer/Control/BotãoIniciarJogo".position.y - 16 * GameManager.escala
+				tween.tween_property($ScrollContainer, "scroll_vertical", fim_do_scroll, 0.1).from(início_do_scroll)
+				tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
+				tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
+				tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
+				tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
+			ModoEnter.MENU:
+				iniciar_menu()
+			ModoEnter.JOGO:
+				iniciar_jogo()
 
 
 func _on_line_edit_profissional_focus_exited() -> void:
+	modo_enter = ModoEnter.NENHUM
 	atualizar_id_profissional($ScrollContainer/Control/LineEditProfissional.text)
 
 
@@ -372,14 +417,8 @@ func _on_h_slider_efeitos_sonoros_value_changed(value: float) -> void:
 
 
 func _on_botão_iniciar_menu_pressed() -> void:
-	if GameManager.id_profissional == "":
-		id_profissional_inválido()
-	else:
-		get_tree().change_scene_to_file("res://UI/tela_inicial_teste.tscn")
+	iniciar_menu()
 
 
 func _on_botão_iniciar_jogo_pressed() -> void:
-	if GameManager.id_profissional == "":
-		id_profissional_inválido()
-	else:
-		GameManager.iniciar_jogo()
+	iniciar_jogo()
