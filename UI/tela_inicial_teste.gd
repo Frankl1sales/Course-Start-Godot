@@ -5,6 +5,9 @@ var hora_da_última_apertada_de_um_botão_secreto: float = 0.0
 var sequência: Array[int] = []
 const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 
+var ícone_configurações_normal: Resource = preload("res://assets/icons/settings/settings_normal.svg")
+var ícone_configurações_pressed: Resource = preload("res://assets/icons/settings/settings_pressed.svg")
+
 var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
 var ícone_música_pressionado: Resource = preload("res://assets/icons/music_note/music_note_pressed.svg")
 var ícone_música_desligada_normal: Resource = preload("res://assets/icons/music_note/music_note_off_normal.svg")
@@ -23,8 +26,20 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
-	
-	
+
+
+func _on_botão_configurações_button_down() -> void:
+	$"AspectRatioContainerBotãoConfigurações/BotãoConfigurações".icon = ícone_configurações_pressed
+
+
+func _on_botão_configurações_button_up() -> void:
+	$"AspectRatioContainerBotãoConfigurações/BotãoConfigurações".icon = ícone_configurações_normal
+
+
+func _on_botão_configurações_pressed() -> void:
+	$"ConfiguraçõesDaTelaInicialTeste".visible = true
+
+
 func _on_botão_música_button_down() -> void:
 	if GameManager.música_desligada:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_pressionado
@@ -46,9 +61,11 @@ func _on_botão_música_pressed() -> void:
 	
 	if GameManager.música_desligada:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
 		AudioServer.set_bus_mute(index_bus_música, true)
 	else:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
 		AudioServer.set_bus_mute(index_bus_música, false)
 
 
@@ -73,9 +90,11 @@ func _on_botão_sons_pressed() -> void:
 	
 	if GameManager.sons_mutados:
 		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_mudo_normal
 		AudioServer.set_bus_mute(index_bust_sons, true)
 	else:
 		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_normal
 		AudioServer.set_bus_mute(index_bust_sons, false)
 
 
