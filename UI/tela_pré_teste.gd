@@ -82,7 +82,11 @@ func _ready() -> void:
 	
 	$"ScrollContainer/Control/LabelDuração".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
 	$"ScrollContainer/Control/LineEditDuração".add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
-	$"ScrollContainer/Control/LineEditDuração".text = str(GameManager.duração)
+	
+	if GameManager.duração == INF:
+		$"ScrollContainer/Control/LineEditDuração".text = "Ilimitada"
+	else:
+		$"ScrollContainer/Control/LineEditDuração".text = str(GameManager.duração)
 	
 	$ScrollContainer/Control/LabelReposicionamento.add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
 	$ScrollContainer/Control/OptionButtonReposicionamento.add_theme_font_size_override("font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala)
@@ -186,8 +190,8 @@ func atualizar_repetição(new_text: String) -> void:
 func atualizar_vidas(new_text: String) -> void:
 	var vidas: int = int(new_text)
 	
-	if vidas <= 0 or new_text.to_lower() == "ilimitado":
-		$ScrollContainer/Control/LineEditVidas.text = "Ilimitado"
+	if vidas <= 0 or new_text.to_lower() == "ilimitadas":
+		$ScrollContainer/Control/LineEditVidas.text = "Ilimitadas"
 		GameManager.vidas = 2147483647
 	else:
 		$ScrollContainer/Control/LineEditVidas.text = str(vidas)
@@ -197,8 +201,8 @@ func atualizar_vidas(new_text: String) -> void:
 func atualizar_duração(new_text: String) -> void:
 	var duração: float = float(new_text)
 	
-	if duração <= 0.0 or new_text.to_lower() == "ilimitado":
-		$"ScrollContainer/Control/LineEditDuração".text = "Ilimitado"
+	if duração <= 0.0 or new_text.to_lower() == "ilimitada":
+		$"ScrollContainer/Control/LineEditDuração".text = "Ilimitada"
 		GameManager.duração = INF
 	else:
 		$"ScrollContainer/Control/LineEditDuração".text = str(duração)
