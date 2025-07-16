@@ -5,11 +5,8 @@ var hora_da_última_apertada_de_um_botão_secreto: float = 0.0
 var sequência: Array[int] = []
 const TEMPO_MÁXIMO_ENTRE_APERTADAS_DE_BOTÕES_SECRETOS: float = 2.0
 
-var id_profissional: String = ""
-
-# Referências aos nós LineEdit
-@onready var line_edit_profissional: LineEdit = $LineEditProfissional
-
+var ícone_configurações_normal: Resource = preload("res://assets/icons/settings/settings_normal.svg")
+var ícone_configurações_pressed: Resource = preload("res://assets/icons/settings/settings_pressed.svg")
 
 var ícone_música_normal: Resource = preload("res://assets/icons/music_note/music_note_normal.svg")
 var ícone_música_pressionado: Resource = preload("res://assets/icons/music_note/music_note_pressed.svg")
@@ -21,20 +18,29 @@ var ícone_sons_pressionado: Resource = preload("res://assets/icons/speaker/spea
 var ícone_sons_mudo_normal: Resource = preload("res://assets/icons/speaker/speaker_mute_normal.svg")
 var ícone_sons_mudo_pressionado: Resource = preload("res://assets/icons/speaker/speaker_mute_pressed.svg")
 
-const TAMANHO_BASE_FONTE_LINE_EDIT: int = 32
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$LineEditProfissional.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_FONTE_LINE_EDIT)
-	
-	GameManager.iniciar_música()
+	$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal if GameManager.música_desligada else ícone_música_normal
+	$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal if GameManager.sons_mutados else ícone_sons_normal
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
-	
-	
+
+
+func _on_botão_configurações_button_down() -> void:
+	$"AspectRatioContainerBotãoConfigurações/BotãoConfigurações".icon = ícone_configurações_pressed
+
+
+func _on_botão_configurações_button_up() -> void:
+	$"AspectRatioContainerBotãoConfigurações/BotãoConfigurações".icon = ícone_configurações_normal
+
+
+func _on_botão_configurações_pressed() -> void:
+	$"ConfiguraçõesDaTelaInicialTeste".visible = true
+
+
 func _on_botão_música_button_down() -> void:
 	if GameManager.música_desligada:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_pressionado
@@ -56,9 +62,11 @@ func _on_botão_música_pressed() -> void:
 	
 	if GameManager.música_desligada:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
 		AudioServer.set_bus_mute(index_bus_música, true)
 	else:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
 		AudioServer.set_bus_mute(index_bus_música, false)
 
 
@@ -83,9 +91,11 @@ func _on_botão_sons_pressed() -> void:
 	
 	if GameManager.sons_mutados:
 		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_mudo_normal
 		AudioServer.set_bus_mute(index_bust_sons, true)
 	else:
 		$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_normal
+		$"ConfiguraçõesDaTelaInicialTeste/Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_normal
 		AudioServer.set_bus_mute(index_bust_sons, false)
 
 
@@ -115,25 +125,12 @@ func _on_botão_secreto_3_pressed() -> void:
 		if sequência == [3, 1, 2, 3]:
 			sequência = []
 			
-			print("Sequência secreta realizada.")
+			get_tree().change_scene_to_file("res://UI/tela_pré_teste.tscn")
 	else:
 		sequência = [3]
 		
 	hora_da_última_apertada_de_um_botão_secreto = Time.get_unix_time_from_system()
-	
-	
-func iniciar_jogo() -> void:
-	id_profissional = $LineEditProfissional.text.strip_edges()
-
-	print("ID do Profissional: ", id_profissional)
-	print("Iniciando jogo...")
-
-	GameManager.iniciar_jogo(10, 120.0, GameManager.PolíticasDeReposicionamento.TODOS, GameManager.Velocidades.MÉDIA, id_profissional, true, 10, true)
 
 
 func _on_botão_jogar_pressed() -> void:
-	iniciar_jogo()
-
-
-func _on_line_edit_profissional_text_submitted(_new_text: String) -> void:
-	iniciar_jogo()
+	GameManager.iniciar_jogo()
