@@ -44,7 +44,10 @@ func _ready() -> void:
 	$"ToggleAnimações".set_pressed_no_signal(GameManager.animar)
 	
 	$"HSliderMúsica".set_value_no_signal(db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Música"))) * 100)
+	$"AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal if GameManager.música_desligada else ícone_música_normal
+	
 	$"HSliderSons".set_value_no_signal(db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("SFX"))) * 100)
+	$"AspectRatioContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal if GameManager.sons_mutados else ícone_sons_normal
 	
 	if GameManager.vidas != 2147483647:
 		$LineEditVidas.text = str(GameManager.vidas)

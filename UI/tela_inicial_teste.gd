@@ -20,7 +20,8 @@ var ícone_sons_mudo_pressionado: Resource = preload("res://assets/icons/speaker
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal if GameManager.música_desligada else ícone_música_normal
+	$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal if GameManager.sons_mutados else ícone_sons_normal
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
