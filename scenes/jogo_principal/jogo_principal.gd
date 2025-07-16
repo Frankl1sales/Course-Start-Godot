@@ -287,6 +287,11 @@ func _input(event: InputEvent) -> void:
 		get_tree().paused = true
 
 
+func _notification(what: int):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		pausar()
+
+
 func alterar_suporte(novo_suporte: int) -> void:
 	if (novo_suporte != GameManager.suporte):
 		GameManager.suporte = novo_suporte
