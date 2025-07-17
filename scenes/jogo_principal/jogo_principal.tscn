@@ -367,3 +367,5 @@ position = Vector2(0, -113.6)
 [connection signal="button_down" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_down"]
 [connection signal="button_up" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_up"]
 [connection signal="pressed" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_pressed"]
+[connection signal="barra_de_tempo_oculta" from="CanvasLayer/MenuPausa" to="." method="_on_menu_pausa_barra_de_tempo_oculta"]
+[connection signal="número_de_vidas_mudou" from="CanvasLayer/MenuPausa" to="." method="_on_menu_pausa_número_de_vidas_mudou"]

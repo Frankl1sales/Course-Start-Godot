@@ -27,9 +27,9 @@ var sprites_dos_alvos: Array[Sprite2D] = []
 var sprite_do_alvo_atual: Sprite2D
 var tamanho_da_janela: Vector2
 var tempo_total: float = 0.0
-var tempo_desde_clique_certo: float = 0.0
+var tempo_desde_toque_certo: float = 0.0
 
-var cliques: Array[int] = [];
+var toques: Array[int] = [];
 
 var tamanho_célula: Vector2
 var offset_máximo: Vector2
@@ -111,7 +111,12 @@ func _ready() -> void:
 				
 	vetores_de_movimento_dos_alvos.resize(alvos_no_jogo.size())
 	sprites_dos_alvos.resize(alvos_no_jogo.size())
-		
+	
+	for alvo: Area2D in alvos_no_jogo:
+		alvo.tocado.connect(func(tipo: int):
+			toques.append(tipo)
+		)
+	
 	for i: int in alvos_no_jogo.size():
 		alvos_no_jogo[i].scale = Vector2(GameManager.escala, GameManager.escala)
 		
@@ -162,21 +167,21 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	tempo_total += delta
-	tempo_desde_clique_certo += delta
+	tempo_desde_toque_certo += delta
 	
 	if tempo_total >= GameManager.duração:
 		GameManager.finalizar_sessão()
 		
-	if GameManager.mostrar_barra_de_tempo and GameManager.duração != INF:
+	if GameManager.duração != INF:
 		var progresso: float = tempo_total / GameManager.duração
 		
 		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)
 		$BarraDeTempo.global_position.x = progresso * tamanho_da_janela.x / 2
 
-	# Tratamento dos cliques, se múltiplos alvos forem clicados em simultâneo devido à propagação do clique o certo se sobrepõe aos errados
-	if cliques.size() != 0:
+	# Tratamento dos toque, se múltiplos alvos forem clicados em simultâneo devido à propagação do toque o certo se sobrepõe aos errados
+	if toques.size() != 0:
 		var alvo_original: int = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
-		var certo: bool = GameManager.clique(cliques)
+		var certo: bool = GameManager.toque(toques)
 		
 		if certo:
 			$TapRight.play()
@@ -185,7 +190,7 @@ func _process(delta: float) -> void:
 				$CanvasLayer/Star.play()
 			
 			alterar_suporte(0)
-			tempo_desde_clique_certo = 0.0
+			tempo_desde_toque_certo = 0.0
 			
 			$CanvasLayer/AjudaAlvo.global_position = Vector2(0, -150 * GameManager.escala)
 			
@@ -241,14 +246,14 @@ func _process(delta: float) -> void:
 					$CanvasLayer/HeartAnimation.play()
 				
 				if GameManager.vidas != 2147483647:
-					$CanvasLayer/MenuPausa.find_child("LineEditVidas").text = str(GameManager.vidas)
+					$CanvasLayer/MenuPausa/LineEditVidas.text = str(GameManager.vidas)
 			
 		atualizar_placar()
 		atualizar_vidas()
 		
-		cliques.clear()
+		toques.clear()
 	
-	var novo_suporte: int = min(3, floor(tempo_desde_clique_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
+	var novo_suporte: int = min(3, floor(tempo_desde_toque_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
 	
 	if novo_suporte != GameManager.suporte:
 		alterar_suporte(novo_suporte)
@@ -317,10 +322,6 @@ func atualizar_placar() -> void:
 func atualizar_vidas() -> void:
 	if GameManager.vidas != 2147483647:
 		$CanvasLayer/LabelVidas.text = str(GameManager.vidas)
-
-
-func clique(alvo: int) -> void:
-	cliques.append(alvo)
  
 
 func vetor_de_movimento_aleatório() -> Vector2:
@@ -454,3 +455,20 @@ func _on_botão_pausa_button_up() -> void:
 
 func _on_botão_pausa_pressed() -> void:
 	pausar()
+
+
+func _on_menu_pausa_barra_de_tempo_oculta(oculta: bool) -> void:
+	$BarraDeTempo.visible = not oculta
+
+
+func _on_menu_pausa_número_de_vidas_mudou(vidas: int) -> void:
+	if vidas == 2147483647:
+		$CanvasLayer/LabelVidas.visible = false
+		$CanvasLayer/Heart.visible = false
+		$CanvasLayer/HeartAnimation.visible = false
+	else:
+		$CanvasLayer/LabelVidas.visible = true
+		$CanvasLayer/Heart.visible = true
+		$CanvasLayer/HeartAnimation.visible = true
+		$CanvasLayer/LabelVidas.text = str(vidas)
+		

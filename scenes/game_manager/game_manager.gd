@@ -208,9 +208,9 @@ func iniciar_jogo_com_parâmetros(número_alvos: int = número_máximo_de_alvos,
 	iniciar_jogo()
 
 
-# Função de clique para verificar acerto
-func clique(alvos: Array[int]) -> bool:
-	# Se múltiplos alvos forem clicados em simultâneo devido à propagação do clique, o certo se sobrepõe aos errados
+# Função de toque para verificar acerto
+func toque(alvos: Array[int]) -> bool:
+	# Se múltiplos alvos forem clicados em simultâneo devido à propagação do toque, o certo se sobrepõe aos errados
 	if alvo_atual in alvos:
 		pontos_real += 1
 		pontos_display += 1

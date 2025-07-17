@@ -1,5 +1,8 @@
 extends Control
 
+signal música_desligada(desligada: bool)
+signal sons_mutados(mutados: bool)
+
 var ícone_fechar_normal: Resource = preload("res://assets/icons/close/close_normal.svg")
 var ícone_fechar_pressed: Resource = preload("res://assets/icons/close/close_pressed.svg")
 
@@ -77,11 +80,11 @@ func _on_botão_música_pressed() -> void:
 	
 	if GameManager.música_desligada:
 		$"Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
-		get_parent().find_child("ContainerBotãoMúsica").find_child("BotãoMúsica").icon = ícone_música_desligada_normal
+		música_desligada.emit(true)
 		AudioServer.set_bus_mute(index_bus_música, true)
 	else:
 		$"Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
-		get_parent().find_child("ContainerBotãoMúsica").find_child("BotãoMúsica").icon = ícone_música_normal
+		música_desligada.emit(false)
 		AudioServer.set_bus_mute(index_bus_música, false)
 
 
@@ -91,12 +94,12 @@ func _on_h_slider_música_value_changed(value: float) -> void:
 	if value == 0:
 		$"Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal
 		GameManager.música_desligada = true
-		get_parent().find_child("ContainerBotãoMúsica").find_child("BotãoMúsica").icon = ícone_música_desligada_normal
+		música_desligada.emit(true)
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("Música"), true)
 	else:
 		$"Background/AspectRatioContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_normal
 		GameManager.música_desligada = false
-		get_parent().find_child("ContainerBotãoMúsica").find_child("BotãoMúsica").icon = ícone_música_normal
+		música_desligada.emit(false)
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("Música"), false)
 
 
@@ -121,11 +124,11 @@ func _on_botão_efeitos_sonoros_pressed() -> void:
 	
 	if GameManager.sons_mutados:
 		$"Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_mudo_normal
-		get_parent().find_child("ContainerBotãoSons").find_child("BotãoSons").icon = ícone_sons_mudo_normal
+		sons_mutados.emit(true)
 		AudioServer.set_bus_mute(index_bust_sons, true)
 	else:
 		$"Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_normal
-		get_parent().find_child("ContainerBotãoSons").find_child("BotãoSons").icon = ícone_sons_normal
+		sons_mutados.emit(false)
 		AudioServer.set_bus_mute(index_bust_sons, false)
 
 
@@ -134,12 +137,12 @@ func _on_h_slider_efeitos_sonoros_value_changed(value: float) -> void:
 	
 	if value == 0:
 		$"Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_mudo_normal
-		get_parent().find_child("ContainerBotãoSons").find_child("BotãoSons").icon = ícone_sons_mudo_normal
+		sons_mutados.emit(true)
 		GameManager.sons_mutados = true
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), true)
 	else:
 		$"Background/AspectRatioContainerBotãoEfeitosSonoros/BotãoEfeitosSonoros".icon = ícone_sons_normal
-		get_parent().find_child("ContainerBotãoSons").find_child("BotãoSons").icon = ícone_sons_normal
+		sons_mutados.emit(false)
 		GameManager.sons_mutados = false
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), false)
 

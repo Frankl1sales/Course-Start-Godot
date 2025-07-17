@@ -1,5 +1,8 @@
 extends Control
 
+signal barra_de_tempo_oculta(oculta: bool)
+signal número_de_vidas_mudou(vidas: int)
+
 
 var ícone_toggle_on: Resource = preload("res://assets/icons/toggle/toggle_on.svg")
 var ícone_toggle_off: Resource = preload("res://assets/icons/toggle/toggle_off.svg")
@@ -52,7 +55,7 @@ func _ready() -> void:
 	if GameManager.vidas != 2147483647:
 		$LineEditVidas.text = str(GameManager.vidas)
 	else:
-		$LineEditVidas.text = str(0)
+		$LineEditVidas.text = "Ilimitadas"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -76,7 +79,7 @@ func _on_botão_voltar_ao_jogo_pressed() -> void:
 
 func _on_toggle_barra_de_tempo_toggled(toggled_on: bool) -> void:
 	GameManager.mostrar_barra_de_tempo = toggled_on
-	get_parent().get_parent().find_child("BarraDeTempo").visible = toggled_on
+	barra_de_tempo_oculta.emit(not toggled_on)
 	
 	$ToggleBarraDeTempo.icon = ícone_toggle_on if toggled_on else ícone_toggle_off
 
@@ -168,30 +171,27 @@ func _on_h_slider_sons_value_changed(value: float) -> void:
 
 
 func _on_line_edit_vidas_text_changed(new_text: String) -> void:
-	var label: Label = get_parent().find_child("LabelVidas")
-	var heart: Sprite2D = get_parent().find_child("Heart")
-	var heart_animation: AnimatedSprite2D = get_parent().find_child("HeartAnimation")
-	
 	var valor: int = int(new_text)
 	
 	if valor != 0:
 		GameManager.vidas = valor
-		label.visible = true
-		heart.visible = true
-		heart_animation.visible = true
-		label.text = str(valor)
+		número_de_vidas_mudou.emit(valor)
 	else:
 		GameManager.vidas = 2147483647
-		label.visible = false
-		heart.visible = false
-		heart_animation.visible = false
+		número_de_vidas_mudou.emit(2147483647)
 
 
 func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
 	var valor: int = int(new_text)
 	
-	GameManager.vidas = valor
-	$LineEditVidas.text = str(valor)
+	if valor > 0:
+		GameManager.vidas = valor
+		$LineEditVidas.text = str(valor)
+		número_de_vidas_mudou.emit(valor)
+	else:
+		GameManager.vidas = 2147483647
+		$LineEditVidas.text = "Ilimitadas"
+		número_de_vidas_mudou.emit(2147483647)
 
 
 func _on_botão_finalizar_sessão_pressed() -> void:
