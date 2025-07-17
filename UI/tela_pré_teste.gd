@@ -190,23 +190,29 @@ func atualizar_repetição(new_text: String) -> void:
 func atualizar_vidas(new_text: String) -> void:
 	var vidas: int = int(new_text)
 	
-	if vidas <= 0 or new_text.to_lower() == "ilimitadas":
+	if vidas <= 0:
+		vidas = GameManager.INT_MAX
+	
+	GameManager.vidas = vidas
+	
+	if vidas == GameManager.INT_MAX:
 		$ScrollContainer/Control/LineEditVidas.text = "Ilimitadas"
-		GameManager.vidas = 2147483647
 	else:
 		$ScrollContainer/Control/LineEditVidas.text = str(vidas)
-		GameManager.vidas = vidas
 
 
 func atualizar_duração(new_text: String) -> void:
 	var duração: float = float(new_text)
 	
-	if duração <= 0.0 or new_text.to_lower() == "ilimitada":
+	if duração <= 0.0:
+		duração = INF
+	
+	GameManager.duração = duração
+	
+	if duração == INF:
 		$"ScrollContainer/Control/LineEditDuração".text = "Ilimitada"
-		GameManager.duração = INF
 	else:
 		$"ScrollContainer/Control/LineEditDuração".text = str(duração)
-		GameManager.duração = duração
 
 
 func id_profissional_inválido() -> void:
