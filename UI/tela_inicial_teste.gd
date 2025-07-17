@@ -41,6 +41,14 @@ func _on_botão_configurações_pressed() -> void:
 	$"ConfiguraçõesDaTelaInicialTeste".visible = true
 
 
+func _on_configurações_da_tela_inicial_teste_música_desligada(desligada: bool) -> void:
+	$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_normal if desligada else ícone_música_normal
+
+
+func _on_configurações_da_tela_inicial_teste_sons_mutados(mutados: bool) -> void:
+	$"ContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal if mutados else ícone_sons_normal
+
+
 func _on_botão_música_button_down() -> void:
 	if GameManager.música_desligada:
 		$"ContainerBotãoMúsica/BotãoMúsica".icon = ícone_música_desligada_pressionado

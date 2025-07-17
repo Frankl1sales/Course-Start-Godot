@@ -1,5 +1,6 @@
 extends Area2D
 
+signal tocado(tipo: int)
 
 const width: float = 115.75
 const height: float = 114.0
@@ -18,4 +19,4 @@ func _process(_delta: float) -> void:
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed:
-		get_parent().clique(tipo)
+		tocado.emit(tipo)

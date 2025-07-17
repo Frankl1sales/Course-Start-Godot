@@ -251,3 +251,5 @@ layout_mode = 1
 [connection signal="button_down" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_down"]
 [connection signal="button_up" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_button_up"]
 [connection signal="pressed" from="ContainerBotãoSons/BotãoSons" to="." method="_on_botão_sons_pressed"]
+[connection signal="música_desligada" from="ConfiguraçõesDaTelaInicialTeste" to="." method="_on_configurações_da_tela_inicial_teste_música_desligada"]
+[connection signal="sons_mutados" from="ConfiguraçõesDaTelaInicialTeste" to="." method="_on_configurações_da_tela_inicial_teste_sons_mutados"]
