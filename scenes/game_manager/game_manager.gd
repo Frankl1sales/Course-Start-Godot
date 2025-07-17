@@ -1,6 +1,9 @@
 extends Node2D
 
 
+const INT_MIN: int = -9223372036854775808
+const INT_MAX: int = 9223372036854775807
+
 enum PolíticasDeReposicionamento {
 	NENHUM,
 	ALVO,
@@ -193,7 +196,7 @@ func iniciar_jogo() -> void:
 	get_tree().change_scene_to_file("res://scenes/jogo_principal/jogo_principal.tscn")
 
 
-func iniciar_jogo_com_parâmetros(número_alvos: int = número_máximo_de_alvos, tempo_de_duração: float = 120.0, política_de_reposicionamento_do_jogo: int = PolíticasDeReposicionamento.TODOS, repetição: int = 3, requisito_para_pontuar: int = Requisitos.TODOS, velocidade_dos_alvos: int = Velocidades.MÉDIA, id_prof: String = "", mostrar_tempo: bool = true, número_de_vidas: int = 2147483647, animar_ícones: bool = true) -> void:
+func iniciar_jogo_com_parâmetros(número_alvos: int = número_máximo_de_alvos, tempo_de_duração: float = 120.0, política_de_reposicionamento_do_jogo: int = PolíticasDeReposicionamento.TODOS, repetição: int = 3, requisito_para_pontuar: int = Requisitos.TODOS, velocidade_dos_alvos: int = Velocidades.MÉDIA, id_prof: String = "", mostrar_tempo: bool = true, número_de_vidas: int = INT_MAX, animar_ícones: bool = true) -> void:
 	número_de_alvos = min(número_alvos, número_máximo_de_alvos)
 	duração = tempo_de_duração
 	política_de_reposicionamento = política_de_reposicionamento_do_jogo
@@ -234,7 +237,7 @@ func toque(alvos: Array[int]) -> bool:
 		
 		pontos_real -= 1
 		
-		if vidas != 2147483647:
+		if vidas != INT_MAX:
 			vidas -= 1
 		
 		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte, Velocidades.find_key(velocidade), vidas])  # Exemplo de log com erro

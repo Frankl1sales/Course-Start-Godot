@@ -77,7 +77,7 @@ func _ready() -> void:
 		grid_de_alvos[i] = array_temporário.duplicate()
 	
 	# A primeira célula é reservada para o indicador do alvo atual
-	grid_de_alvos[0][0] = 2147483647
+	grid_de_alvos[0][0] = GameManager.INT_MAX
 	
 	var aspect_ratio_célula: float = tamanho_célula.y / tamanho_célula.x
 	offset_máximo = Vector2(BASE_OFFSET_MÁXIMO * GameManager.escala, BASE_OFFSET_MÁXIMO * GameManager.escala * aspect_ratio_célula)
@@ -151,7 +151,7 @@ func _ready() -> void:
 	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	$CanvasLayer/LabelVidas.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 
-	if GameManager.vidas == 2147483647:
+	if GameManager.vidas == GameManager.INT_MAX:
 		$CanvasLayer/LabelVidas.visible = false
 		$CanvasLayer/Heart.visible = false
 		$CanvasLayer/HeartAnimation.visible = false
@@ -242,10 +242,10 @@ func _process(delta: float) -> void:
 			if GameManager.vidas != 0:
 				$TapWrong.play()
 				
-				if GameManager.animar and GameManager.vidas != 2147483647:
+				if GameManager.animar and GameManager.vidas != GameManager.INT_MAX:
 					$CanvasLayer/HeartAnimation.play()
 				
-				if GameManager.vidas != 2147483647:
+				if GameManager.vidas != GameManager.INT_MAX:
 					$CanvasLayer/MenuPausa/LineEditVidas.text = str(GameManager.vidas)
 			
 		atualizar_placar()
@@ -320,7 +320,7 @@ func atualizar_placar() -> void:
 	
 
 func atualizar_vidas() -> void:
-	if GameManager.vidas != 2147483647:
+	if GameManager.vidas != GameManager.INT_MAX:
 		$CanvasLayer/LabelVidas.text = str(GameManager.vidas)
  
 
@@ -409,7 +409,7 @@ func remover_todos_os_alvos_do_grid() -> void:
 		for j: int in grid_de_alvos[i].size():
 			grid_de_alvos[i][j] = -1
 
-	grid_de_alvos[0][0] = 2147483647
+	grid_de_alvos[0][0] = GameManager.INT_MAX
 
 
 func centro_de_alvo(alvo: int) -> Vector2:
@@ -462,7 +462,7 @@ func _on_menu_pausa_barra_de_tempo_oculta(oculta: bool) -> void:
 
 
 func _on_menu_pausa_número_de_vidas_mudou(vidas: int) -> void:
-	if vidas == 2147483647:
+	if vidas == GameManager.INT_MAX:
 		$CanvasLayer/LabelVidas.visible = false
 		$CanvasLayer/Heart.visible = false
 		$CanvasLayer/HeartAnimation.visible = false

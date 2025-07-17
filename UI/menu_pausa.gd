@@ -52,7 +52,7 @@ func _ready() -> void:
 	$"HSliderSons".set_value_no_signal(db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("SFX"))) * 100)
 	$"AspectRatioContainerBotãoSons/BotãoSons".icon = ícone_sons_mudo_normal if GameManager.sons_mutados else ícone_sons_normal
 	
-	if GameManager.vidas != 2147483647:
+	if GameManager.vidas != GameManager.INT_MAX:
 		$LineEditVidas.text = str(GameManager.vidas)
 	else:
 		$LineEditVidas.text = "Ilimitadas"
@@ -177,21 +177,23 @@ func _on_line_edit_vidas_text_changed(new_text: String) -> void:
 		GameManager.vidas = valor
 		número_de_vidas_mudou.emit(valor)
 	else:
-		GameManager.vidas = 2147483647
-		número_de_vidas_mudou.emit(2147483647)
+		GameManager.vidas = GameManager.INT_MAX
+		número_de_vidas_mudou.emit(GameManager.INT_MAX)
 
 
 func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
 	var valor: int = int(new_text)
+
+	if valor <= 0:
+		valor = GameManager.INT_MAX
 	
-	if valor > 0:
-		GameManager.vidas = valor
-		$LineEditVidas.text = str(valor)
-		número_de_vidas_mudou.emit(valor)
+	GameManager.vidas = valor
+	número_de_vidas_mudou.emit(valor)
+
+	if valor == GameManager.INT_MAX:
+		$"LineEditVidas".text = "Ilimitadas"
 	else:
-		GameManager.vidas = 2147483647
-		$LineEditVidas.text = "Ilimitadas"
-		número_de_vidas_mudou.emit(2147483647)
+		$"LineEditVidas".text = str(valor)
 
 
 func _on_botão_finalizar_sessão_pressed() -> void:
