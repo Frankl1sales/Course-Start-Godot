@@ -1,8 +1,8 @@
 extends Control
 
 
-const TAMANHO_BASE_DA_FONTE_LABEL_PARABÉNS: int = 96
-const TAMANHO_BASE_DA_FONTE_BOTÕES: int = 55
+const TAMANHO_BASE_DA_FONTE_LABEL_PARABÉNS: int = 80
+const TAMANHO_BASE_DA_FONTE_BOTÕES: int = 56
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

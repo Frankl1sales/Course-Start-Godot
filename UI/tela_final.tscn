@@ -25,17 +25,17 @@ theme = ExtResource("1_2mng0")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.096
-anchor_top = 0.082
+anchor_top = 0.116
 anchor_right = 0.905
-anchor_bottom = 0.532
+anchor_bottom = 0.435
 offset_left = 0.407997
-offset_top = -0.136002
+offset_top = -0.167999
 offset_right = -0.560059
-offset_bottom = 0.264008
+offset_bottom = 0.119965
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_2mng0")
-theme_override_font_sizes/font_size = 96
+theme_override_font_sizes/font_size = 80
 text = "Parabéns você obteve 0 pontos!"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -44,14 +44,14 @@ autowrap_mode = 2
 [node name="ContainerBotões" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.291
-anchor_top = 0.562
+anchor_left = 0.292
+anchor_top = 0.54
 anchor_right = 0.709
-anchor_bottom = 0.877
-offset_left = 0.268005
-offset_top = 35.8239
-offset_right = -0.268127
-offset_bottom = -36.296
+anchor_bottom = 0.86
+offset_left = -0.384033
+offset_top = 0.0799866
+offset_right = 0.231934
+offset_bottom = -0.280029
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 6
@@ -60,19 +60,19 @@ alignment = 1
 [node name="BotãoMenuPrincipal" type="Button" parent="ContainerBotões"]
 layout_mode = 2
 theme = ExtResource("1_2mng0")
-theme_override_font_sizes/font_size = 55
+theme_override_font_sizes/font_size = 56
 text = "Menu principal"
 
 [node name="BotãoParâmetros" type="Button" parent="ContainerBotões"]
 layout_mode = 2
 theme = ExtResource("1_2mng0")
-theme_override_font_sizes/font_size = 55
+theme_override_font_sizes/font_size = 56
 text = "Parâmetros"
 
 [node name="BotãoSair" type="Button" parent="ContainerBotões"]
 layout_mode = 2
 theme = ExtResource("1_2mng0")
-theme_override_font_sizes/font_size = 55
+theme_override_font_sizes/font_size = 56
 text = "Fechar o jogo"
 
 [connection signal="pressed" from="ContainerBotões/BotãoMenuPrincipal" to="." method="_on_botão_menu_principal_pressed"]
