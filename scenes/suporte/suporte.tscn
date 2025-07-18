@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://buenxbyfefe56"]
+
+[ext_resource type="Texture2D" uid="uid://cinv4qjjnqqkr" path="res://assets/current_target_box_hollow.png" id="1_t5jde"]
+
+[node name="Suporte" type="TextureRect"]
+offset_right = 150.0
+offset_bottom = 150.0
+texture = ExtResource("1_t5jde")
+expand_mode = 2

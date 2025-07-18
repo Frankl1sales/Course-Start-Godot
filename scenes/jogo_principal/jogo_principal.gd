@@ -4,38 +4,48 @@ extends Node2D
 const ícone_pausa_normal: Resource = preload("res://assets/icons/pause/pause_normal.svg")
 const ícone_pausa_pressed: Resource = preload("res://assets/icons/pause/pause_pressed.svg")
 
-@onready var donut: Area2D = $Donut
-@onready var hambúrguer: Area2D = $"Hambúrguer"
-@onready var pizza: Area2D = $Pizza
-@onready var ovo_frito: Area2D = $OvoFrito
-@onready var maçã: Area2D = $"Maçã"
-@onready var uva: Area2D = $Uva
-@onready var sorvete: Area2D = $Sorvete
-@onready var cupcake: Area2D = $Cupcake
-@onready var brócolis: Area2D = $"Brócolis"
-@onready var picolé: Area2D = $"Picolé"
+const suporte = preload("res://scenes/suporte/suporte.tscn")
 
-@onready var current_target_box_hollow_default: Resource = preload("res://assets/current_target_box_hollow.png")
-@onready var current_target_box_hollow_red: Resource = preload("res://assets/current_target_box_hollow_red.png")
+const donut: Resource = preload("res://scenes/alvos/donut/donut.tscn")
+const hambúrguer: Resource = preload("res://scenes/alvos/hambúrguer/hambúrguer.tscn")
+const pizza: Resource = preload("res://scenes/alvos/pizza/pizza.tscn")
+const ovo_frito: Resource = preload("res://scenes/alvos/ovo_frito/ovo_frito.tscn")
+const maçã: Resource = preload("res://scenes/alvos/maçã/maçã.tscn")
+const uva: Resource = preload("res://scenes/alvos/uva/uva.tscn")
+const sorvete: Resource = preload("res://scenes/alvos/sorvete/sorvete.tscn")
+const cupcake: Resource = preload("res://scenes/alvos/cupcake/cupcake.tscn")
+const brócolis: Resource = preload("res://scenes/alvos/brócolis/brócolis.tscn")
+const picolé: Resource = preload("res://scenes/alvos/picolé/picolé.tscn")
+
+var current_target_box_hollow_default: Resource = preload("res://assets/current_target_box_hollow.png")
+var current_target_box_hollow_red: Resource = preload("res://assets/current_target_box_hollow_red.png")
 
 @onready var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var velocidade: float
-var alvos_no_jogo: Array[Area2D] = []
-var vetores_de_movimento_dos_alvos: Array[Vector2] = []
+var repetição: int
+var certos_intermediários: int = 0
+var instâncias_dos_alvos: Array[Array] = []
+var alvos_no_jogo: Array[Array] = []
+var toques_certos: Array[Array] = []
+var posições_originais: Array[Vector2] = []
+var indicadores_do_suporte: Array[TextureRect] = []
+var vetores_de_movimento_dos_alvos: Array[Array] = []
 var sprites_dos_alvos: Array[Sprite2D] = []
 var sprite_do_alvo_atual: Sprite2D
 var tamanho_da_janela: Vector2
 var tempo_total: float = 0.0
 var tempo_desde_toque_certo: float = 0.0
 
-var toques: Array[int] = [];
+var toques: Array[Array] = [];
 
 var tamanho_célula: Vector2
 var offset_máximo: Vector2
 const BASE_OFFSET_MÁXIMO: int = 50
 
-var distância_mínima_entre_alvos: float = 125.0
+const DISTÂNCIA_MÍNIMA_BASE_ENTRE_ALVOS: float = 125.0
+const DISTÂNCIA_MÍNIMA_BASE_DA_POSIÇÃO_ORIGINAL: float = 200
+const NÚMERO_MÁXIMO_DE_TENTATIVAS: int = 100
 
 var grid_de_alvos: Array[Array] = []
 
@@ -46,8 +56,14 @@ const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 func _ready() -> void:   
 	tamanho_da_janela = get_viewport_rect().size
 	
-	distância_mínima_entre_alvos *= GameManager.escala
+	atualizar_placar()
+	atualizar_vidas()
+	certos_intermediários = 0
+	repetição = repetição_aleatória()
+	
+	GameManager.alvo_atual = alvo_aleatório()
 
+#region Velocidade
 	match GameManager.velocidade:
 		GameManager.Velocidades.ESTÁTICA:
 			velocidade = 0.0
@@ -59,90 +75,142 @@ func _ready() -> void:
 			velocidade = 300.0 * GameManager.escala
 		_:
 			assert(false, "Velocidade inválida")
-		
-	atualizar_placar()
-	atualizar_vidas()
+#endregion
 
-	# Inicialização do ruído azul
+#region Inicialização do ruído azul
 	tamanho_célula.x = tamanho_da_janela.x / GameManager.colunas
 	tamanho_célula.y = tamanho_da_janela.y / GameManager.linhas
 	
 	grid_de_alvos.resize(GameManager.colunas)
 	
-	var array_temporário: Array[int]
+	var array_temporário: Array[Array]
 	array_temporário.resize(GameManager.linhas)
-	array_temporário.fill(-1)
+	array_temporário.fill([-1, -1])
 	
 	for i: int in grid_de_alvos.size():
 		grid_de_alvos[i] = array_temporário.duplicate()
 	
 	# A primeira célula é reservada para o indicador do alvo atual
-	grid_de_alvos[0][0] = GameManager.INT_MAX
+	grid_de_alvos[0][0] = [GameManager.INT_MAX, GameManager.INT_MAX]
+	grid_de_alvos[GameManager.colunas - 1][0] = [GameManager.INT_MAX, GameManager.INT_MAX]
 	
 	var aspect_ratio_célula: float = tamanho_célula.y / tamanho_célula.x
 	offset_máximo = Vector2(BASE_OFFSET_MÁXIMO * GameManager.escala, BASE_OFFSET_MÁXIMO * GameManager.escala * aspect_ratio_célula)
+#endregion
 	
+#region Inicialização dos alvos
+	instâncias_dos_alvos.resize(GameManager.Alvos.size())
 
-	# Inicialização dos alvos
-	for alvo: int in GameManager.alvos_no_jogo:
-		match alvo:
-			GameManager.Alvos.DONUT:
-				alvos_no_jogo.append(donut)
-			GameManager.Alvos.HAMBÚRGUER:
-				alvos_no_jogo.append(hambúrguer)
-			GameManager.Alvos.PIZZA:
-				alvos_no_jogo.append(pizza)
-			GameManager.Alvos.OVO_FRITO:
-				alvos_no_jogo.append(ovo_frito)
-			GameManager.Alvos.MAÇÃ:
-				alvos_no_jogo.append(maçã)
-			GameManager.Alvos.UVA:
-				alvos_no_jogo.append(uva)
-			GameManager.Alvos.SORVETE:
-				alvos_no_jogo.append(sorvete)
-			GameManager.Alvos.CUPCAKE:
-				alvos_no_jogo.append(cupcake)
-			GameManager.Alvos.BRÓCOLIS:
-				alvos_no_jogo.append(brócolis)
-			GameManager.Alvos.PICOLÉ:
-				alvos_no_jogo.append(picolé)
-			_:
-				assert(false, "Alvo inválido")
-				
-	vetores_de_movimento_dos_alvos.resize(alvos_no_jogo.size())
-	sprites_dos_alvos.resize(alvos_no_jogo.size())
+	for i: int in GameManager.Alvos.values():
+		for j: int in GameManager.repetição_máxima:
+			match i:
+				GameManager.Alvos.DONUT:
+					var alvo: Area2D = donut.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.HAMBÚRGUER:
+					var alvo: Area2D = hambúrguer.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.PIZZA:
+					var alvo: Area2D = pizza.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.OVO_FRITO:
+					var alvo: Area2D = ovo_frito.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.MAÇÃ:
+					var alvo: Area2D = maçã.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.UVA:
+					var alvo: Area2D = uva.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.SORVETE:
+					var alvo: Area2D = sorvete.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.CUPCAKE:
+					var alvo: Area2D = cupcake.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.BRÓCOLIS:
+					var alvo: Area2D = brócolis.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				GameManager.Alvos.PICOLÉ:
+					var alvo: Area2D = picolé.instantiate()
+					alvo.visible = false
+					alvo.z_index = 0
+					instâncias_dos_alvos[i].append(alvo)
+					add_child(alvo)
+				_:
+					assert(false, "Alvo inválido")
 	
-	for alvo: Area2D in alvos_no_jogo:
-		alvo.tocado.connect(func(tipo: int):
-			toques.append(tipo)
-		)
+	for alvos: Array in instâncias_dos_alvos:
+		for i: int in alvos.size():
+			alvos[i].tocado.connect(func(tipo: int):
+				toques.append([tipo, i])
+			)
+#endregion
 	
-	for i: int in alvos_no_jogo.size():
-		alvos_no_jogo[i].scale = Vector2(GameManager.escala, GameManager.escala)
+#region Inicialização dos indicadores do suporte
+	indicadores_do_suporte.resize(GameManager.repetição_máxima)
+	
+	for i: int in GameManager.repetição_máxima:
+		var instância_do_indicador_do_suporte = suporte.instantiate()
 		
-		for child: Node in alvos_no_jogo[i].get_children():
+		$CanvasLayer/ControlSuporte.add_child(instância_do_indicador_do_suporte)
+		
+		instância_do_indicador_do_suporte.texture = current_target_box_hollow_default
+		instância_do_indicador_do_suporte.scale = Vector2(GameManager.escala, GameManager.escala)
+		
+		instância_do_indicador_do_suporte.visible = false
+		
+		indicadores_do_suporte[i] = instância_do_indicador_do_suporte
+#endregion
+	
+#region Inicialização dos vetores de movimento e sprites dos alvos
+	vetores_de_movimento_dos_alvos.resize(instâncias_dos_alvos.size())
+	sprites_dos_alvos.resize(instâncias_dos_alvos.size())
+	
+	for i: int in instâncias_dos_alvos.size():
+		for j in instâncias_dos_alvos[i].size():
+			instâncias_dos_alvos[i][j].scale = Vector2(GameManager.escala, GameManager.escala)
+			
+			vetores_de_movimento_dos_alvos[i].append(vetor_de_movimento_aleatório())
+		
+		for child: Node in instâncias_dos_alvos[i][0].get_children():
 			if child is Sprite2D:
 				sprites_dos_alvos[i] = child.duplicate()
 				
 				sprites_dos_alvos[i].scale *= GameManager.escala
 				sprites_dos_alvos[i].position = Vector2(75 * GameManager.escala, 75 * GameManager.escala)
-				
-		vetores_de_movimento_dos_alvos[i] = vetor_de_movimento_aleatório()
-
-	spawnar_todos_os_alvos()
+#endregion
 	
-	# Não mantenha as células ocupadas se os alvos vão se mover
-	if GameManager.velocidade == GameManager.Velocidades.ESTÁTICA:
-		remover_todos_os_alvos_do_grid()
-	
-	
-	# Inicialização dos indicadores da interface
-	setar_sprite_alvo(GameManager.alvos_no_jogo.find(GameManager.alvo_atual))
+#region Inicialização dos elementos da interface
+	setar_sprite_alvo(GameManager.alvo_atual)
 	$CanvasLayer/ControlAlvo/RectAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
-	
-	$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
-	
-	$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala, GameManager.escala)
 	
 	$BarraDeTempo.scale = Vector2(0, GameManager.escala)
 	$BarraDeTempo.global_position = Vector2(0.0, tamanho_da_janela.y - 16 * GameManager.escala)
@@ -163,9 +231,16 @@ func _ready() -> void:
 	$CanvasLayer/Heart.scale *= GameManager.escala
 	$CanvasLayer/HeartAnimation.scale *= GameManager.escala
 	$CanvasLayer/Star.scale *= GameManager.escala
+#endregion
+
+	spawnar_todos_os_alvos()
+	
+	if GameManager.velocidade != GameManager.Velocidades.ESTÁTICA:
+		limpar_grid()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+#region Tempo
 	tempo_total += delta
 	tempo_desde_toque_certo += delta
 	
@@ -177,113 +252,150 @@ func _process(delta: float) -> void:
 		
 		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)
 		$BarraDeTempo.global_position.x = progresso * tamanho_da_janela.x / 2
+#endregion
 
-	# Tratamento dos toque, se múltiplos alvos forem clicados em simultâneo devido à propagação do toque o certo se sobrepõe aos errados
+#region Tratamento do toque
 	if toques.size() != 0:
-		var alvo_original: int = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
-		var certo: bool = GameManager.toque(toques)
+		var alvo_original: int = GameManager.alvo_atual
+		var novos_toques_certos: Array[Array] = []
 		
-		if certo:
+		for toque: Array[int] in toques:
+			if toque[0] == GameManager.alvo_atual:
+				toques_certos.append(toque)
+				novos_toques_certos.append(toque)
+		
+		if novos_toques_certos.size() > 0:
 			$TapRight.play()
 			
-			if GameManager.animar:
-				$CanvasLayer/Star.play()
-			
-			alterar_suporte(0)
-			tempo_desde_toque_certo = 0.0
-			
-			$CanvasLayer/AjudaAlvo.global_position = Vector2(0, -150 * GameManager.escala)
-			
-			var index: int = GameManager.alvos_no_jogo.find(GameManager.alvo_atual)
-			setar_sprite_alvo(index)
-			
-			if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
-				# Reposiciona o alvo imóvel
-				if GameManager.velocidade == GameManager.Velocidades.ESTÁTICA:
-					trocar_alvo_de_posição(alvo_original)
-				# Reposiciona o alvo móvel
+			for toque_certo: Array[int] in novos_toques_certos:
+				posições_originais.append(centro_de_alvo(toque_certo))
+				
+				if GameManager.política_de_reposicionamento != GameManager.PolíticasDeReposicionamento.NENHUM:
+					remover_alvo(toque_certo)
 				else:
-					vetores_de_movimento_dos_alvos[alvo_original] = vetor_de_movimento_aleatório()
-					
-					var posição_original: Vector2 = centro_de_alvo(alvo_original)
-					
-					var tentativas: int = 0
-
-					while true:                
-						alvos_no_jogo[alvo_original].global_position = Vector2(rng.randf_range(0, tamanho_da_janela.x - alvos_no_jogo[alvo_original].width * GameManager.escala),
-																			rng.randf_range(0, tamanho_da_janela.y - alvos_no_jogo[alvo_original].height * GameManager.escala))
-						
-						var colisão: bool = false
-						var colisão_com_o_indicador_do_alvo: bool = false
-						
-						for i: int in alvos_no_jogo.size():
-							if i == alvo_original:
-								continue
-							
-							if distância_entre_alvos(i, alvo_original) < distância_mínima_entre_alvos:
-								colisão = true
-								break
-						
-						# Detecta se o alvo está na área do indicador do alvo
-						if distância_entre_alvos(alvo_original, -1, Vector2(0, 0)) < 200 * GameManager.escala:
-							colisão = true
-							colisão_com_o_indicador_do_alvo = true
-							
-						# Detecta se o alvo está muito perto da posição inicial
-						if distância_entre_alvos(alvo_original, -1, posição_original) < 300 * GameManager.escala:
-							colisão = true
-								
-						if not colisão or (tentativas >= 100 and not colisão_com_o_indicador_do_alvo):
-							break
-			elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.TODOS:
-				spawnar_todos_os_alvos()
+					# Esconda os alvos tocados até o todos os toques certos sejam realizados, não os
+					# remova pois a política de reposicionamento é nenhum.
+					for alvo: Array in alvos_no_jogo:
+						instâncias_dos_alvos[toque_certo[0]][toque_certo[1]].visible = false
 				
-		else:
-			if GameManager.vidas != 0:
-				$TapWrong.play()
-				
-				if GameManager.animar and GameManager.vidas != GameManager.INT_MAX:
-					$CanvasLayer/HeartAnimation.play()
-				
-				if GameManager.vidas != GameManager.INT_MAX:
-					$CanvasLayer/MenuPausa/LineEditVidas.text = str(GameManager.vidas)
+				certos_intermediários += 1
 			
-		atualizar_placar()
-		atualizar_vidas()
-		
-		toques.clear()
+			if certos_intermediários >= repetição or GameManager.requisito == GameManager.Requisitos.APENAS_UM:
+				GameManager.acerto_final()
+				
+				if GameManager.animar:
+					$CanvasLayer/Star.play()
+				
+				atualizar_placar()
+				
+				alterar_suporte(0)
+				tempo_desde_toque_certo = 0.0
+				
+				certos_intermediários = 0
+				
+				if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.ALVO:
+					for i: int in GameManager.número_de_alvos - alvos_no_jogo.size():
+						var novo_alvo: Array[int] = adicionar_alvo(false)
+						posicionar_alvo_com_ruído_azul(novo_alvo, GameManager.velocidade == GameManager.Velocidades.ESTÁTICA, posições_originais[i])
+					
+					GameManager.alvo_atual = alvo_aleatório_presente()
+				
+					while GameManager.alvo_atual == alvo_original:
+						GameManager.alvo_atual = alvo_aleatório_presente()
+					
+					repetição = alvos_de_tipo(GameManager.alvo_atual)
+				
+					setar_sprite_alvo(GameManager.alvo_atual)
+				elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.TODOS:
+					GameManager.alvo_atual = alvo_aleatório()
+					
+					while GameManager.alvo_atual == alvo_original:
+						GameManager.alvo_atual = alvo_aleatório()
+					
+					repetição = repetição_aleatória()
+					spawnar_todos_os_alvos()
+					
+					setar_sprite_alvo(GameManager.alvo_atual)
+					
+					if GameManager.velocidade != GameManager.Velocidades.ESTÁTICA:
+						limpar_grid()
+				elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.NENHUM:
+					GameManager.alvo_atual = alvo_aleatório_presente()
+				
+					while GameManager.alvo_atual == alvo_original and GameManager.número_de_alvos > 1:
+						GameManager.alvo_atual = alvo_aleatório_presente()
+					
+					repetição = alvos_de_tipo(GameManager.alvo_atual)
+				
+					setar_sprite_alvo(GameManager.alvo_atual)
+				
+				# Faça os alvos ocultos após toque certo serem visíveis novamente
+				if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.NENHUM:
+					for toque_certo: Array in toques_certos:
+						instâncias_dos_alvos[toque_certo[0]][toque_certo[1]].visible = true
+				
+				toques_certos.clear()
+			else:
+				GameManager.acerto_intermediário()
+				
+				tempo_desde_toque_certo = floor(tempo_desde_toque_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE) * TEMPO_ATÉ_AUMENTAR_O_SUPORTE
+		else:
+			GameManager.erro()
+			
+			atualizar_vidas()
+			
+			if GameManager.vidas > 0:
+				$TapWrong.play()
+			
+			if GameManager.animar and GameManager.vidas > 0:
+				$CanvasLayer/HeartAnimation.play()
 	
+		toques.clear()
+#endregion
+	
+#region Colisão
+	for alvo: Array[int] in alvos_no_jogo:
+		instâncias_dos_alvos[alvo[0]][alvo[1]].global_position += vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]] * delta
+		
+		if vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].x < 0 and instâncias_dos_alvos[alvo[0]][alvo[1]].global_position.x < 0:
+			vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].x *= -1
+		
+		if vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].x > 0 and instâncias_dos_alvos[alvo[0]][alvo[1]].global_position.x + instâncias_dos_alvos[alvo[0]][alvo[1]].width * GameManager.escala > tamanho_da_janela.x:
+			vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].x *= -1
+
+		if vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].y < 0 and instâncias_dos_alvos[alvo[0]][alvo[1]].global_position.y < 0:
+			vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].y *= -1
+
+		if vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].y > 0 and instâncias_dos_alvos[alvo[0]][alvo[1]].global_position.y + instâncias_dos_alvos[alvo[0]][alvo[1]].height * GameManager.escala > tamanho_da_janela.y:
+			vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]].y *= -1
+#endregion
+
+#region Suporte
 	var novo_suporte: int = min(3, floor(tempo_desde_toque_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE))
 	
 	if novo_suporte != GameManager.suporte:
 		alterar_suporte(novo_suporte)
-	
-	for i: int in alvos_no_jogo.size():
-		alvos_no_jogo[i].global_position += vetores_de_movimento_dos_alvos[i] * delta
-		
-		if vetores_de_movimento_dos_alvos[i].x < 0 and alvos_no_jogo[i].global_position.x < 0:
-			vetores_de_movimento_dos_alvos[i].x *= -1
-		
-		if vetores_de_movimento_dos_alvos[i].x > 0 and alvos_no_jogo[i].global_position.x + alvos_no_jogo[i].width * GameManager.escala > tamanho_da_janela.x:
-			vetores_de_movimento_dos_alvos[i].x *= -1
-
-		if vetores_de_movimento_dos_alvos[i].y < 0 and alvos_no_jogo[i].global_position.y < 0:
-			vetores_de_movimento_dos_alvos[i].y *= -1
-
-		if vetores_de_movimento_dos_alvos[i].y > 0 and alvos_no_jogo[i].global_position.y + alvos_no_jogo[i].height * GameManager.escala > tamanho_da_janela.y:
-			vetores_de_movimento_dos_alvos[i].y *= -1
 
 	if (GameManager.suporte > 0):
-		var alvo_atual: Area2D = alvos_no_jogo[GameManager.alvos_no_jogo.find(GameManager.alvo_atual)]
+		for i: int in repetição:
+			var alvo: Area2D = instâncias_dos_alvos[GameManager.alvo_atual][i]
+			
+			if alvos_no_jogo.has([GameManager.alvo_atual, i]) and alvo.visible:
+				indicadores_do_suporte[i]. visible = true
 		
-		var escala_ajuda_alvo: float = abs(sin(tempo_total * GameManager.suporte) * (GameManager.suporte - 1) * 0.1)
-		$CanvasLayer/AjudaAlvo.scale = Vector2(GameManager.escala + GameManager.escala * escala_ajuda_alvo, GameManager.escala + GameManager.escala * escala_ajuda_alvo)
-		
-		$CanvasLayer/AjudaAlvo.global_position = Vector2(alvo_atual.global_position.x + (alvo_atual.width / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala,
-														 alvo_atual.global_position.y + (alvo_atual.height / 2 - 75 * (1 + escala_ajuda_alvo)) * GameManager.escala)
+				var escala_suporte: float = abs(sin(tempo_total * GameManager.suporte) * (GameManager.suporte - 1) * 0.1)
+				indicadores_do_suporte[i].scale = Vector2(GameManager.escala + GameManager.escala * escala_suporte, GameManager.escala + GameManager.escala * escala_suporte)
+			
+				indicadores_do_suporte[i].global_position = Vector2(alvo.global_position.x + (alvo.width / 2 - 75 * (1 + escala_suporte)) * GameManager.escala,
+																	alvo.global_position.y + (alvo.height / 2 - 75 * (1 + escala_suporte)) * GameManager.escala)
+			
+			else:
+				indicadores_do_suporte[i]. visible = false
+	
 	else:
-		$CanvasLayer/AjudaAlvo.scale = Vector2(0, 0)
-		$CanvasLayer/AjudaAlvo.global_position = Vector2(-10000, -10000)
+		for i: int in GameManager.repetição_máxima:
+			indicadores_do_suporte[i].visible = false
+#endregion
 
 
 func _input(event: InputEvent) -> void:
@@ -302,17 +414,18 @@ func alterar_suporte(novo_suporte: int) -> void:
 		GameManager.suporte = novo_suporte
 		GameManager.mudança_no_suporte()
 		
-		if novo_suporte == 3:
-			$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_red
-		else:
-			$CanvasLayer/AjudaAlvo.texture = current_target_box_hollow_default
+		for i: int in repetição:
+			if novo_suporte == 3:
+				indicadores_do_suporte[i].texture = current_target_box_hollow_red
+			else:
+				indicadores_do_suporte[i].texture = current_target_box_hollow_default
 
-func setar_sprite_alvo(index: int) -> void:
+func setar_sprite_alvo(tipo: int) -> void:
 	if sprite_do_alvo_atual != null:
 		$CanvasLayer/ControlAlvo.remove_child(sprite_do_alvo_atual)
 	
-	$CanvasLayer/ControlAlvo.add_child(sprites_dos_alvos[index])
-	sprite_do_alvo_atual = sprites_dos_alvos[index]
+	$CanvasLayer/ControlAlvo.add_child(sprites_dos_alvos[tipo])
+	sprite_do_alvo_atual = sprites_dos_alvos[tipo]
 
 
 func atualizar_placar() -> void:
@@ -322,7 +435,25 @@ func atualizar_placar() -> void:
 func atualizar_vidas() -> void:
 	if GameManager.vidas != GameManager.INT_MAX:
 		$CanvasLayer/LabelVidas.text = str(GameManager.vidas)
- 
+
+
+func alvo_aleatório_presente() -> int:
+	var alvos_presentes: Array[int] = []
+	
+	for alvo: Array[int] in alvos_no_jogo:
+		if not alvos_presentes.has(alvo[0]):
+			alvos_presentes.append(alvo[0])
+	
+	return alvos_presentes.pick_random()
+
+
+func alvo_aleatório() -> int:
+	return GameManager.Alvos.values().pick_random()
+
+
+func repetição_aleatória() -> int:
+	return rng.randi_range(1, GameManager.repetição_máxima)
+
 
 func vetor_de_movimento_aleatório() -> Vector2:
 	var vetor_de_movimento: Vector2 = Vector2(rng.randi_range(0, 1), rng.randi_range(0, 1))
@@ -338,99 +469,171 @@ func vetor_de_movimento_aleatório() -> Vector2:
 	return vetor_de_movimento
    
 	
-func spawnar_alvo(alvo: int, ocupar: bool) -> void:
+func posicionar_alvo_com_ruído_azul(alvo: Array, ocupar_célula: bool, posição_original: Vector2 = Vector2(NAN, NAN)) -> Array:
 	var coluna: int
 	var linha: int
+	var x: float
+	var y: float
+	var tentativas: int = 0
 	
 	# Cria uma lista de células não ocupadas
 	var células_vazias: Array[Array] = []
 	for i: int in GameManager.colunas:
 		for j: int in GameManager.linhas:
-			if grid_de_alvos[i][j] < 0:
+			if grid_de_alvos[i][j][0] < 0:
 				células_vazias.append([i, j])
 	
 	# Escolhe uma célula aleatória da lista
-	if células_vazias.size() > 0:
+	assert(células_vazias.size() > 0, "Não há células vazias.")
+	while tentativas < NÚMERO_MÁXIMO_DE_TENTATIVAS:
 		var célula_escolhida: Array = células_vazias[rng.randi_range(0, células_vazias.size() - 1)]
 		coluna = célula_escolhida[0]
 		linha = célula_escolhida[1]
-	else:
-		# Caso não haja células vazias, escolhe uma célula aleatória
-		coluna = rng.randi_range(0, GameManager.colunas - 1)
-		linha = rng.randi_range(0, GameManager.linhas - 1)
-	
-	if ocupar:
-		grid_de_alvos[coluna][linha] = alvo
+			
+		x = coluna * tamanho_célula.x + tamanho_célula.x / 2 + rng.randf_range(-offset_máximo.x, offset_máximo.x)
+		y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
 		
-	var pos_x: float = coluna * tamanho_célula.x + tamanho_célula.x / 2 + rng.randf_range(-offset_máximo.x, offset_máximo.x)
-	var pos_y: float = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
+		if !is_nan(posição_original.x):
+			if distância_entre_alvos([-1, -1], [-1, -1], posição_original, Vector2(x, y)) < DISTÂNCIA_MÍNIMA_BASE_DA_POSIÇÃO_ORIGINAL * GameManager.escala:
+				tentativas =+ 1
+				continue
+		
+		tentativas = GameManager.INT_MAX
 	
-	alvos_no_jogo[alvo].global_position = Vector2(pos_x - alvos_no_jogo[alvo].width * GameManager.escala / 2,\
-												  pos_y - alvos_no_jogo[alvo].height * GameManager.escala / 2)
+		if ocupar_célula:
+			grid_de_alvos[coluna][linha] = [alvo[0], alvo[1]]
+		
+		instâncias_dos_alvos[alvo[0]][alvo[1]].global_position = Vector2(x - instâncias_dos_alvos[alvo[0]][alvo[1]].width * GameManager.escala / 2,\
+																		 y - instâncias_dos_alvos[alvo[0]][alvo[1]].height * GameManager.escala / 2)
+	
+	return [Vector2(x, y), coluna, linha]
 
 
 func spawnar_todos_os_alvos() -> void:
-	remover_todos_os_alvos_do_grid()
+	limpar_grid()
+	limpar_alvos_do_jogo()
 	
-	for i: int in alvos_no_jogo.size():
-		spawnar_alvo(i, true)
-
-
-func remover_alvo_do_grid(alvo: int) -> bool:
-	for i: int in grid_de_alvos.size():
-		for j: int in grid_de_alvos[i].size():
-			if grid_de_alvos[i][j] == alvo:
-				grid_de_alvos[i][j] = -1
-				return true
+	var alvos: int = 0
 	
-	return false
+	# Spawna primeiro os alvos certos
+	for i: int in repetição:
+		if alvos == repetição:
+			break
+		
+		var alvo = [GameManager.alvo_atual, i]
+		
+		instâncias_dos_alvos[alvo[0]][alvo[1]].visible = true
+		instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 1
+		
+		alvos_no_jogo.append(alvo)
+		
+		alvos += 1
+	
+	while alvos_no_jogo.size() < GameManager.número_de_alvos:
+		adicionar_alvo()
+		alvos += 1
+	
+	for alvo: Array[int] in alvos_no_jogo:
+		posicionar_alvo_com_ruído_azul(alvo, true)
 
 
-func encontrar_posição_de_alvo_no_grid(alvo: int) -> Array[int]:
-	for i: int in grid_de_alvos.size():
-		for j: int in grid_de_alvos[i].size():
-			if grid_de_alvos[i][j] == alvo:
-				return [i, j]
+func adicionar_alvo(proibir_alvo_atual: bool = true) -> Array[int]:
+	while true:
+		var alvo_para_adicionar = alvo_aleatório()
+		
+		if alvo_para_adicionar == GameManager.alvo_atual and proibir_alvo_atual:
+			continue
+		
+		var alvos_presentes = alvos_de_tipo(alvo_para_adicionar)
+		
+		if alvos_presentes >= GameManager.repetição_máxima:
+			continue
+		
+		var índice_livre: int = 0
+		
+		var índices_usados: Array[int] = []
+		for alvo: Array[int] in alvos_no_jogo:
+			if alvo[0] == alvo_para_adicionar:
+				índices_usados.append(alvo[1])
+
+		for i: int in GameManager.repetição_máxima:
+			if not índices_usados.has(i):
+				índice_livre = i
+				break
+		
+		instâncias_dos_alvos[alvo_para_adicionar][índice_livre].visible = true
+		instâncias_dos_alvos[alvo_para_adicionar][índice_livre].z_index = 1
+		
+		alvos_no_jogo.append([alvo_para_adicionar, índice_livre])
+		
+		return [alvo_para_adicionar, índice_livre]
 	
 	return [-1, -1]
 
 
-func trocar_alvo_de_posição(alvo: int) -> void:
-	var posição_atual: Array[int] = encontrar_posição_de_alvo_no_grid(alvo)
+func alvos_de_tipo(tipo: int):
+	var alvos_presentes = 0
+	
+	for i in alvos_no_jogo.size():
+		if alvos_no_jogo[i][0] == tipo:
+			alvos_presentes += 1
+	
+	return alvos_presentes
 
-	assert(posição_atual[0] >= 0 and posição_atual[1] >= 0, "Alvo não encontrado no grid")
 
-	spawnar_alvo(alvo, true)
-	grid_de_alvos[posição_atual[0]][posição_atual[1]] = -1
-		
+func remover_alvo(alvo: Array) -> void:
+	var índice: int = alvos_no_jogo.find(alvo)
+	
+	if índice != -1:
+		alvos_no_jogo.remove_at(índice)
+	
+	instâncias_dos_alvos[alvo[0]][alvo[1]].visible = false
+	instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 0
+	
+	for i: int in GameManager.colunas:
+		for j: int in GameManager.linhas:
+			if grid_de_alvos[i][j] == alvo:
+				grid_de_alvos[i][j] = [-1, -1]
+				return
 
-func remover_todos_os_alvos_do_grid() -> void:
+	assert(GameManager.velocidade != GameManager.Velocidades.ESTÁTICA, "Alvo não encontrado")
+
+
+func limpar_grid() -> void:
 	for i: int in grid_de_alvos.size():
 		for j: int in grid_de_alvos[i].size():
-			grid_de_alvos[i][j] = -1
+			grid_de_alvos[i][j] = [-1, -1]
 
-	grid_de_alvos[0][0] = GameManager.INT_MAX
-
-
-func centro_de_alvo(alvo: int) -> Vector2:
-	return alvos_no_jogo[alvo].global_position + Vector2(alvos_no_jogo[alvo].width / 2 * GameManager.escala,
-														 alvos_no_jogo[alvo].height / 2 * GameManager.escala)
+	grid_de_alvos[0][0] = [GameManager.INT_MAX, GameManager.INT_MAX]
 
 
-# Calcula a distância entre o centro de dois alvos. Use -1 em um dos alvos para especificar um ponto
-# arbitrário no terceiro argumento ou -1 nos dois alvos para especificar dois pontos arbitrários no
-# terceiro e quarto argumento e calcular a distância entre eles.
-func distância_entre_alvos(a: int, b: int, pos_1: Vector2 = Vector2(0, 0), pos_2: Vector2 = Vector2(0, 0)) -> float:
+func limpar_alvos_do_jogo() -> void:
+	for alvo: Array[int] in alvos_no_jogo:
+		instâncias_dos_alvos[alvo[0]][alvo[1]].visible = false
+		instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 0
+	
+	alvos_no_jogo.clear()
+
+
+func centro_de_alvo(alvo: Array) -> Vector2:
+	return instâncias_dos_alvos[alvo[0]][alvo[1]].global_position + Vector2(instâncias_dos_alvos[alvo[0]][alvo[1]].width / 2 * GameManager.escala,
+																			instâncias_dos_alvos[alvo[0]][alvo[1]].height / 2 * GameManager.escala)
+
+
+# Calcula a distância entre o centro de dois alvos. Use [-1, -1] em um dos alvos para especificar um
+# ponto arbitrário no terceiro argumento ou [-1, -1] nos dois alvos para especificar dois pontos
+# arbitrários no terceiro e quarto argumento e calcular a distância entre eles.
+func distância_entre_alvos(a: Array, b: Array, pos_1: Vector2 = Vector2(0, 0), pos_2: Vector2 = Vector2(0, 0)) -> float:
 	var centro_a: Vector2
 	var centro_b: Vector2
 	
-	if a == -1 and b == -1:
+	if a == [-1, -1] and b == [-1, -1]:
 		centro_a = pos_1
 		centro_b = pos_2
-	elif a == -1:
+	elif a == [-1, -1]:
 		centro_a = pos_1
 		centro_b = centro_de_alvo(b)
-	elif b == -1:
+	elif b == [-1, -1]:
 		centro_a = centro_de_alvo(a)
 		centro_b = pos_1
 	else:

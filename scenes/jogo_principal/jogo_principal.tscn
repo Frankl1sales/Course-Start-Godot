@@ -1,26 +1,15 @@
-[gd_scene load_steps=74 format=3 uid="uid://c1kieko08207m"]
+[gd_scene load_steps=63 format=3 uid="uid://c1kieko08207m"]
 
 [ext_resource type="Script" path="res://scenes/jogo_principal/jogo_principal.gd" id="1_56i3e"]
 [ext_resource type="Theme" uid="uid://dejubhbtuxstt" path="res://scenes/jogo_principal/jogo_principal.tres" id="1_u5hf3"]
 [ext_resource type="Texture2D" uid="uid://11emcp3oxcn0" path="res://assets/background.png" id="2_1oknb"]
 [ext_resource type="AudioStream" uid="uid://trmfjw1qgyrb" path="res://assets/sounds/tap_right/tap.wav" id="2_4ap5s"]
 [ext_resource type="PackedScene" uid="uid://b220by45y5bjv" path="res://UI/menu_pausa.tscn" id="2_7sorp"]
-[ext_resource type="PackedScene" uid="uid://x8gr2llucnrv" path="res://scenes/alvos/donut/donut.tscn" id="2_33l3o"]
 [ext_resource type="Texture2D" uid="uid://ckybi4o6hyssl" path="res://assets/current_target_box.png" id="3_jvdrf"]
 [ext_resource type="AudioStream" uid="uid://baiwynv4mx0pu" path="res://assets/sounds/tap_wrong/tap_wrong.wav" id="3_p3tf5"]
-[ext_resource type="PackedScene" uid="uid://bi3p0yl1fdvr0" path="res://scenes/alvos/hambúrguer/hambúrguer.tscn" id="5_fjpxd"]
-[ext_resource type="Texture2D" uid="uid://cinv4qjjnqqkr" path="res://assets/current_target_box_hollow.png" id="6_40f5l"]
-[ext_resource type="PackedScene" uid="uid://b4mh3kec83g0j" path="res://scenes/alvos/pizza/pizza.tscn" id="6_51a2h"]
-[ext_resource type="PackedScene" uid="uid://s0jn048bopew" path="res://scenes/alvos/cupcake/cupcake.tscn" id="7_0dske"]
-[ext_resource type="PackedScene" uid="uid://5g0i2x5vfdmt" path="res://scenes/alvos/sorvete/sorvete.tscn" id="7_6ogpa"]
-[ext_resource type="PackedScene" uid="uid://bjfk2g5gmsslm" path="res://scenes/alvos/picolé/picolé.tscn" id="7_30t43"]
-[ext_resource type="PackedScene" uid="uid://vj7r1qeedxms" path="res://scenes/alvos/uva/uva.tscn" id="7_ll5sl"]
-[ext_resource type="PackedScene" uid="uid://c1qxkoehka503" path="res://scenes/alvos/ovo_frito/ovo_frito.tscn" id="7_nnegn"]
-[ext_resource type="PackedScene" uid="uid://cj3bcuy8meobn" path="res://scenes/alvos/brócolis/brócolis.tscn" id="7_oa5at"]
 [ext_resource type="Texture2D" uid="uid://8edpe3tkcgwd" path="res://assets/sprites/heart/heart.png" id="7_qiex0"]
 [ext_resource type="Texture2D" uid="uid://cm5yds4g3w4bf" path="res://assets/progressbar.png" id="8_h2bnm"]
 [ext_resource type="Texture2D" uid="uid://dn286hidgc5je" path="res://assets/sprites/heart/animation/0001.png" id="8_mtde2"]
-[ext_resource type="PackedScene" uid="uid://crxyuw6h3xx20" path="res://scenes/alvos/maçã/maçã.tscn" id="8_wa8v5"]
 [ext_resource type="Texture2D" uid="uid://bsfilprn15xit" path="res://assets/sprites/heart/animation/0002.png" id="9_iw1ci"]
 [ext_resource type="Texture2D" uid="uid://4544giyyt5bc" path="res://assets/sprites/heart/animation/0003.png" id="10_h0m8x"]
 [ext_resource type="Texture2D" uid="uid://cl3620u536hp6" path="res://assets/sprites/heart/animation/0004.png" id="11_frwhn"]
@@ -259,11 +248,12 @@ theme = ExtResource("1_u5hf3")
 theme_override_font_sizes/font_size = 64
 text = "0"
 
-[node name="AjudaAlvo" type="TextureRect" parent="CanvasLayer"]
-offset_top = -150.0
-offset_right = 150.0
-texture = ExtResource("6_40f5l")
-expand_mode = 2
+[node name="ControlSuporte" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
 
 [node name="ControlAlvo" type="Control" parent="CanvasLayer"]
 layout_mode = 3
@@ -296,14 +286,15 @@ sprite_frames = SubResource("SpriteFrames_eqsfm")
 
 [node name="ContainerBotãoPausa" type="AspectRatioContainer" parent="CanvasLayer"]
 anchors_preset = -1
-anchor_left = 0.9
-anchor_top = 0.023
-anchor_right = 0.987
-anchor_bottom = 0.177
-offset_left = 0.199951
-offset_top = 0.0959988
-offset_right = -0.0240479
-offset_bottom = 0.304001
+anchor_left = 0.892
+anchor_right = 1.0
+anchor_bottom = 0.191
+offset_left = 0.416016
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 0.231987
+alignment_horizontal = 2
+alignment_vertical = 0
 
 [node name="BotãoPausa" type="Button" parent="CanvasLayer/ContainerBotãoPausa"]
 layout_mode = 2
@@ -333,36 +324,6 @@ texture = ExtResource("2_1oknb")
 position = Vector2(576, 632)
 scale = Vector2(36, 1)
 texture = ExtResource("8_h2bnm")
-
-[node name="Donut" parent="." instance=ExtResource("2_33l3o")]
-position = Vector2(0, -93.6)
-
-[node name="Hambúrguer" parent="." instance=ExtResource("5_fjpxd")]
-position = Vector2(0, -93)
-
-[node name="Pizza" parent="." instance=ExtResource("6_51a2h")]
-position = Vector2(0, -113.5)
-
-[node name="OvoFrito" parent="." instance=ExtResource("7_nnegn")]
-position = Vector2(0, -114)
-
-[node name="Maçã" parent="." instance=ExtResource("8_wa8v5")]
-position = Vector2(0, -119.375)
-
-[node name="Uva" parent="." instance=ExtResource("7_ll5sl")]
-position = Vector2(0, -97.6)
-
-[node name="Sorvete" parent="." instance=ExtResource("7_6ogpa")]
-position = Vector2(0, -128.4)
-
-[node name="Cupcake" parent="." instance=ExtResource("7_0dske")]
-position = Vector2(0, -101)
-
-[node name="Brócolis" parent="." instance=ExtResource("7_oa5at")]
-position = Vector2(0, -98.7)
-
-[node name="Picolé" parent="." instance=ExtResource("7_30t43")]
-position = Vector2(0, -113.6)
 
 [connection signal="button_down" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_down"]
 [connection signal="button_up" from="CanvasLayer/ContainerBotãoPausa/BotãoPausa" to="." method="_on_botão_pausa_button_up"]

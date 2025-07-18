@@ -51,7 +51,6 @@ var número_máximo_de_alvos: int
 var velocidade: int = Velocidades.MÉDIA
 var número_de_alvos: int
 var repetição_máxima: int = 3
-var alvos_no_jogo: Array
 var requisito: int = Requisitos.TODOS
 var política_de_reposicionamento: int = PolíticasDeReposicionamento.TODOS
 var alvo_atual: int = 0
@@ -77,75 +76,72 @@ var caminho: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.c
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	linhas = round(tamanho_da_janela.y / tamanho_da_janela.x * colunas)
-	número_máximo_de_alvos = min(10, colunas * linhas - 1)
+	número_máximo_de_alvos = min(Alvos.size(), colunas * linhas - 1)
 
 	iniciar_música()
 	
 	var stylebox_slider: StyleBox = tema_menus_do_teste.get_stylebox("slider", "HSlider")
-	stylebox_slider.border_width_left *= GameManager.escala
-	stylebox_slider.border_width_top *= GameManager.escala
-	stylebox_slider.border_width_right *= GameManager.escala
-	stylebox_slider.border_width_bottom *= GameManager.escala
-	stylebox_slider.corner_radius_top_left *= GameManager.escala
-	stylebox_slider.corner_radius_top_right *= GameManager.escala
-	stylebox_slider.corner_radius_bottom_right *= GameManager.escala
-	stylebox_slider.corner_radius_bottom_left *= GameManager.escala
+	stylebox_slider.border_width_left *= escala
+	stylebox_slider.border_width_top *= escala
+	stylebox_slider.border_width_right *= escala
+	stylebox_slider.border_width_bottom *= escala
+	stylebox_slider.corner_radius_top_left *= escala
+	stylebox_slider.corner_radius_top_right *= escala
+	stylebox_slider.corner_radius_bottom_right *= escala
+	stylebox_slider.corner_radius_bottom_left *= escala
 	
 	var stylebox_grabber_area: StyleBox = tema_menus_do_teste.get_stylebox("grabber_area", "HSlider")
-	stylebox_grabber_area.border_width_left *= GameManager.escala
-	stylebox_grabber_area.border_width_top *= GameManager.escala
-	stylebox_grabber_area.border_width_right *= GameManager.escala
-	stylebox_grabber_area.border_width_bottom *= GameManager.escala
-	stylebox_grabber_area.corner_radius_top_left *= GameManager.escala
-	stylebox_grabber_area.corner_radius_top_right *= GameManager.escala
-	stylebox_grabber_area.corner_radius_bottom_right *= GameManager.escala
-	stylebox_grabber_area.corner_radius_bottom_left *= GameManager.escala
+	stylebox_grabber_area.border_width_left *= escala
+	stylebox_grabber_area.border_width_top *= escala
+	stylebox_grabber_area.border_width_right *= escala
+	stylebox_grabber_area.border_width_bottom *= escala
+	stylebox_grabber_area.corner_radius_top_left *= escala
+	stylebox_grabber_area.corner_radius_top_right *= escala
+	stylebox_grabber_area.corner_radius_bottom_right *= escala
+	stylebox_grabber_area.corner_radius_bottom_left *= escala
 	
 	var stylebox_grabber_area_highlight: StyleBox = tema_menus_do_teste.get_stylebox("grabber_area_highlight", "HSlider")
-	stylebox_grabber_area_highlight.border_width_left *= GameManager.escala
-	stylebox_grabber_area_highlight.border_width_top *= GameManager.escala
-	stylebox_grabber_area_highlight.border_width_right *= GameManager.escala
-	stylebox_grabber_area_highlight.border_width_bottom *= GameManager.escala
-	stylebox_grabber_area_highlight.corner_radius_top_left *= GameManager.escala
-	stylebox_grabber_area_highlight.corner_radius_top_right *= GameManager.escala
-	stylebox_grabber_area_highlight.corner_radius_bottom_right *= GameManager.escala
-	stylebox_grabber_area_highlight.corner_radius_bottom_left *= GameManager.escala
+	stylebox_grabber_area_highlight.border_width_left *= escala
+	stylebox_grabber_area_highlight.border_width_top *= escala
+	stylebox_grabber_area_highlight.border_width_right *= escala
+	stylebox_grabber_area_highlight.border_width_bottom *= escala
+	stylebox_grabber_area_highlight.corner_radius_top_left *= escala
+	stylebox_grabber_area_highlight.corner_radius_top_right *= escala
+	stylebox_grabber_area_highlight.corner_radius_bottom_right *= escala
+	stylebox_grabber_area_highlight.corner_radius_bottom_left *= escala
 	
 	var grabber_slider: CompressedTexture2D = tema_menus_do_teste.get_icon("grabber", "HSlider")
 	var grabber_slider_image: Image = grabber_slider.get_image()
-	grabber_slider_image.resize(int(grabber_slider.get_size().x * GameManager.escala), int(grabber_slider.get_size().y * GameManager.escala))
+	grabber_slider_image.resize(int(grabber_slider.get_size().x * escala), int(grabber_slider.get_size().y * escala))
 	var grabber_slider_texture: ImageTexture = ImageTexture.create_from_image(grabber_slider_image)
 	tema_menus_do_teste.set_icon("grabber", "HSlider", grabber_slider_texture)
 	
 	var grabber_disabled: CompressedTexture2D = tema_menus_do_teste.get_icon("grabber_disabled", "HSlider")
 	var grabber_disabled_image: Image = grabber_disabled.get_image()
-	grabber_disabled_image.resize(int(grabber_disabled.get_size().x * GameManager.escala), int(grabber_disabled.get_size().y * GameManager.escala))
+	grabber_disabled_image.resize(int(grabber_disabled.get_size().x * escala), int(grabber_disabled.get_size().y * escala))
 	var grabber_disabled_texture: ImageTexture = ImageTexture.create_from_image(grabber_disabled_image)
 	tema_menus_do_teste.set_icon("grabber_disabled", "HSlider", grabber_disabled_texture)
 	
 	var grabber_highlight: CompressedTexture2D = tema_menus_do_teste.get_icon("grabber_highlight", "HSlider")
 	var grabber_highlight_image: Image = grabber_highlight.get_image()
-	grabber_highlight_image.resize(int(grabber_highlight.get_size().x * GameManager.escala), int(grabber_highlight.get_size().y * GameManager.escala))
+	grabber_highlight_image.resize(int(grabber_highlight.get_size().x * escala), int(grabber_highlight.get_size().y * escala))
 	var grabber_highlight_texture: ImageTexture = ImageTexture.create_from_image(grabber_highlight_image)
 	tema_menus_do_teste.set_icon("grabber_highlight", "HSlider", grabber_highlight_texture)
 	
 	var radio_unchecked: CompressedTexture2D = tema_menus_do_teste.get_icon("radio_unchecked", "PopupMenu")
 	var radio_unchecked_image: Image = radio_unchecked.get_image()
-	radio_unchecked_image.resize(int(radio_unchecked.get_size().x * GameManager.escala), int(radio_unchecked.get_size().y * GameManager.escala))
+	radio_unchecked_image.resize(int(radio_unchecked.get_size().x * escala), int(radio_unchecked.get_size().y * escala))
 	var radio_unchecked_texture: ImageTexture = ImageTexture.create_from_image(radio_unchecked_image)
 	tema_menus_do_teste.set_icon("radio_unchecked", "PopupMenu", radio_unchecked_texture)
 	
 	var radio_checked: CompressedTexture2D = tema_menus_do_teste.get_icon("radio_checked", "PopupMenu")
 	var radio_checked_image: Image = radio_checked.get_image()
-	radio_checked_image.resize(int(radio_checked.get_size().x * GameManager.escala), int(radio_checked.get_size().y * GameManager.escala))
+	radio_checked_image.resize(int(radio_checked.get_size().x * escala), int(radio_checked.get_size().y * escala))
 	var radio_checked_texture: ImageTexture = ImageTexture.create_from_image(radio_checked_image)
 	tema_menus_do_teste.set_icon("radio_checked", "PopupMenu", radio_checked_texture)
 	
 	# Só relevante para debug quando iniciando a cena do jogo principal diretamente.
 	número_de_alvos = número_máximo_de_alvos
-	alvos_no_jogo = Alvos.values()
-	alvos_no_jogo.shuffle()
-	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
 
 
 # Chamado a cada frame
@@ -174,11 +170,7 @@ func parar_música() -> void:
 
 
 func iniciar_jogo() -> void:
-	alvos_no_jogo = Alvos.values()
-	alvos_no_jogo.shuffle()
-	alvos_no_jogo = alvos_no_jogo.slice(0, número_de_alvos)
 	
-	alvo_atual = alvos_no_jogo.pick_random()
 	
 	pontos_real = 0
 	pontos_display = 0
@@ -211,42 +203,36 @@ func iniciar_jogo_com_parâmetros(número_alvos: int = número_máximo_de_alvos,
 	iniciar_jogo()
 
 
-# Função de toque para verificar acerto
-func toque(alvos: Array[int]) -> bool:
-	# Se múltiplos alvos forem clicados em simultâneo devido à propagação do toque, o certo se sobrepõe aos errados
-	if alvo_atual in alvos:
-		pontos_real += 1
-		pontos_display += 1
-		
-		var anterior: int = alvo_atual
-		
-		# O alvo novo sempre será diferente do anterior
-		while alvo_atual == anterior and alvos_no_jogo.size() > 1:
-			alvo_atual = alvos_no_jogo.pick_random()
+func acerto_intermediário() -> void:
+	log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, "INTERMEDIÁRIO", suporte, Velocidades.find_key(velocidade), vidas])
+	salvar_logs_csv()
 
-		# Adiciona os dados ao log
-		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, true, suporte, Velocidades.find_key(velocidade), vidas]) # Exemplo de log com acerto
-		salvar_logs_csv()
-		
-		tempo_resposta = 0.0
-		
-		return true
-	else:
-		if pontos_display >= 1:
-			pontos_display -= 1
-		
-		pontos_real -= 1
-		
-		if vidas != INT_MAX:
-			vidas -= 1
-		
-		log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, false, suporte, Velocidades.find_key(velocidade), vidas])  # Exemplo de log com erro
-		salvar_logs_csv()
-		
-		if vidas == 0:
-			finalizar_sessão()
-		
-		return false
+
+func acerto_final() -> void:
+	pontos_real += 1
+	pontos_display += 1
+	
+	# Adiciona os dados ao log
+	log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, "FINAL", suporte, Velocidades.find_key(velocidade), vidas])
+	salvar_logs_csv()
+	
+	tempo_resposta = 0.0
+
+
+func erro() -> void:
+	if pontos_display >= 1:
+		pontos_display -= 1
+	
+	pontos_real -= 1
+	
+	if vidas != INT_MAX:
+		vidas -= 1
+	
+	if vidas == 0:
+		finalizar_sessão()
+	
+	log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, "ERRO", suporte, Velocidades.find_key(velocidade), vidas])
+	salvar_logs_csv()
 
 
 func mudança_no_suporte() -> void:
