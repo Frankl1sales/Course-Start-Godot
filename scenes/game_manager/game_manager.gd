@@ -76,7 +76,8 @@ var caminho: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/game_logs.c
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	linhas = round(tamanho_da_janela.y / tamanho_da_janela.x * colunas)
-	número_máximo_de_alvos = min(Alvos.size(), colunas * linhas - 1)
+	número_máximo_de_alvos = min(Alvos.size() * repetição_máxima, colunas * linhas - 1)
+	número_de_alvos = min(10, número_máximo_de_alvos)
 
 	iniciar_música()
 	
@@ -139,10 +140,6 @@ func _ready() -> void:
 	radio_checked_image.resize(int(radio_checked.get_size().x * escala), int(radio_checked.get_size().y * escala))
 	var radio_checked_texture: ImageTexture = ImageTexture.create_from_image(radio_checked_image)
 	tema_menus_do_teste.set_icon("radio_checked", "PopupMenu", radio_checked_texture)
-	
-	# Só relevante para debug quando iniciando a cena do jogo principal diretamente.
-	número_de_alvos = número_máximo_de_alvos
-
 
 # Chamado a cada frame
 func _process(delta: float) -> void:
