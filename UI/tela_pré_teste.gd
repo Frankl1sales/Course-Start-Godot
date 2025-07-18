@@ -164,11 +164,14 @@ func atualizar_id_profissional(new_text: String) -> void:
 func atualizar_número_de_alvos(new_text: String):
 	var número_de_alvos: int = int(new_text)
 	
-	if número_de_alvos <= 0:
-		número_de_alvos = 1
+	if número_de_alvos < GameManager.repetição_máxima:
+		número_de_alvos = GameManager.repetição_máxima
 	
 	if número_de_alvos > GameManager.número_máximo_de_alvos:
 		número_de_alvos = GameManager.número_máximo_de_alvos
+	
+	if número_de_alvos > GameManager.Alvos.size() * GameManager.repetição_máxima:
+		número_de_alvos = GameManager.Alvos.size() * GameManager.repetição_máxima
 	
 	$"ScrollContainer/Control/LineEditNúmeroDeAlvos".text = str(número_de_alvos)
 	GameManager.número_de_alvos = número_de_alvos
@@ -182,6 +185,9 @@ func atualizar_repetição(new_text: String) -> void:
 	
 	if repetição > GameManager.número_de_alvos:
 		repetição = GameManager.número_de_alvos
+	
+	if repetição * GameManager.Alvos.size() < GameManager.número_de_alvos:
+		repetição = ceil(float(GameManager.número_de_alvos) / GameManager.Alvos.size())
 	
 	$"ScrollContainer/Control/LineEditRepetição".text = str(repetição)
 	GameManager.repetição_máxima = repetição

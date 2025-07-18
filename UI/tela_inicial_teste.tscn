@@ -84,14 +84,16 @@ theme = ExtResource("2_areup")
 [node name="AspectRatioContainerBotãoConfigurações" type="AspectRatioContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.905
+anchor_left = 0.892
 anchor_right = 1.0
-anchor_bottom = 0.17
-offset_left = -0.560059
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -0.160004
+anchor_bottom = 0.191
+offset_left = 0.416016
+offset_top = 24.0
+offset_right = -23.9999
+offset_bottom = 0.231987
 grow_horizontal = 2
+alignment_horizontal = 2
+alignment_vertical = 0
 
 [node name="BotãoConfigurações" type="Button" parent="AspectRatioContainerBotãoConfigurações"]
 layout_mode = 2
