@@ -46,6 +46,8 @@ const BASE_OFFSET_MÁXIMO: int = 50
 const DISTÂNCIA_MÍNIMA_BASE_ENTRE_ALVOS: float = 125.0
 const DISTÂNCIA_MÍNIMA_BASE_DA_POSIÇÃO_ORIGINAL: float = 200
 const NÚMERO_MÁXIMO_DE_TENTATIVAS: int = 100
+const TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR: float = 100.0
+const TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_INFERIOR: float = 32.0
 
 var grid_de_alvos: Array[Array] = []
 
@@ -79,7 +81,11 @@ func _ready() -> void:
 
 #region Inicialização do ruído azul
 	tamanho_célula.x = tamanho_da_janela.x / GameManager.colunas
-	tamanho_célula.y = tamanho_da_janela.y / GameManager.linhas
+	
+	if GameManager.mostrar_barra_de_tempo:
+		tamanho_célula.y = (tamanho_da_janela.y - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR * GameManager.escala - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_INFERIOR * GameManager.escala) / GameManager.linhas
+	else:
+		tamanho_célula.y = (tamanho_da_janela.y - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR * GameManager.escala) / GameManager.linhas
 	
 	grid_de_alvos.resize(GameManager.colunas)
 	
@@ -252,6 +258,13 @@ func _process(delta: float) -> void:
 		
 		$BarraDeTempo.scale = Vector2(progresso * tamanho_da_janela.x / 32, GameManager.escala)
 		$BarraDeTempo.global_position.x = progresso * tamanho_da_janela.x / 2
+#endregion
+
+#region Ruído azul
+	if GameManager.mostrar_barra_de_tempo:
+		tamanho_célula.y = (tamanho_da_janela.y - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR * GameManager.escala - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_INFERIOR * GameManager.escala) / GameManager.linhas
+	else:
+		tamanho_célula.y = (tamanho_da_janela.y - TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR * GameManager.escala) / GameManager.linhas
 #endregion
 
 #region Tratamento do toque
@@ -491,7 +504,7 @@ func posicionar_alvo_com_ruído_azul(alvo: Array, ocupar_célula: bool, posiçã
 		linha = célula_escolhida[1]
 			
 		x = coluna * tamanho_célula.x + tamanho_célula.x / 2 + rng.randf_range(-offset_máximo.x, offset_máximo.x)
-		y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y)
+		y = linha * tamanho_célula.y + tamanho_célula.y / 2 + rng.randf_range(-offset_máximo.y, offset_máximo.y) + TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR * GameManager.escala
 		
 		if !is_nan(posição_original.x):
 			if distância_entre_alvos([-1, -1], [-1, -1], posição_original, Vector2(x, y)) < DISTÂNCIA_MÍNIMA_BASE_DA_POSIÇÃO_ORIGINAL * GameManager.escala:
