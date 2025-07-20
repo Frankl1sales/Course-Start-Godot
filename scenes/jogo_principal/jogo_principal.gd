@@ -58,7 +58,7 @@ const TAMANHO_BASE_DA_FONTE: int = 64
 const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:   
+func _ready() -> void:
 	tamanho_da_janela = get_viewport_rect().size
 	
 	atualizar_placar()
@@ -626,11 +626,11 @@ func distância_entre_alvos(a: Array, b: Array, pos_1: Vector2 = Vector2(0, 0), 
 	return sqrt(pow(centro_a.x - centro_b.x, 2) + pow(centro_a.y - centro_b.y, 2))
 
 
-func setar_índice_z_de_alvo(alvo: Array, índice_z: int):
+func setar_índice_z_de_alvo(alvo: Array, índice_z: int) -> void:
 	instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = índice_z
 
 
-func setar_índice_z_de_alvos_de_tipo(tipo: int, índice_z: int):
+func setar_índice_z_de_alvos_de_tipo(tipo: int, índice_z: int) -> void:
 	for i: int in GameManager.repetição_máxima:
 		setar_índice_z_de_alvo([tipo, i], índice_z)
 
