@@ -41,7 +41,7 @@ var toques: Array[Array] = [];
 
 var tamanho_célula: Vector2
 var offset_máximo: Vector2
-const BASE_OFFSET_MÁXIMO: int = 50
+const OFFSET_MÁXIMO_BASE: int = 50
 
 const DISTÂNCIA_MÍNIMA_BASE_ENTRE_ALVOS: float = 125.0
 const DISTÂNCIA_MÍNIMA_BASE_DA_POSIÇÃO_ORIGINAL: float = 200
@@ -49,21 +49,25 @@ const NÚMERO_MÁXIMO_DE_TENTATIVAS: int = 100
 const TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_SUPERIOR: float = 100.0
 const TAMANHO_BASE_DA_ZONA_DE_EXCLUSÃO_INFERIOR: float = 32.0
 
+const ÍNDICE_Z_ALVO_ATUAL: int = 1
+const ÍNDICE_Z_OUTROS_ALVOS: int = 0
+
 var grid_de_alvos: Array[Array] = []
 
 const TAMANHO_BASE_DA_FONTE: int = 64
 const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:   
+func _ready() -> void:
 	tamanho_da_janela = get_viewport_rect().size
 	
 	atualizar_placar()
 	atualizar_vidas()
-	certos_intermediários = 0
-	repetição = repetição_aleatória()
 	
 	GameManager.alvo_atual = alvo_aleatório()
+	repetição = repetição_aleatória()
+	
+	certos_intermediários = 0
 
 #region Velocidade
 	match GameManager.velocidade:
@@ -101,77 +105,37 @@ func _ready() -> void:
 	grid_de_alvos[GameManager.colunas - 1][0] = [GameManager.INT_MAX, GameManager.INT_MAX]
 	
 	var aspect_ratio_célula: float = tamanho_célula.y / tamanho_célula.x
-	offset_máximo = Vector2(BASE_OFFSET_MÁXIMO * GameManager.escala, BASE_OFFSET_MÁXIMO * GameManager.escala * aspect_ratio_célula)
+	offset_máximo = Vector2(OFFSET_MÁXIMO_BASE * GameManager.escala, OFFSET_MÁXIMO_BASE * GameManager.escala * aspect_ratio_célula)
 #endregion
 	
 #region Inicialização dos alvos
 	instâncias_dos_alvos.resize(GameManager.Alvos.size())
+	
+	var resources_alvos: Array[Resource]
+	resources_alvos.resize(GameManager.Alvos.size())
+	
+	resources_alvos[GameManager.Alvos.DONUT] = donut
+	resources_alvos[GameManager.Alvos.HAMBÚRGUER] = hambúrguer
+	resources_alvos[GameManager.Alvos.PIZZA] = pizza
+	resources_alvos[GameManager.Alvos.OVO_FRITO] = ovo_frito
+	resources_alvos[GameManager.Alvos.MAÇÃ] = maçã
+	resources_alvos[GameManager.Alvos.UVA] = uva
+	resources_alvos[GameManager.Alvos.SORVETE] = sorvete
+	resources_alvos[GameManager.Alvos.CUPCAKE] = cupcake
+	resources_alvos[GameManager.Alvos.BRÓCOLIS] = brócolis
+	resources_alvos[GameManager.Alvos.PICOLÉ] = picolé
 
 	for i: int in GameManager.Alvos.values():
+		instâncias_dos_alvos[i].resize(GameManager.repetição_máxima)
+		
 		for j: int in GameManager.repetição_máxima:
-			match i:
-				GameManager.Alvos.DONUT:
-					var alvo: Area2D = donut.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.HAMBÚRGUER:
-					var alvo: Area2D = hambúrguer.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.PIZZA:
-					var alvo: Area2D = pizza.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.OVO_FRITO:
-					var alvo: Area2D = ovo_frito.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.MAÇÃ:
-					var alvo: Area2D = maçã.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.UVA:
-					var alvo: Area2D = uva.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.SORVETE:
-					var alvo: Area2D = sorvete.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.CUPCAKE:
-					var alvo: Area2D = cupcake.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.BRÓCOLIS:
-					var alvo: Area2D = brócolis.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				GameManager.Alvos.PICOLÉ:
-					var alvo: Area2D = picolé.instantiate()
-					alvo.visible = false
-					alvo.z_index = 0
-					instâncias_dos_alvos[i].append(alvo)
-					add_child(alvo)
-				_:
-					assert(false, "Alvo inválido")
+			var alvo: Area2D = resources_alvos[i].instantiate()
+			
+			instâncias_dos_alvos[i][j] = alvo
+			add_child(alvo)
+			
+			alvo.visible = false
+			setar_índice_z_de_alvo([i, j], ÍNDICE_Z_OUTROS_ALVOS)
 	
 	for alvos: Array in instâncias_dos_alvos:
 		for i: int in alvos.size():
@@ -241,6 +205,8 @@ func _ready() -> void:
 
 	spawnar_todos_os_alvos()
 	
+	setar_índice_z_de_alvos_de_tipo(GameManager.alvo_atual, ÍNDICE_Z_ALVO_ATUAL)
+	
 	if GameManager.velocidade != GameManager.Velocidades.ESTÁTICA:
 		limpar_grid()
 
@@ -288,8 +254,8 @@ func _process(delta: float) -> void:
 				else:
 					# Esconda os alvos tocados até o todos os toques certos sejam realizados, não os
 					# remova pois a política de reposicionamento é nenhum.
-					for alvo: Array in alvos_no_jogo:
-						instâncias_dos_alvos[toque_certo[0]][toque_certo[1]].visible = false
+					instâncias_dos_alvos[toque_certo[0]][toque_certo[1]].visible = false
+					setar_índice_z_de_alvo(toque_certo, ÍNDICE_Z_OUTROS_ALVOS)
 				
 				certos_intermediários += 1
 			
@@ -312,11 +278,14 @@ func _process(delta: float) -> void:
 						posicionar_alvo_com_ruído_azul(novo_alvo, GameManager.velocidade == GameManager.Velocidades.ESTÁTICA, posições_originais[i])
 					
 					GameManager.alvo_atual = alvo_aleatório_presente()
-				
+
 					while GameManager.alvo_atual == alvo_original:
 						GameManager.alvo_atual = alvo_aleatório_presente()
 					
 					repetição = alvos_de_tipo(GameManager.alvo_atual)
+					
+					setar_índice_z_de_alvos_de_tipo(alvo_original, ÍNDICE_Z_OUTROS_ALVOS)
+					setar_índice_z_de_alvos_de_tipo(GameManager.alvo_atual, ÍNDICE_Z_ALVO_ATUAL)
 				
 					setar_sprite_alvo(GameManager.alvo_atual)
 				elif GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.TODOS:
@@ -327,6 +296,9 @@ func _process(delta: float) -> void:
 					
 					repetição = repetição_aleatória()
 					spawnar_todos_os_alvos()
+					
+					setar_índice_z_de_alvos_de_tipo(alvo_original, ÍNDICE_Z_OUTROS_ALVOS)
+					setar_índice_z_de_alvos_de_tipo(GameManager.alvo_atual, ÍNDICE_Z_ALVO_ATUAL)
 					
 					setar_sprite_alvo(GameManager.alvo_atual)
 					
@@ -339,9 +311,11 @@ func _process(delta: float) -> void:
 						GameManager.alvo_atual = alvo_aleatório_presente()
 					
 					repetição = alvos_de_tipo(GameManager.alvo_atual)
+					
+					setar_índice_z_de_alvos_de_tipo(alvo_original, ÍNDICE_Z_OUTROS_ALVOS)
+					setar_índice_z_de_alvos_de_tipo(GameManager.alvo_atual, ÍNDICE_Z_ALVO_ATUAL)
 				
 					setar_sprite_alvo(GameManager.alvo_atual)
-				
 				# Faça os alvos ocultos após toque certo serem visíveis novamente
 				if GameManager.política_de_reposicionamento == GameManager.PolíticasDeReposicionamento.NENHUM:
 					for toque_certo: Array in toques_certos:
@@ -366,7 +340,7 @@ func _process(delta: float) -> void:
 		toques.clear()
 #endregion
 	
-#region Colisão
+#region Movimento dos alvos
 	for alvo: Array[int] in alvos_no_jogo:
 		instâncias_dos_alvos[alvo[0]][alvo[1]].global_position += vetores_de_movimento_dos_alvos[alvo[0]][alvo[1]] * delta
 		
@@ -536,7 +510,6 @@ func spawnar_todos_os_alvos() -> void:
 		var alvo = [GameManager.alvo_atual, i]
 		
 		instâncias_dos_alvos[alvo[0]][alvo[1]].visible = true
-		instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 1
 		
 		alvos_no_jogo.append(alvo)
 		
@@ -575,7 +548,6 @@ func adicionar_alvo(proibir_alvo_atual: bool = true) -> Array[int]:
 				break
 		
 		instâncias_dos_alvos[alvo_para_adicionar][índice_livre].visible = true
-		instâncias_dos_alvos[alvo_para_adicionar][índice_livre].z_index = 1
 		
 		alvos_no_jogo.append([alvo_para_adicionar, índice_livre])
 		
@@ -601,7 +573,6 @@ func remover_alvo(alvo: Array) -> void:
 		alvos_no_jogo.remove_at(índice)
 	
 	instâncias_dos_alvos[alvo[0]][alvo[1]].visible = false
-	instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 0
 	
 	for i: int in GameManager.colunas:
 		for j: int in GameManager.linhas:
@@ -623,7 +594,6 @@ func limpar_grid() -> void:
 func limpar_alvos_do_jogo() -> void:
 	for alvo: Array[int] in alvos_no_jogo:
 		instâncias_dos_alvos[alvo[0]][alvo[1]].visible = false
-		instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = 0
 	
 	alvos_no_jogo.clear()
 
@@ -654,6 +624,15 @@ func distância_entre_alvos(a: Array, b: Array, pos_1: Vector2 = Vector2(0, 0), 
 		centro_b = centro_de_alvo(b)
 	
 	return sqrt(pow(centro_a.x - centro_b.x, 2) + pow(centro_a.y - centro_b.y, 2))
+
+
+func setar_índice_z_de_alvo(alvo: Array, índice_z: int) -> void:
+	instâncias_dos_alvos[alvo[0]][alvo[1]].z_index = índice_z
+
+
+func setar_índice_z_de_alvos_de_tipo(tipo: int, índice_z: int) -> void:
+	for i: int in GameManager.repetição_máxima:
+		setar_índice_z_de_alvo([tipo, i], índice_z)
 
 
 func pausar():
