@@ -190,7 +190,6 @@ func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
 	if valor <= 0:
 		valor = GameManager.INT_MAX
 	
-	GameManager.vidas = valor
 	GameManager.alterar_número_de_vidas(valor)
 
 	if valor == GameManager.INT_MAX:
