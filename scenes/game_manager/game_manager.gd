@@ -176,6 +176,9 @@ func iniciar_jogo() -> void:
 	timestamp_atual_sessão = 0.0
 	tempo_resposta = 0.0
 	log_data = []
+	
+	mudança_nos_pontos.emit(pontos_real, pontos_display)
+	mudança_nas_vidas.emit(vidas)
 
 	# Gerar ID único e data da sessão
 	id_sessão = gerar_id_único()
