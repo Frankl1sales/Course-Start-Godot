@@ -1,6 +1,9 @@
 extends Node2D
 
 
+signal mudança_nas_vidas(vidas: int)
+signal mudança_nos_pontos(pontos_real: int, pontos_display: int)
+
 const INT_MIN: int = -9223372036854775808
 const INT_MAX: int = 9223372036854775807
 
@@ -167,14 +170,15 @@ func parar_música() -> void:
 
 
 func iniciar_jogo() -> void:
-	
-	
 	pontos_real = 0
 	pontos_display = 0
 	suporte = 0
 	timestamp_atual_sessão = 0.0
 	tempo_resposta = 0.0
 	log_data = []
+	
+	mudança_nos_pontos.emit(pontos_real, pontos_display)
+	mudança_nas_vidas.emit(vidas)
 
 	# Gerar ID único e data da sessão
 	id_sessão = gerar_id_único()
@@ -209,6 +213,8 @@ func acerto_final() -> void:
 	pontos_real += 1
 	pontos_display += 1
 	
+	mudança_nos_pontos.emit(pontos_real, pontos_display)
+	
 	# Adiciona os dados ao log
 	log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, "FINAL", suporte, Velocidades.find_key(velocidade), vidas])
 	salvar_logs_csv()
@@ -222,14 +228,22 @@ func erro() -> void:
 	
 	pontos_real -= 1
 	
+	mudança_nos_pontos.emit(pontos_real, pontos_display)
+	
 	if vidas != INT_MAX:
 		vidas -= 1
+		mudança_nas_vidas.emit(vidas)
 	
 	if vidas == 0:
 		finalizar_sessão()
 	
 	log_data.append([id_sessão, id_profissional, data_sessão, timestamp_atual_sessão, nome_jogo, tempo_resposta, pontos_real, alvo_atual, "ERRO", suporte, Velocidades.find_key(velocidade), vidas])
 	salvar_logs_csv()
+
+
+func alterar_número_de_vidas(número_de_vidas: int) -> void:
+	vidas = número_de_vidas
+	mudança_nas_vidas.emit(vidas)
 
 
 func mudança_no_suporte() -> void:

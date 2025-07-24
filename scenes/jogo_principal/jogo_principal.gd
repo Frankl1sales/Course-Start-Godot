@@ -61,9 +61,6 @@ const TEMPO_ATÉ_AUMENTAR_O_SUPORTE: float = 5.0
 func _ready() -> void:
 	tamanho_da_janela = get_viewport_rect().size
 	
-	atualizar_placar()
-	atualizar_vidas()
-	
 	GameManager.alvo_atual = alvo_aleatório()
 	repetição = repetição_aleatória()
 	
@@ -188,11 +185,6 @@ func _ready() -> void:
 	
 	$CanvasLayer/LabelPontos.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
 	$CanvasLayer/LabelVidas.add_theme_font_size_override("font_size", GameManager.escala * TAMANHO_BASE_DA_FONTE)
-
-	if GameManager.vidas == GameManager.INT_MAX:
-		$CanvasLayer/LabelVidas.visible = false
-		$CanvasLayer/Heart.visible = false
-		$CanvasLayer/HeartAnimation.visible = false
 		
 	$CanvasLayer/Heart.global_position *= GameManager.escala
 	$CanvasLayer/HeartAnimation.global_position *= GameManager.escala
@@ -201,6 +193,14 @@ func _ready() -> void:
 	$CanvasLayer/Heart.scale *= GameManager.escala
 	$CanvasLayer/HeartAnimation.scale *= GameManager.escala
 	$CanvasLayer/Star.scale *= GameManager.escala
+	
+	atualizar_placar(GameManager.pontos_display)
+	GameManager.mudança_nos_pontos.connect(func(_pontos_real, pontos_display) -> void:
+		atualizar_placar(pontos_display)
+	)
+	
+	atualizar_vidas(GameManager.vidas)
+	GameManager.mudança_nas_vidas.connect(atualizar_vidas)
 #endregion
 
 	spawnar_todos_os_alvos()
@@ -265,8 +265,6 @@ func _process(delta: float) -> void:
 				if GameManager.animar:
 					$CanvasLayer/Star.play()
 				
-				atualizar_placar()
-				
 				alterar_suporte(0)
 				tempo_desde_toque_certo = 0.0
 				
@@ -328,8 +326,6 @@ func _process(delta: float) -> void:
 				tempo_desde_toque_certo = floor(tempo_desde_toque_certo / TEMPO_ATÉ_AUMENTAR_O_SUPORTE) * TEMPO_ATÉ_AUMENTAR_O_SUPORTE
 		else:
 			GameManager.erro()
-			
-			atualizar_vidas()
 			
 			if GameManager.vidas > 0:
 				$TapWrong.play()
@@ -413,15 +409,21 @@ func setar_sprite_alvo(tipo: int) -> void:
 	
 	$CanvasLayer/ControlAlvo.add_child(sprites_dos_alvos[tipo])
 	sprite_do_alvo_atual = sprites_dos_alvos[tipo]
-
-
-func atualizar_placar() -> void:
-	$CanvasLayer/LabelPontos.text = str(GameManager.pontos_display)
 	
+func atualizar_placar(pontos: int) -> void:
+	$CanvasLayer/LabelPontos.text = str(pontos)
 
-func atualizar_vidas() -> void:
-	if GameManager.vidas != GameManager.INT_MAX:
-		$CanvasLayer/LabelVidas.text = str(GameManager.vidas)
+
+func atualizar_vidas(vidas: int) -> void:
+	if vidas != GameManager.INT_MAX:
+		$CanvasLayer/LabelVidas.visible = true
+		$CanvasLayer/Heart.visible = true
+		$CanvasLayer/HeartAnimation.visible = true
+		$CanvasLayer/LabelVidas.text = str(vidas)
+	else:
+		$CanvasLayer/LabelVidas.visible = false
+		$CanvasLayer/Heart.visible = false
+		$CanvasLayer/HeartAnimation.visible = false
 
 
 func alvo_aleatório_presente() -> int:
@@ -654,16 +656,3 @@ func _on_botão_pausa_pressed() -> void:
 
 func _on_menu_pausa_barra_de_tempo_oculta(oculta: bool) -> void:
 	$BarraDeTempo.visible = not oculta
-
-
-func _on_menu_pausa_número_de_vidas_mudou(vidas: int) -> void:
-	if vidas == GameManager.INT_MAX:
-		$CanvasLayer/LabelVidas.visible = false
-		$CanvasLayer/Heart.visible = false
-		$CanvasLayer/HeartAnimation.visible = false
-	else:
-		$CanvasLayer/LabelVidas.visible = true
-		$CanvasLayer/Heart.visible = true
-		$CanvasLayer/HeartAnimation.visible = true
-		$CanvasLayer/LabelVidas.text = str(vidas)
-		
