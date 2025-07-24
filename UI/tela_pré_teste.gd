@@ -252,6 +252,17 @@ func iniciar_jogo() -> void:
 		GameManager.iniciar_jogo()
 
 
+func mostrar_botões_de_iniciar() -> void:
+	var tween: Tween = create_tween()
+	var início_do_scroll: int = $ScrollContainer.scroll_vertical
+	var fim_do_scroll: int = $"ScrollContainer/Control/BotãoIniciarJogo".position.y - 16 * GameManager.escala
+	tween.tween_property($ScrollContainer, "scroll_vertical", fim_do_scroll, 0.1).from(início_do_scroll)
+	tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
+	tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
+	tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
+	tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
+
+
 func _on_line_edit_profissional_text_submitted(new_text: String) -> void:
 	atualizar_id_profissional(new_text)
 	
@@ -260,14 +271,7 @@ func _on_line_edit_profissional_text_submitted(new_text: String) -> void:
 	else:
 		match modo_enter:
 			ModoEnter.NENHUM:
-				var tween: Tween = create_tween()
-				var início_do_scroll: int = $ScrollContainer.scroll_vertical
-				var fim_do_scroll: int = $"ScrollContainer/Control/BotãoIniciarJogo".position.y - 16 * GameManager.escala
-				tween.tween_property($ScrollContainer, "scroll_vertical", fim_do_scroll, 0.1).from(início_do_scroll)
-				tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
-				tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", (TAMANHO_BASE_DA_FONTE + 2) * GameManager.escala, 0.05).set_ease(Tween.EASE_IN)
-				tween.tween_property($"ScrollContainer/Control/BotãoIniciarMenu", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
-				tween.tween_property($"ScrollContainer/Control/BotãoIniciarJogo", "theme_override_font_sizes/font_size", TAMANHO_BASE_DA_FONTE * GameManager.escala, 0.05).set_ease(Tween.EASE_OUT)
+				mostrar_botões_de_iniciar()
 			ModoEnter.MENU:
 				iniciar_menu()
 			ModoEnter.JOGO:
@@ -281,6 +285,7 @@ func _on_line_edit_profissional_focus_exited() -> void:
 
 func _on_line_edit_número_de_alvos_text_submitted(new_text: String) -> void:
 	atualizar_número_de_alvos(new_text)
+	mostrar_botões_de_iniciar()
 
 
 func _on_line_edit_número_de_alvos_focus_exited() -> void:
@@ -289,6 +294,7 @@ func _on_line_edit_número_de_alvos_focus_exited() -> void:
 
 func _on_line_edit_repetição_text_submitted(new_text: String) -> void:
 	atualizar_repetição(new_text)
+	mostrar_botões_de_iniciar()
 
 
 func _on_line_edit_repetição_focus_exited() -> void:
@@ -316,6 +322,7 @@ func _on_option_button_velocidade_item_selected(index: int) -> void:
 
 func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
 	atualizar_vidas(new_text)
+	mostrar_botões_de_iniciar()
 
 
 func _on_line_edit_vidas_focus_exited() -> void:
@@ -324,6 +331,7 @@ func _on_line_edit_vidas_focus_exited() -> void:
 
 func _on_line_edit_duração_text_submitted(new_text: String) -> void:
 	atualizar_duração(new_text)
+	mostrar_botões_de_iniciar()
 
 
 func _on_line_edit_duração_focus_exited() -> void:
