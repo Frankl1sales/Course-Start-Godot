@@ -1,8 +1,7 @@
 extends Control
 
-signal barra_de_tempo_oculta(oculta: bool)
-signal número_de_vidas_mudou(vidas: int)
 
+signal barra_de_tempo_oculta(oculta: bool)
 
 var ícone_toggle_on: Resource = preload("res://assets/icons/toggle/toggle_on.svg")
 var ícone_toggle_off: Resource = preload("res://assets/icons/toggle/toggle_off.svg")
@@ -56,6 +55,11 @@ func _ready() -> void:
 		$LineEditVidas.text = str(GameManager.vidas)
 	else:
 		$LineEditVidas.text = "Ilimitadas"
+	
+	GameManager.mudança_nas_vidas.connect(func(vidas: int) -> void:
+		if not $LineEditVidas.has_focus():
+			$LineEditVidas.text = str(vidas)
+	)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -173,12 +177,11 @@ func _on_h_slider_sons_value_changed(value: float) -> void:
 func _on_line_edit_vidas_text_changed(new_text: String) -> void:
 	var valor: int = int(new_text)
 	
-	if valor != 0:
-		GameManager.vidas = valor
-		número_de_vidas_mudou.emit(valor)
-	else:
-		GameManager.vidas = GameManager.INT_MAX
-		número_de_vidas_mudou.emit(GameManager.INT_MAX)
+	if valor <= 0:
+		valor = GameManager.INT_MAX
+	
+	GameManager.vidas = valor
+	GameManager.alterar_número_de_vidas(valor)
 
 
 func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
@@ -188,7 +191,7 @@ func _on_line_edit_vidas_text_submitted(new_text: String) -> void:
 		valor = GameManager.INT_MAX
 	
 	GameManager.vidas = valor
-	número_de_vidas_mudou.emit(valor)
+	GameManager.alterar_número_de_vidas(valor)
 
 	if valor == GameManager.INT_MAX:
 		$"LineEditVidas".text = "Ilimitadas"
